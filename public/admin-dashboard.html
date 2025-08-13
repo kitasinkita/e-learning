@@ -142,7 +142,18 @@
         .table {
             width: 100%;
             border-collapse: collapse;
+            table-layout: fixed;
         }
+        
+        /* 進捗テーブルの列幅調整 */
+        .table th:nth-child(1), .table td:nth-child(1) { width: 15%; } /* ユーザー */
+        .table th:nth-child(2), .table td:nth-child(2) { width: 12%; } /* 部署 */
+        .table th:nth-child(3), .table td:nth-child(3) { width: 14%; } /* レッスン1 */
+        .table th:nth-child(4), .table td:nth-child(4) { width: 14%; } /* レッスン2 */
+        .table th:nth-child(5), .table td:nth-child(5) { width: 14%; } /* レッスン3 */
+        .table th:nth-child(6), .table td:nth-child(6) { width: 14%; } /* レッスン4 */
+        .table th:nth-child(7), .table td:nth-child(7) { width: 14%; } /* レッスン5 */
+        .table th:nth-child(8), .table td:nth-child(8) { width: 8%; }  /* 全体進捗 */
 
         .table th {
             background: #34495e;
@@ -153,8 +164,10 @@
         }
 
         .table td {
-            padding: 15px;
+            padding: 12px 8px;
             border-bottom: 1px solid #ecf0f1;
+            font-size: 0.85em;
+            white-space: nowrap;
         }
 
         .table tr:hover {
@@ -162,10 +175,13 @@
         }
 
         .status-badge {
-            padding: 5px 12px;
-            border-radius: 20px;
-            font-size: 0.8em;
+            padding: 4px 8px;
+            border-radius: 12px;
+            font-size: 0.7em;
             font-weight: 600;
+            white-space: nowrap;
+            display: inline-block;
+            line-height: 1.2;
         }
 
         .status-not-started {
@@ -379,7 +395,16 @@
             }
 
             .table {
-                font-size: 0.9em;
+                font-size: 0.75em;
+            }
+            
+            .table td {
+                padding: 8px 4px;
+            }
+            
+            .status-badge {
+                font-size: 0.6em;
+                padding: 2px 6px;
             }
 
             .action-buttons {
@@ -820,7 +845,7 @@
                 tableBody.innerHTML = Object.values(userProgress).map(up => {
                     const getStatusBadge = (lessonId) => {
                         const lesson = up.lessons[lessonId];
-                        if (!lesson) return '<span class="status-badge status-not-started">未開始<br><small>0%</small></span>';
+                        if (!lesson) return '<span class="status-badge status-not-started">未開始 0%</span>';
                         
                         let className = 'status-not-started';
                         let text = '未開始';
@@ -840,7 +865,7 @@
                             progressText = `100% (${totalSlides}/${totalSlides})`;
                         }
                         
-                        return `<span class="status-badge ${className}">${text}<br><small>${progressText}</small></span>`;
+                        return `<span class="status-badge ${className}">${text} ${progressText}</span>`;
                     };
                     
                     const completedCount = Object.values(up.lessons).filter(l => l.status === 'completed').length;
