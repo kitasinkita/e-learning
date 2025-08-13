@@ -1,0 +1,564 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>SmartLearn Pro - カスタマイズ型eラーニングシステム</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        body {
+            font-family: 'Segoe UI', 'メイリオ', sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: #333;
+            overflow: hidden;
+        }
+        
+        .slide-container {
+            display: none;
+            width: 100vw;
+            height: 100vh;
+            padding: 40px;
+            animation: slideIn 0.5s ease-in-out;
+        }
+        
+        .slide-container.active {
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+        }
+        
+        @keyframes slideIn {
+            from { opacity: 0; transform: translateX(50px); }
+            to { opacity: 1; transform: translateX(0); }
+        }
+        
+        .slide-content {
+            background: white;
+            border-radius: 20px;
+            padding: 60px;
+            box-shadow: 0 20px 60px rgba(0,0,0,0.3);
+            max-width: 1200px;
+            width: 100%;
+            max-height: 85vh;
+            overflow-y: auto;
+        }
+        
+        h1 {
+            color: #667eea;
+            font-size: 3em;
+            margin-bottom: 30px;
+            text-align: center;
+            border-bottom: 3px solid #667eea;
+            padding-bottom: 20px;
+        }
+        
+        h2 {
+            color: #764ba2;
+            font-size: 2.2em;
+            margin: 30px 0 20px;
+            display: flex;
+            align-items: center;
+            gap: 15px;
+        }
+        
+        h3 {
+            color: #667eea;
+            font-size: 1.8em;
+            margin: 25px 0 15px;
+        }
+        
+        .icon {
+            font-size: 1.5em;
+        }
+        
+        .feature-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 30px;
+            margin: 30px 0;
+        }
+        
+        .feature-card {
+            background: linear-gradient(135deg, #f5f7fa 0%, #c3cfe2 100%);
+            padding: 30px;
+            border-radius: 15px;
+            text-align: center;
+            transition: transform 0.3s;
+        }
+        
+        .feature-card:hover {
+            transform: translateY(-5px);
+        }
+        
+        .feature-icon {
+            font-size: 3em;
+            margin-bottom: 20px;
+        }
+        
+        .benefit-list {
+            background: #f8f9fa;
+            padding: 30px;
+            border-radius: 15px;
+            margin: 30px 0;
+        }
+        
+        .benefit-item {
+            display: flex;
+            align-items: center;
+            margin: 15px 0;
+            font-size: 1.2em;
+        }
+        
+        .benefit-item .icon {
+            margin-right: 15px;
+            color: #28a745;
+        }
+        
+        .cta-section {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            padding: 40px;
+            border-radius: 15px;
+            text-align: center;
+            margin: 30px 0;
+        }
+        
+        .cta-button {
+            background: white;
+            color: #667eea;
+            padding: 15px 30px;
+            border: none;
+            border-radius: 10px;
+            font-size: 1.2em;
+            font-weight: bold;
+            cursor: pointer;
+            margin: 10px;
+            transition: transform 0.3s;
+        }
+        
+        .cta-button:hover {
+            transform: translateY(-2px);
+        }
+        
+        .navigation {
+            position: fixed;
+            bottom: 30px;
+            left: 50%;
+            transform: translateX(-50%);
+            display: flex;
+            gap: 20px;
+        }
+        
+        .nav-btn {
+            background: rgba(255,255,255,0.9);
+            color: #667eea;
+            border: none;
+            padding: 12px 24px;
+            border-radius: 25px;
+            cursor: pointer;
+            font-weight: bold;
+            transition: all 0.3s;
+        }
+        
+        .nav-btn:hover:not(:disabled) {
+            background: white;
+            transform: translateY(-2px);
+        }
+        
+        .nav-btn:disabled {
+            opacity: 0.5;
+            cursor: not-allowed;
+        }
+        
+        .slide-counter {
+            position: fixed;
+            top: 30px;
+            right: 30px;
+            background: rgba(255,255,255,0.9);
+            padding: 10px 20px;
+            border-radius: 20px;
+            font-weight: bold;
+            color: #667eea;
+        }
+        
+        .highlight {
+            background: linear-gradient(120deg, #a8edea 0%, #fed6e3 100%);
+            padding: 3px 8px;
+            border-radius: 5px;
+            font-weight: bold;
+        }
+        
+        .warning-box {
+            background: #e7f3ff;
+            border-left: 5px solid #007bff;
+            padding: 20px;
+            margin: 20px 0;
+            border-radius: 10px;
+        }
+        
+        @media (max-width: 768px) {
+            .slide-content {
+                padding: 30px;
+                margin: 20px;
+            }
+            
+            h1 {
+                font-size: 2.2em;
+            }
+            
+            h2 {
+                font-size: 1.8em;
+            }
+            
+            .feature-grid {
+                grid-template-columns: 1fr;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="slide-counter">
+        <span id="current-slide">1</span> / <span id="total-slides">6</span>
+    </div>
+
+    <!-- スライド1: タイトル -->
+    <div class="slide-container active">
+        <div class="slide-content">
+            <h1>🚀 SmartLearn Pro</h1>
+            <div style="text-align: center; margin: 40px 0;">
+                <div style="font-size: 2.5em; margin-bottom: 20px;">🔄📚✨</div>
+                <h2 style="color: #764ba2; justify-content: center;">
+                    御社専用の社内研修システムを即構築
+                </h2>
+                <p style="font-size: 1.4em; color: #666; margin-top: 20px;">
+                    <span class="highlight">スライドを差し替えるだけ</span>で、どんな研修内容にも対応
+                </p>
+            </div>
+            <div class="cta-section" style="margin-top: 30px;">
+                <h3 style="color: white; margin-bottom: 15px;">💡 革新的なアプローチ</h3>
+                <p style="font-size: 1.2em;">既製品のeラーニングではなく、<span style="background: white; color: #667eea; padding: 2px 6px; border-radius: 4px; font-weight: bold;">御社オリジナルの研修システム</span>を最短1日で構築</p>
+            </div>
+            <div class="warning-box">
+                <strong>🏢 開発元:</strong> AI研修法人<br>
+                <strong>🎯 対象:</strong> 企業・組織の社員教育担当者様
+            </div>
+        </div>
+    </div>
+
+    <!-- スライド2: 課題と解決 -->
+    <div class="slide-container">
+        <div class="slide-content">
+            <h1>😰 社員教育でこんなお悩みありませんか？</h1>
+            
+            <div class="feature-grid" style="margin-top: 40px;">
+                <div class="feature-card" style="background: #fff3cd;">
+                    <div class="feature-icon">💸</div>
+                    <h3>研修コストが高額</h3>
+                    <p>外部講師やe-learning導入に数百万円の費用がかかる</p>
+                </div>
+                <div class="feature-card" style="background: #f8d7da;">
+                    <div class="feature-icon">⏰</div>
+                    <h3>準備に時間がかかる</h3>
+                    <p>カリキュラム作成、システム構築で数ヶ月の準備期間</p>
+                </div>
+                <div class="feature-card" style="background: #d1ecf1;">
+                    <div class="feature-icon">😴</div>
+                    <h3>受講者が飽きやすい</h3>
+                    <p>従来の座学や動画では集中力が続かない</p>
+                </div>
+                <div class="feature-card" style="background: #e2e3e5;">
+                    <div class="feature-icon">📊</div>
+                    <h3>進捗管理が困難</h3>
+                    <p>誰がどこまで学習したかリアルタイムで把握できない</p>
+                </div>
+            </div>
+            
+            <div class="cta-section" style="margin-top: 40px;">
+                <h2 style="color: white; justify-content: center; margin-bottom: 20px;">
+                    ✨ すべて解決します！
+                </h2>
+                <p style="font-size: 1.3em;">SmartLearn Proなら...</p>
+            </div>
+        </div>
+    </div>
+
+    <!-- スライド3: システム特徴 -->
+    <div class="slide-container">
+        <div class="slide-content">
+            <h1>🌟 システムの特徴</h1>
+            
+            <div class="warning-box" style="background: #fff3cd; border-left-color: #ffc107; margin-bottom: 30px;">
+                <strong>🔄 最大の特徴：完全カスタマイズ対応</strong><br>
+                <span class="highlight">スライドを差し替えるだけ</span>で、御社で教育したい内容のeラーニングシステムとしてすぐ機能します！
+            </div>
+            
+            <div class="feature-grid">
+                <div class="feature-card">
+                    <div class="feature-icon">🔄</div>
+                    <h3>スライド差し替えで即導入</h3>
+                    <p>業界・職種を問わず<span class="highlight">どんな研修内容</span>にも対応可能</p>
+                </div>
+                <div class="feature-card">
+                    <div class="feature-icon">⚡</div>
+                    <h3>即座に導入可能</h3>
+                    <p>クラウド環境で<span class="highlight">最短1日</span>で研修開始</p>
+                </div>
+                <div class="feature-card">
+                    <div class="feature-icon">📱</div>
+                    <h3>どこでも学習</h3>
+                    <p>PC・タブレット・スマホ対応でいつでもどこでも</p>
+                </div>
+                <div class="feature-card">
+                    <div class="feature-icon">👥</div>
+                    <h3>管理者機能充実</h3>
+                    <p>リアルタイム進捗管理と詳細レポート機能</p>
+                </div>
+                <div class="feature-card">
+                    <div class="feature-icon">🎯</div>
+                    <h3>実演ベース学習</h3>
+                    <p>座学ではなく実際に手を動かして覚える実践型</p>
+                </div>
+                <div class="feature-card">
+                    <div class="feature-icon">💰</div>
+                    <h3>コストパフォーマンス</h3>
+                    <p>従来研修の<span class="highlight">1/10以下</span>のコストで導入</p>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- スライド4: 導入効果 -->
+    <div class="slide-container">
+        <div class="slide-content">
+            <h1>📈 導入効果・メリット</h1>
+            
+            <div class="benefit-list">
+                <div class="benefit-item">
+                    <span class="icon">✅</span>
+                    <span><strong>研修費用を大幅削減：</strong>年間数百万円の研修費を月額数万円に</span>
+                </div>
+                <div class="benefit-item">
+                    <span class="icon">✅</span>
+                    <span><strong>即戦力の人材育成：</strong>実践的なAIスキルで業務効率化を実現</span>
+                </div>
+                <div class="benefit-item">
+                    <span class="icon">✅</span>
+                    <span><strong>学習継続率向上：</strong>従来の座学より2倍以上の完走率</span>
+                </div>
+                <div class="benefit-item">
+                    <span class="icon">✅</span>
+                    <span><strong>管理工数削減：</strong>自動進捗管理で人事部門の負担軽減</span>
+                </div>
+                <div class="benefit-item">
+                    <span class="icon">✅</span>
+                    <span><strong>スキル標準化：</strong>全社員が同じレベルのAI活用スキルを習得</span>
+                </div>
+                <div class="benefit-item">
+                    <span class="icon">✅</span>
+                    <span><strong>柔軟な学習環境：</strong>リモートワーク対応で場所を選ばない</span>
+                </div>
+            </div>
+            
+            <div class="cta-section">
+                <h3 style="color: white; margin-bottom: 15px;">🏆 成功事例</h3>
+                <p>「3ヶ月でExcel作業を50%削減！AI活用で業務が革新されました」</p>
+                <p style="text-align: right; margin-top: 10px; font-style: italic;">- 導入企業 人事部長様</p>
+            </div>
+        </div>
+    </div>
+
+    <!-- スライド5: 導入事例 -->
+    <div class="slide-container">
+        <div class="slide-content">
+            <h1>🏢 あらゆる業界で活用可能</h1>
+            
+            <div class="warning-box" style="background: #e7f3ff; border-left-color: #007bff; margin-bottom: 30px;">
+                <strong>💡 コンセプト：完全カスタマイズ対応</strong><br>
+                従来のeラーニングシステムは既製コンテンツが中心でしたが、SmartLearn Proは違います。<br>
+                <span class="highlight">御社の研修内容に合わせてスライドを作成し、システムに組み込むだけ！</span>
+            </div>
+            
+            <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); gap: 25px; margin: 30px 0;">
+                <div class="feature-card" style="background: linear-gradient(135deg, #ff9a56 0%, #ffad56 100%); color: white;">
+                    <div class="feature-icon">🍕</div>
+                    <h3>飲食店向け研修例</h3>
+                    <ul style="text-align: left; font-size: 0.9em; margin-top: 15px;">
+                        <li>材料の注文手順・システム</li>
+                        <li>食材管理とロス削減</li>
+                        <li>衛生管理基準</li>
+                        <li>接客マナーとクレーム対応</li>
+                        <li>POS操作とレジ業務</li>
+                    </ul>
+                </div>
+                <div class="feature-card" style="background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); color: white;">
+                    <div class="feature-icon">⚖️</div>
+                    <h3>税理士事務所向け研修例</h3>
+                    <ul style="text-align: left; font-size: 0.9em; margin-top: 15px;">
+                        <li>最新税法・国税庁規定</li>
+                        <li>電子帳簿保存法対応</li>
+                        <li>インボイス制度実務</li>
+                        <li>申告書作成手順</li>
+                        <li>税務調査対応</li>
+                    </ul>
+                </div>
+                <div class="feature-card" style="background: linear-gradient(135deg, #11998e 0%, #38ef7d 100%); color: white;">
+                    <div class="feature-icon">🏥</div>
+                    <h3>医療機関向け研修例</h3>
+                    <ul style="text-align: left; font-size: 0.9em; margin-top: 15px;">
+                        <li>医療安全管理</li>
+                        <li>感染症対策手順</li>
+                        <li>電子カルテ操作</li>
+                        <li>患者対応・接遇</li>
+                        <li>医療機器の取り扱い</li>
+                    </ul>
+                </div>
+                <div class="feature-card" style="background: linear-gradient(135deg, #f093fb 0%, #f5576c 100%); color: white;">
+                    <div class="feature-icon">🏪</div>
+                    <h3>小売業向け研修例</h3>
+                    <ul style="text-align: left; font-size: 0.9em; margin-top: 15px;">
+                        <li>商品陳列・VMD</li>
+                        <li>在庫管理システム</li>
+                        <li>販売促進手法</li>
+                        <li>顧客対応・苦情処理</li>
+                        <li>売上分析・報告</li>
+                    </ul>
+                </div>
+                <div class="feature-card" style="background: linear-gradient(135deg, #4facfe 0%, #00f2fe 100%); color: white;">
+                    <div class="feature-icon">🏭</div>
+                    <h3>製造業向け研修例</h3>
+                    <ul style="text-align: left; font-size: 0.9em; margin-top: 15px;">
+                        <li>安全作業手順</li>
+                        <li>品質管理・検査</li>
+                        <li>機械操作・メンテナンス</li>
+                        <li>5S活動推進</li>
+                        <li>改善提案制度</li>
+                    </ul>
+                </div>
+                <div class="feature-card" style="background: linear-gradient(135deg, #fa709a 0%, #fee140 100%); color: white;">
+                    <div class="feature-icon">🏢</div>
+                    <h3>一般企業向け研修例</h3>
+                    <ul style="text-align: left; font-size: 0.9em; margin-top: 15px;">
+                        <li>コンプライアンス</li>
+                        <li>情報セキュリティ</li>
+                        <li>ハラスメント防止</li>
+                        <li>新システム導入研修</li>
+                        <li>ビジネスマナー</li>
+                    </ul>
+                </div>
+            </div>
+            
+            <div class="warning-box" style="background: #d4edda; border-left-color: #28a745;">
+                <strong>🔧 導入の流れ:</strong><br>
+                1. 御社の研修内容をヒアリング<br>
+                2. 専用スライドを作成（当社で対応可能）<br>
+                3. システムに組み込み・調整<br>
+                4. <span class="highlight">御社専用eラーニングシステム完成！</span>
+            </div>
+        </div>
+    </div>
+
+    <!-- スライド6: 料金・お問い合わせ -->
+    <div class="slide-container">
+        <div class="slide-content">
+            <h1>💼 導入プラン・お問い合わせ</h1>
+            
+            <div class="feature-grid" style="margin: 40px 0;">
+                <div class="feature-card" style="background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); color: white;">
+                    <div class="feature-icon">🏢</div>
+                    <h3>スタンダードプラン</h3>
+                    <p style="font-size: 2em; margin: 20px 0;">月額 ¥50,000</p>
+                    <ul style="text-align: left; margin: 20px 0;">
+                        <li>受講者数: 50名まで</li>
+                        <li>管理者機能: 標準</li>
+                        <li>サポート: メール</li>
+                        <li>導入支援: あり</li>
+                    </ul>
+                </div>
+                <div class="feature-card" style="background: linear-gradient(135deg, #f093fb 0%, #f5576c 100%); color: white;">
+                    <div class="feature-icon">🚀</div>
+                    <h3>エンタープライズ</h3>
+                    <p style="font-size: 2em; margin: 20px 0;">要お見積り</p>
+                    <ul style="text-align: left; margin: 20px 0;">
+                        <li>受講者数: 無制限</li>
+                        <li>管理者機能: 高機能</li>
+                        <li>サポート: 電話・チャット</li>
+                        <li>カスタマイズ: 対応</li>
+                    </ul>
+                </div>
+            </div>
+            
+            <div class="cta-section">
+                <h2 style="color: white; justify-content: center; margin-bottom: 20px;">
+                    🎁 特別キャンペーン実施中！
+                </h2>
+                <p style="font-size: 1.3em; margin-bottom: 20px;">
+                    <span class="highlight" style="background: white; color: #667eea;">初月無料</span> + 
+                    <span class="highlight" style="background: white; color: #667eea;">導入サポート付き</span>
+                </p>
+                <div style="margin-top: 30px;">
+                    <button class="cta-button" onclick="window.open('mailto:info@ai-training.co.jp?subject=SmartLearn Pro お問い合わせ', '_blank')">
+                        📧 お問い合わせ
+                    </button>
+                    <button class="cta-button" onclick="window.open('tel:03-1234-5678', '_blank')">
+                        📞 お電話で相談
+                    </button>
+                </div>
+                <p style="margin-top: 20px; font-size: 0.9em;">
+                    ✨ まずは無料デモンストレーションから始めませんか？
+                </p>
+            </div>
+        </div>
+    </div>
+
+    <div class="navigation">
+        <button class="nav-btn" id="prevBtn" onclick="changeSlide(-1)">← 前へ</button>
+        <button class="nav-btn" id="nextBtn" onclick="changeSlide(1)">次へ →</button>
+    </div>
+
+    <footer style="position: fixed; bottom: 5px; right: 10px; font-size: 0.6em; color: #ccc; z-index: 1000;">
+        © 2025 AI研修法人
+    </footer>
+
+    <script>
+        let currentSlide = 1;
+        const totalSlides = 6;
+
+        function showSlide(n) {
+            const slides = document.querySelectorAll('.slide-container');
+            
+            if (n > totalSlides) currentSlide = 1;
+            if (n < 1) currentSlide = totalSlides;
+            
+            slides.forEach(slide => slide.classList.remove('active'));
+            slides[currentSlide - 1].classList.add('active');
+            
+            document.getElementById('current-slide').textContent = currentSlide;
+            document.getElementById('total-slides').textContent = totalSlides;
+            
+            // ナビゲーションボタンの状態更新
+            document.getElementById('prevBtn').disabled = currentSlide === 1;
+            document.getElementById('nextBtn').disabled = currentSlide === totalSlides;
+        }
+
+        function changeSlide(n) {
+            currentSlide += n;
+            showSlide(currentSlide);
+        }
+
+        // キーボードナビゲーション
+        document.addEventListener('keydown', (e) => {
+            if (e.key === 'ArrowLeft') changeSlide(-1);
+            if (e.key === 'ArrowRight') changeSlide(1);
+        });
+
+        // 初期表示
+        showSlide(1);
+    </script>
+</body>
+</html>
