@@ -499,7 +499,9 @@
             container.innerHTML = lessons.map(lesson => {
                 const progress = progressData.find(p => p.lesson_id === lesson.id);
                 const status = progress ? progress.status : 'not_started';
-                const progressPercent = progress ? Math.round((progress.last_slide / lesson.totalSlides) * 100) : 0;
+                // 修正: totalSlidesが0の場合のエラーを防ぐ
+                const totalSlides = lesson.totalSlides > 0 ? lesson.totalSlides : 10;
+                const progressPercent = progress && totalSlides > 0 ? Math.round((progress.last_slide / totalSlides) * 100) : 0;
                 
                 let statusClass = 'status-not-started';
                 let statusText = '未開始';
@@ -523,7 +525,7 @@
                             <div class="progress-bar">
                                 <div class="progress-fill" style="width: ${progressPercent}%"></div>
                             </div>
-                            <div class="progress-text">進捗: ${progressPercent}% (${progress?.last_slide || 0}/${lesson.totalSlides}スライド)</div>
+                            <div class="progress-text">進捗: ${progressPercent}% (${progress?.last_slide || 0}/${totalSlides}スライド)</div>
                         </div>
                         
                         <div class="lesson-actions">
