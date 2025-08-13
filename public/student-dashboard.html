@@ -1,0 +1,685 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Claude Code eラーニング - 受講ダッシュボード</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+JP:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Noto Sans JP', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+            background: #f8f9fa;
+            color: #2c3e50;
+            line-height: 1.6;
+        }
+
+        .header {
+            background: linear-gradient(135deg, #1e3c72 0%, #2a5298 100%);
+            color: white;
+            padding: 20px 0;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+        }
+
+        .header-content {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 0 20px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .header h1 {
+            font-size: 2em;
+            font-weight: 700;
+        }
+
+        .user-info {
+            display: flex;
+            align-items: center;
+            gap: 20px;
+        }
+
+        .user-name {
+            font-weight: 600;
+        }
+
+        .logout-btn {
+            background: rgba(255,255,255,0.2);
+            color: white;
+            border: none;
+            padding: 10px 20px;
+            border-radius: 8px;
+            cursor: pointer;
+            font-weight: 500;
+            transition: background 0.3s;
+        }
+
+        .logout-btn:hover {
+            background: rgba(255,255,255,0.3);
+        }
+
+        .main-content {
+            max-width: 1200px;
+            margin: 40px auto;
+            padding: 0 20px;
+        }
+
+        .progress-overview {
+            background: white;
+            border-radius: 15px;
+            padding: 30px;
+            margin-bottom: 40px;
+            box-shadow: 0 5px 15px rgba(0,0,0,0.08);
+        }
+
+        .progress-stats {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 20px;
+            margin-top: 20px;
+        }
+
+        .stat-card {
+            background: linear-gradient(135deg, #34495e 0%, #2c3e50 100%);
+            color: white;
+            padding: 25px;
+            border-radius: 12px;
+            text-align: center;
+        }
+
+        .stat-number {
+            font-size: 2.5em;
+            font-weight: 700;
+            margin-bottom: 5px;
+        }
+
+        .stat-label {
+            font-size: 1em;
+            opacity: 0.9;
+        }
+
+        .lessons-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(350px, 1fr));
+            gap: 30px;
+        }
+
+        .lesson-card {
+            background: white;
+            border-radius: 15px;
+            padding: 30px;
+            box-shadow: 0 5px 15px rgba(0,0,0,0.08);
+            transition: transform 0.3s;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .lesson-card:hover {
+            transform: translateY(-5px);
+        }
+
+        .lesson-status {
+            position: absolute;
+            top: 20px;
+            right: 20px;
+            padding: 5px 12px;
+            border-radius: 20px;
+            font-size: 0.8em;
+            font-weight: 600;
+        }
+
+        .status-not-started {
+            background: #ecf0f1;
+            color: #7f8c8d;
+        }
+
+        .status-in-progress {
+            background: #fff3cd;
+            color: #856404;
+        }
+
+        .status-completed {
+            background: #d4edda;
+            color: #155724;
+        }
+
+        .lesson-number {
+            font-size: 2.5em;
+            font-weight: 700;
+            color: #34495e;
+            margin-bottom: 10px;
+        }
+
+        .lesson-title {
+            font-size: 1.4em;
+            font-weight: 600;
+            color: #2c3e50;
+            margin-bottom: 15px;
+        }
+
+        .lesson-description {
+            color: #5d6d7e;
+            margin-bottom: 20px;
+            line-height: 1.6;
+        }
+
+        .lesson-progress {
+            margin-bottom: 20px;
+        }
+
+        .progress-bar {
+            background: #ecf0f1;
+            height: 8px;
+            border-radius: 4px;
+            overflow: hidden;
+            margin-bottom: 8px;
+        }
+
+        .progress-fill {
+            background: linear-gradient(90deg, #34495e, #2c3e50);
+            height: 100%;
+            transition: width 0.3s ease;
+        }
+
+        .progress-text {
+            font-size: 0.9em;
+            color: #7f8c8d;
+        }
+
+        .lesson-actions {
+            display: flex;
+            gap: 10px;
+        }
+
+        .btn {
+            padding: 12px 24px;
+            border: none;
+            border-radius: 8px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s;
+            text-decoration: none;
+            display: inline-block;
+            text-align: center;
+        }
+
+        .btn-primary {
+            background: #34495e;
+            color: white;
+        }
+
+        .btn-primary:hover {
+            background: #2c3e50;
+        }
+
+        .btn-secondary {
+            background: #ecf0f1;
+            color: #34495e;
+            border: 2px solid #bdc3c7;
+        }
+
+        .btn-secondary:hover {
+            background: #d5dbdb;
+        }
+
+        .btn:disabled {
+            opacity: 0.5;
+            cursor: not-allowed;
+        }
+
+        .achievements {
+            background: white;
+            border-radius: 15px;
+            padding: 30px;
+            margin-top: 40px;
+            box-shadow: 0 5px 15px rgba(0,0,0,0.08);
+        }
+
+        .achievement-badge {
+            display: inline-block;
+            background: linear-gradient(135deg, #f39c12, #e67e22);
+            color: white;
+            padding: 10px 20px;
+            border-radius: 20px;
+            margin: 5px;
+            font-weight: 600;
+            font-size: 0.9em;
+        }
+
+        @media (max-width: 768px) {
+            .header-content {
+                flex-direction: column;
+                gap: 15px;
+                text-align: center;
+            }
+
+            .lessons-grid {
+                grid-template-columns: 1fr;
+            }
+
+            .progress-stats {
+                grid-template-columns: repeat(2, 1fr);
+            }
+        }
+    </style>
+</head>
+<body>
+    <header class="header">
+        <div class="header-content">
+            <h1>🤖 Claude Code eラーニング</h1>
+            <div class="user-info">
+                <span class="user-name" id="user-name">読み込み中...</span>
+                <button class="logout-btn" onclick="logout()">ログアウト</button>
+            </div>
+        </div>
+    </header>
+
+    <main class="main-content">
+        <section class="progress-overview">
+            <h2>📊 学習進捗</h2>
+            <div class="progress-stats" id="progress-stats">
+                <div class="stat-card">
+                    <div class="stat-number" id="completed-lessons">0</div>
+                    <div class="stat-label">完了レッスン</div>
+                </div>
+                <div class="stat-card">
+                    <div class="stat-number" id="total-progress">0%</div>
+                    <div class="stat-label">全体進捗</div>
+                </div>
+                <div class="stat-card">
+                    <div class="stat-number" id="study-time">0h</div>
+                    <div class="stat-label">学習時間</div>
+                </div>
+                <div class="stat-card">
+                    <div class="stat-number" id="demo-completed">0</div>
+                    <div class="stat-label">実演完了</div>
+                </div>
+            </div>
+        </section>
+
+        <section class="lessons">
+            <h2>📚 レッスン一覧</h2>
+            <div class="lessons-grid" id="lessons-grid">
+                <!-- レッスンカードはJavaScriptで生成 -->
+            </div>
+        </section>
+
+        <section class="achievements">
+            <h2>🏆 獲得バッジ</h2>
+            <div id="achievements-list">
+                <!-- 実績はJavaScriptで生成 -->
+            </div>
+        </section>
+    </main>
+
+    <script>
+        const API_BASE = window.location.origin;
+        let currentUser = null;
+        let progressData = [];
+
+        // 認証チェック
+        async function checkAuth() {
+            const token = localStorage.getItem('token');
+            
+            if (!token) {
+                window.location.href = '/login.html';
+                return false;
+            }
+            
+            try {
+                const response = await fetch(`${API_BASE}/api/verify-token`, {
+                    headers: {
+                        'Authorization': `Bearer ${token}`
+                    }
+                });
+                
+                if (response.ok) {
+                    const userData = await response.json();
+                    
+                    // ユーザー情報を取得（ローカルストレージから、またはAPIから）
+                    let user = JSON.parse(localStorage.getItem('user') || '{}');
+                    if (!user.name) {
+                        // ログイン時に保存されたユーザー情報がない場合は仮の情報
+                        user = { 
+                            name: '受講者', 
+                            employee_id: userData.employee_id,
+                            id: userData.id
+                        };
+                    }
+                    
+                    currentUser = user;
+                    document.getElementById('user-name').textContent = `${currentUser.name}さん`;
+                    return true;
+                } else {
+                    // 無効なトークン
+                    localStorage.removeItem('token');
+                    localStorage.removeItem('user');
+                    window.location.href = '/login.html';
+                    return false;
+                }
+            } catch (error) {
+                console.error('認証エラー:', error);
+                localStorage.removeItem('token');
+                localStorage.removeItem('user');
+                window.location.href = '/login.html';
+                return false;
+            }
+        }
+
+        // ログアウト
+        function logout() {
+            localStorage.removeItem('token');
+            localStorage.removeItem('user');
+            window.location.href = '/login.html';
+        }
+
+        // レッスンデータ
+        const lessons = [
+            {
+                id: 1,
+                number: "01",
+                title: "Claude Code入門",
+                description: "AIプログラミングの基礎とWindows環境構築",
+                slides: "lesson1_slides.html",
+                totalSlides: 0, // 動的に取得
+                demos: [
+                    { id: "hello-world", title: "Hello Worldプログラム作成", required: true },
+                    { id: "calculator", title: "計算プログラム作成", required: true }
+                ]
+            },
+            {
+                id: 2,
+                number: "02",
+                title: "基本操作 & GitHub入門",
+                description: "効果的なプロンプトとコード管理の基礎",
+                slides: "lesson2_slides.html",
+                totalSlides: 0, // 動的に取得
+                demos: [
+                    { id: "text-replacement", title: "テキスト置換ツール作成", required: true },
+                    { id: "github-upload", title: "GitHubへのアップロード", required: true }
+                ]
+            },
+            {
+                id: 3,
+                number: "03",
+                title: "MCP外部ツール連携",
+                description: "プラグインで機能を拡張しよう",
+                slides: "lesson3_slides.html",
+                totalSlides: 0, // 動的に取得
+                demos: [
+                    { id: "csv-excel", title: "CSV→Excel変換ツール", required: true },
+                    { id: "image-batch", title: "画像一括処理", required: true }
+                ]
+            },
+            {
+                id: 4,
+                number: "04",
+                title: "Playwright Web自動化",
+                description: "ブラウザ操作を自動化しよう",
+                slides: "lesson4_slides.html",
+                totalSlides: 0, // 動的に取得
+                demos: [
+                    { id: "screenshot-auto", title: "スクリーンショット自動取得", required: true },
+                    { id: "form-automation", title: "フォーム自動入力", required: true }
+                ]
+            },
+            {
+                id: 5,
+                number: "05",
+                title: "総まとめ & ツール作成",
+                description: "実用的なツールを完成させよう",
+                slides: "lesson5_slides.html",
+                totalSlides: 0, // 動的に取得
+                demos: [
+                    { id: "news-collector", title: "ニュース収集ツール", required: true },
+                    { id: "form-automation-tool", title: "フォーム自動化ツール", required: true },
+                    { id: "original-tool", title: "オリジナルツール作成", required: false }
+                ]
+            }
+        ];
+
+        // スライド数を動的に取得
+        async function loadSlideCounts() {
+            try {
+                for (let lesson of lessons) {
+                    const response = await fetch(`${API_BASE}/api/lesson/${lesson.id}/slide-count`);
+                    if (response.ok) {
+                        const data = await response.json();
+                        lesson.totalSlides = data.totalSlides;
+                        console.log(`レッスン${lesson.id}: ${lesson.totalSlides}スライド`);
+                    } else {
+                        // フォールバック：デフォルト値を設定
+                        lesson.totalSlides = 10; 
+                        console.warn(`レッスン${lesson.id}: スライド数取得失敗、デフォルト値(10)を使用`);
+                    }
+                }
+            } catch (error) {
+                console.error('スライド数取得エラー:', error);
+                // エラー時はデフォルト値を設定
+                lessons.forEach(lesson => {
+                    if (lesson.totalSlides === 0) lesson.totalSlides = 10;
+                });
+            }
+        }
+
+        // 進捗データ取得
+        async function loadProgress() {
+            try {
+                const token = localStorage.getItem('token');
+                const response = await fetch(`${API_BASE}/api/progress`, {
+                    headers: {
+                        'Authorization': `Bearer ${token}`
+                    }
+                });
+
+                if (response.ok) {
+                    progressData = await response.json();
+                } else {
+                    progressData = [];
+                }
+            } catch (error) {
+                console.error('進捗の取得に失敗:', error);
+                progressData = [];
+            }
+        }
+
+        // レッスンカード生成
+        function renderLessons() {
+            const container = document.getElementById('lessons-grid');
+            
+            container.innerHTML = lessons.map(lesson => {
+                const progress = progressData.find(p => p.lesson_id === lesson.id);
+                const status = progress ? progress.status : 'not_started';
+                const progressPercent = progress ? Math.round((progress.last_slide / lesson.totalSlides) * 100) : 0;
+                
+                let statusClass = 'status-not-started';
+                let statusText = '未開始';
+                
+                if (status === 'in_progress') {
+                    statusClass = 'status-in-progress';
+                    statusText = '学習中';
+                } else if (status === 'completed') {
+                    statusClass = 'status-completed';
+                    statusText = '完了';
+                }
+
+                return `
+                    <div class="lesson-card">
+                        <div class="lesson-status ${statusClass}">${statusText}</div>
+                        <div class="lesson-number">${lesson.number}</div>
+                        <div class="lesson-title">${lesson.title}</div>
+                        <div class="lesson-description">${lesson.description}</div>
+                        
+                        <div class="lesson-progress">
+                            <div class="progress-bar">
+                                <div class="progress-fill" style="width: ${progressPercent}%"></div>
+                            </div>
+                            <div class="progress-text">進捗: ${progressPercent}% (${progress?.last_slide || 0}/${lesson.totalSlides}スライド)</div>
+                        </div>
+                        
+                        <div class="lesson-actions">
+                            <a href="../slides/${lesson.slides}" class="btn btn-primary" onclick="startLesson(${lesson.id})">
+                                ${status === 'not_started' ? '学習開始' : '学習継続'}
+                            </a>
+                            <button class="btn btn-secondary" onclick="showDemos(${lesson.id})" ${status === 'not_started' ? 'disabled' : ''}>
+                                実演提出
+                            </button>
+                        </div>
+                    </div>
+                `;
+            }).join('');
+        }
+
+        // 統計更新
+        function updateStats() {
+            const completedCount = progressData.filter(p => p.status === 'completed').length;
+            const totalProgress = Math.round((completedCount / lessons.length) * 100);
+            const totalTime = progressData.reduce((sum, p) => sum + (p.time_spent || 0), 0);
+            const studyTimeMinutes = Math.round(totalTime / 60);
+            const studyTimeHours = Math.floor(studyTimeMinutes / 60);
+            const remainingMinutes = studyTimeMinutes % 60;
+            
+            // 時間表示の決定
+            let timeDisplay;
+            if (studyTimeHours > 0) {
+                timeDisplay = remainingMinutes > 0 ? `${studyTimeHours}h${remainingMinutes}m` : `${studyTimeHours}h`;
+            } else {
+                timeDisplay = `${studyTimeMinutes}m`;
+            }
+            
+            document.getElementById('completed-lessons').textContent = completedCount;
+            document.getElementById('total-progress').textContent = `${totalProgress}%`;
+            document.getElementById('study-time').textContent = timeDisplay;
+            document.getElementById('demo-completed').textContent = '0'; // TODO: 実演完了数
+        }
+
+        // レッスン開始
+        function startLesson(lessonId) {
+            updateProgress(lessonId, 'in_progress', 0, 0);
+        }
+
+        // 進捗更新
+        async function updateProgress(lessonId, status, lastSlide, timeSpent) {
+            try {
+                const token = localStorage.getItem('token');
+                await fetch(`${API_BASE}/api/progress`, {
+                    method: 'POST',
+                    headers: {
+                        'Authorization': `Bearer ${token}`,
+                        'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify({
+                        lesson_id: lessonId,
+                        status: status,
+                        last_slide: lastSlide,
+                        time_spent: timeSpent
+                    })
+                });
+            } catch (error) {
+                console.error('進捗の更新に失敗:', error);
+            }
+        }
+
+        // 実演提出ダイアログ
+        function showDemos(lessonId) {
+            const lesson = lessons.find(l => l.id === lessonId);
+            if (!lesson) return;
+
+            const demoList = lesson.demos.map(demo => `
+                <div style="margin: 15px 0; padding: 15px; border: 1px solid #ddd; border-radius: 8px;">
+                    <h4>${demo.title} ${demo.required ? '(必須)' : '(任意)'}</h4>
+                    <textarea placeholder="実演内容を記載してください..." style="width: 100%; height: 80px; margin: 10px 0; padding: 10px; border: 1px solid #ccc; border-radius: 4px;"></textarea>
+                    <button onclick="submitDemo(${lessonId}, '${demo.id}', this.previousElementSibling.value)" style="background: #34495e; color: white; border: none; padding: 8px 16px; border-radius: 4px; cursor: pointer;">提出</button>
+                </div>
+            `).join('');
+
+            const popup = document.createElement('div');
+            popup.innerHTML = `
+                <div style="position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.5); z-index: 1000; display: flex; align-items: center; justify-content: center;">
+                    <div style="background: white; border-radius: 15px; padding: 30px; max-width: 600px; width: 90%; max-height: 80%; overflow-y: auto;">
+                        <h3>${lesson.title} - 実演提出</h3>
+                        ${demoList}
+                        <button onclick="this.closest('div').parentElement.remove()" style="background: #7f8c8d; color: white; border: none; padding: 10px 20px; border-radius: 8px; cursor: pointer; margin-top: 20px;">閉じる</button>
+                    </div>
+                </div>
+            `;
+            document.body.appendChild(popup);
+        }
+
+        // 実演提出
+        async function submitDemo(lessonId, taskId, evidenceText) {
+            if (!evidenceText.trim()) {
+                alert('実演内容を入力してください');
+                return;
+            }
+
+            try {
+                const token = localStorage.getItem('token');
+                const response = await fetch(`${API_BASE}/api/demonstration`, {
+                    method: 'POST',
+                    headers: {
+                        'Authorization': `Bearer ${token}`,
+                        'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify({
+                        lesson_id: lessonId,
+                        task_id: taskId,
+                        evidence_text: evidenceText
+                    })
+                });
+
+                if (response.ok) {
+                    alert('実演記録を提出しました！');
+                } else {
+                    alert('提出に失敗しました');
+                }
+            } catch (error) {
+                console.error('実演提出エラー:', error);
+                alert('提出に失敗しました');
+            }
+        }
+
+        // バッジ表示
+        function renderAchievements() {
+            const container = document.getElementById('achievements-list');
+            const completedCount = progressData.filter(p => p.status === 'completed').length;
+            
+            const badges = [];
+            if (completedCount >= 1) badges.push('🚀 初回完了');
+            if (completedCount >= 3) badges.push('📚 学習継続者');
+            if (completedCount >= 5) badges.push('🏆 全レッスン制覇');
+            
+            if (badges.length === 0) {
+                container.innerHTML = '<p style="color: #7f8c8d;">まだ獲得したバッジはありません。学習を進めてバッジを獲得しましょう！</p>';
+            } else {
+                container.innerHTML = badges.map(badge => `<span class="achievement-badge">${badge}</span>`).join('');
+            }
+        }
+
+        // 初期化
+        async function init() {
+            if (!checkAuth()) return;
+            
+            // スライド数を最初に取得
+            await loadSlideCounts();
+            
+            await loadProgress();
+            renderLessons();
+            updateStats();
+            renderAchievements();
+        }
+
+        // ページ読み込み時に初期化
+        document.addEventListener('DOMContentLoaded', init);
+    </script>
+</body>
+</html>

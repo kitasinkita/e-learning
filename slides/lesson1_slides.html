@@ -1,0 +1,886 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>第1回：Claude Codeとは & Windows環境にインストール</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        body {
+            font-family: 'Segoe UI', 'メイリオ', sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: #333;
+            overflow: hidden;
+        }
+        
+        .slide-container {
+            display: none;
+            width: 100vw;
+            height: 100vh;
+            padding: 40px;
+            animation: slideIn 0.5s ease-in-out;
+        }
+        
+        .slide-container.active {
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+        }
+        
+        @keyframes slideIn {
+            from { opacity: 0; transform: translateX(50px); }
+            to { opacity: 1; transform: translateX(0); }
+        }
+        
+        .slide-content {
+            background: white;
+            border-radius: 20px;
+            padding: 60px;
+            box-shadow: 0 20px 60px rgba(0,0,0,0.3);
+            max-width: 1200px;
+            width: 100%;
+            max-height: 80vh;
+            overflow-y: auto;
+        }
+        
+        h1 {
+            color: #667eea;
+            font-size: 3em;
+            margin-bottom: 30px;
+            text-align: center;
+            border-bottom: 3px solid #667eea;
+            padding-bottom: 20px;
+        }
+        
+        h2 {
+            color: #764ba2;
+            font-size: 2.2em;
+            margin: 30px 0 20px;
+            display: flex;
+            align-items: center;
+            gap: 15px;
+        }
+        
+        h3 {
+            color: #667eea;
+            font-size: 1.8em;
+            margin: 25px 0 15px;
+        }
+        
+        .icon {
+            font-size: 1.5em;
+        }
+        
+        .feature-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 30px;
+            margin: 30px 0;
+        }
+        
+        .feature-card {
+            background: linear-gradient(135deg, #f5f7fa 0%, #c3cfe2 100%);
+            padding: 30px;
+            border-radius: 15px;
+            text-align: center;
+            transition: transform 0.3s;
+        }
+        
+        .feature-card:hover {
+            transform: translateY(-5px);
+        }
+        
+        .feature-icon {
+            font-size: 3em;
+            margin-bottom: 15px;
+        }
+        
+        .code-box {
+            background: #1e1e1e;
+            color: #fff;
+            padding: 25px;
+            border-radius: 10px;
+            margin: 20px 0;
+            font-family: 'Courier New', monospace;
+            font-size: 1.1em;
+            overflow-x: auto;
+            box-shadow: 0 5px 15px rgba(0,0,0,0.3);
+        }
+        
+        .command-prompt {
+            background: #000;
+            color: #0f0;
+            padding: 20px;
+            border-radius: 10px;
+            margin: 20px 0;
+            font-family: 'Consolas', monospace;
+            font-size: 1.2em;
+            position: relative;
+            box-shadow: 0 5px 15px rgba(0,0,0,0.3);
+        }
+        
+        .command-prompt::before {
+            content: 'C:\\Users\\User>';
+            color: #888;
+            margin-right: 10px;
+        }
+        
+        .diagram {
+            display: flex;
+            justify-content: space-around;
+            align-items: center;
+            margin: 40px 0;
+            padding: 30px;
+            background: #f8f9fa;
+            border-radius: 15px;
+        }
+        
+        .diagram-item {
+            text-align: center;
+            flex: 1;
+        }
+        
+        .diagram-icon {
+            font-size: 4em;
+            margin-bottom: 10px;
+            color: #667eea;
+        }
+        
+        .arrow {
+            font-size: 2em;
+            color: #764ba2;
+            margin: 0 20px;
+        }
+        
+        .step-list {
+            counter-reset: step-counter;
+            margin: 30px 0;
+        }
+        
+        .step-item {
+            counter-increment: step-counter;
+            margin: 20px 0;
+            padding: 20px;
+            background: #f8f9fa;
+            border-radius: 10px;
+            position: relative;
+            padding-left: 70px;
+            font-size: 1.2em;
+        }
+        
+        .step-item::before {
+            content: counter(step-counter);
+            position: absolute;
+            left: 20px;
+            top: 50%;
+            transform: translateY(-50%);
+            background: #667eea;
+            color: white;
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: bold;
+            font-size: 1.2em;
+        }
+        
+        .highlight {
+            background: linear-gradient(120deg, #f093fb 0%, #f5576c 100%);
+            color: white;
+            padding: 5px 15px;
+            border-radius: 20px;
+            display: inline-block;
+            margin: 10px 5px;
+            font-weight: bold;
+        }
+        
+        .comparison-table {
+            width: 100%;
+            margin: 30px 0;
+            border-collapse: collapse;
+            box-shadow: 0 5px 15px rgba(0,0,0,0.1);
+        }
+        
+        .comparison-table th {
+            background: #667eea;
+            color: white;
+            padding: 20px;
+            text-align: left;
+            font-size: 1.3em;
+        }
+        
+        .comparison-table td {
+            padding: 20px;
+            border-bottom: 1px solid #e0e0e0;
+            font-size: 1.1em;
+        }
+        
+        .comparison-table tr:nth-child(even) {
+            background: #f8f9fa;
+        }
+        
+        /* リンクスタイル */
+        a {
+            color: #667eea;
+            text-decoration: none;
+            font-weight: bold;
+            transition: color 0.3s;
+        }
+        
+        a:hover {
+            color: #764ba2;
+            text-decoration: underline;
+        }
+        
+        a:visited {
+            color: #667eea;
+        }
+        
+        .navigation {
+            position: fixed;
+            bottom: 30px;
+            right: 30px;
+            display: flex;
+            gap: 20px;
+            z-index: 1000;
+        }
+        
+        .nav-btn {
+            background: #667eea;
+            color: white;
+            border: none;
+            padding: 15px 30px;
+            border-radius: 30px;
+            cursor: pointer;
+            font-size: 1.1em;
+            transition: all 0.3s;
+            box-shadow: 0 5px 15px rgba(0,0,0,0.2);
+        }
+        
+        .nav-btn:hover {
+            background: #764ba2;
+            transform: translateY(-2px);
+        }
+        
+        .nav-btn:disabled {
+            opacity: 0.5;
+            cursor: not-allowed;
+        }
+        
+        .slide-number {
+            position: fixed;
+            top: 30px;
+            right: 30px;
+            background: rgba(255,255,255,0.9);
+            padding: 10px 20px;
+            border-radius: 20px;
+            font-weight: bold;
+            color: #667eea;
+            font-size: 1.2em;
+        }
+        
+        .emoji-large {
+            font-size: 2em;
+            vertical-align: middle;
+            margin: 0 10px;
+        }
+        
+        .warning-box {
+            background: #fff3cd;
+            border-left: 5px solid #ffc107;
+            padding: 20px;
+            margin: 20px 0;
+            border-radius: 10px;
+            font-size: 1.1em;
+        }
+        
+        .success-box {
+            background: #d4edda;
+            border-left: 5px solid #28a745;
+            padding: 20px;
+            margin: 20px 0;
+            border-radius: 10px;
+            font-size: 1.1em;
+        }
+    </style>
+</head>
+<body>
+    <div class="slide-number">
+        <span id="currentSlide">1</span> / <span id="totalSlides">10</span>
+    </div>
+
+    <!-- スライド1: タイトル -->
+    <div class="slide-container active">
+        <div class="slide-content">
+            <h1>🚀 第1回：Claude Code 入門講座</h1>
+            <div style="text-align: center; margin: 50px 0;">
+                <div style="font-size: 6em; margin: 30px 0;">🤖💻</div>
+                <h2 style="justify-content: center;">AIと一緒にプログラミング！</h2>
+                <p style="font-size: 1.5em; margin-top: 30px; color: #666;">
+                    Windows環境でClaude Codeを始めよう
+                </p>
+            </div>
+        </div>
+    </div>
+
+    <!-- スライド2: 本日の内容 -->
+    <div class="slide-container">
+        <div class="slide-content">
+            <h1>📋 本日の内容</h1>
+            <div class="step-list">
+                <div class="step-item">
+                    Claude Codeって何？
+                </div>
+                <div class="step-item">
+                    ChatGPTとの違いを理解しよう
+                </div>
+                <div class="step-item">
+                    Windows環境にインストール
+                </div>
+                <div class="step-item">
+                    初めてのプログラム作成
+                </div>
+            </div>
+            <div class="success-box">
+                💡 今日のゴール：Claude Codeで「Hello World」プログラムを作って実行できるようになる！
+            </div>
+        </div>
+    </div>
+
+    <!-- スライド3: Claude Codeとは -->
+    <div class="slide-container">
+        <div class="slide-content">
+            <h1>🤖 Claude Codeとは？</h1>
+            <div class="diagram">
+                <div class="diagram-item">
+                    <div class="diagram-icon">👤</div>
+                    <p>あなた</p>
+                    <p style="font-size: 0.9em; color: #666;">日本語で指示</p>
+                </div>
+                <div class="arrow">→</div>
+                <div class="diagram-item">
+                    <div class="diagram-icon">🤖</div>
+                    <p>Claude Code</p>
+                    <p style="font-size: 0.9em; color: #666;">AIアシスタント</p>
+                </div>
+                <div class="arrow">→</div>
+                <div class="diagram-item">
+                    <div class="diagram-icon">📝</div>
+                    <p>プログラム</p>
+                    <p style="font-size: 0.9em; color: #666;">自動生成＆実行</p>
+                </div>
+            </div>
+            <div class="feature-grid">
+                <div class="feature-card">
+                    <div class="feature-icon">💬</div>
+                    <h3>自然な日本語でOK</h3>
+                    <p>「〜を作って」と話しかけるだけ</p>
+                </div>
+                <div class="feature-card">
+                    <div class="feature-icon">⚡</div>
+                    <h3>即座に実行</h3>
+                    <p>作ったコードをすぐに動かせる</p>
+                </div>
+                <div class="feature-card">
+                    <div class="feature-icon">🔧</div>
+                    <h3>修正も簡単</h3>
+                    <p>「ここを変えて」と伝えるだけ</p>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- スライド4: ChatGPTとの違い -->
+    <div class="slide-container">
+        <div class="slide-content">
+            <h1>🆚 ChatGPTとの違い</h1>
+            <table class="comparison-table">
+                <tr>
+                    <th>機能</th>
+                    <th>ChatGPT</th>
+                    <th>Claude Code</th>
+                </tr>
+                <tr>
+                    <td>コード生成</td>
+                    <td>✅ できる</td>
+                    <td>✅ できる</td>
+                </tr>
+                <tr>
+                    <td>コード実行</td>
+                    <td>❌ 手動でコピペ必要</td>
+                    <td>✅ <span class="highlight">自動実行</span></td>
+                </tr>
+                <tr>
+                    <td>ファイル操作</td>
+                    <td>❌ できない</td>
+                    <td>✅ <span class="highlight">直接操作可能</span></td>
+                </tr>
+                <tr>
+                    <td>環境構築</td>
+                    <td>❌ 別途必要</td>
+                    <td>✅ <span class="highlight">統合環境</span></td>
+                </tr>
+                <tr>
+                    <td>デバッグ</td>
+                    <td>❌ 手動</td>
+                    <td>✅ <span class="highlight">AIが支援</span></td>
+                </tr>
+            </table>
+            <div class="success-box">
+                🎯 Claude Code = プログラミングに特化した実行環境付きAI
+            </div>
+        </div>
+    </div>
+
+    <!-- スライド5: できることの例 -->
+    <div class="slide-container">
+        <div class="slide-content">
+            <h1>✨ Claude Codeでできること</h1>
+            <div class="feature-grid">
+                <div class="feature-card">
+                    <div class="feature-icon">📊</div>
+                    <h3>データ処理</h3>
+                    <p>Excel・CSV自動処理<br>グラフ作成<br>レポート生成</p>
+                </div>
+                <div class="feature-card">
+                    <div class="feature-icon">🌐</div>
+                    <h3>Web操作</h3>
+                    <p>サイト情報収集<br>フォーム自動入力<br>スクレイピング</p>
+                </div>
+                <div class="feature-card">
+                    <div class="feature-icon">📁</div>
+                    <h3>ファイル管理</h3>
+                    <p>一括リネーム<br>フォルダ整理<br>バックアップ</p>
+                </div>
+                <div class="feature-card">
+                    <div class="feature-icon">🔄</div>
+                    <h3>業務自動化</h3>
+                    <p>定型作業の自動化<br>メール処理<br>スケジュール管理</p>
+                </div>
+                <div class="feature-card">
+                    <div class="feature-icon">🎮</div>
+                    <h3>ゲーム作成</h3>
+                    <p>簡単なゲーム<br>パズル<br>クイズアプリ</p>
+                </div>
+                <div class="feature-card">
+                    <div class="feature-icon">🤖</div>
+                    <h3>AI活用</h3>
+                    <p>チャットボット<br>画像認識<br>テキスト分析</p>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- スライド6: インストール準備 -->
+    <div class="slide-container">
+        <div class="slide-content">
+            <h1>🛠️ インストール準備</h1>
+            <h2><span class="icon">✅</span>必要なもの</h2>
+            <div class="step-list">
+                <div class="step-item">
+                    Windows 10 または Windows 11
+                </div>
+                <div class="step-item">
+                    インターネット接続
+                </div>
+                <div class="step-item">
+                    管理者権限（インストール時に必要）
+                </div>
+            </div>
+            <h2><span class="icon">📦</span>インストールするソフト</h2>
+            <div class="feature-grid">
+                <div class="feature-card">
+                    <div class="feature-icon">💻</div>
+                    <h3>Visual Studio Code</h3>
+                    <p>コードエディタ</p>
+                </div>
+                <div class="feature-card">
+                    <div class="feature-icon">🔧</div>
+                    <h3>Git Bash</h3>
+                    <p>コマンドツール</p>
+                </div>
+                <div class="feature-card">
+                    <div class="feature-icon">📗</div>
+                    <h3>Node.js</h3>
+                    <p>JavaScriptの実行環境</p>
+                </div>
+                <div class="feature-card">
+                    <div class="feature-icon">📦</div>
+                    <h3>npm</h3>
+                    <p>パッケージ管理ツール</p>
+                </div>
+                <div class="feature-card">
+                    <div class="feature-icon">🤖</div>
+                    <h3>Claude Code</h3>
+                    <p>VS Code内のターミナルで<br>利用する</p>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- スライド7: 詳細インストール手順 -->
+    <div class="slide-container">
+        <div class="slide-content">
+            <h1>📥 詳細インストール手順</h1>
+            
+            <h2><span class="icon">1️⃣</span>Visual Studio Code</h2>
+            <div class="step-list">
+                <div class="step-item">
+                    ✅ ブラウザで <a href="https://code.visualstudio.com" target="_blank"><strong>https://code.visualstudio.com</strong></a> にアクセス
+                </div>
+                <div class="step-item">
+                    ✅ 「Download for Windows」をクリック
+                </div>
+                <div class="step-item">
+                    ✅ ダウンロードしたファイル（VSCodeUserSetup-x64-1.x.x.exe）をダブルクリック
+                </div>
+                <div class="step-item">
+                    ✅ ライセンス同意 → 「次へ」→「次へ」→「インストール」
+                </div>
+            </div>
+            
+            <h2><span class="icon">2️⃣</span>Git Bash</h2>
+            <div class="step-list">
+                <div class="step-item">
+                    ✅ ブラウザで <a href="https://git-scm.com" target="_blank"><strong>https://git-scm.com</strong></a> にアクセス
+                </div>
+                <div class="step-item">
+                    ✅ 「Download for Windows」をクリック
+                </div>
+                <div class="step-item">
+                    ✅ ダウンロードしたファイル（Git-2.x.x-64-bit.exe）を実行
+                </div>
+                <div class="step-item">
+                    ✅ 全て「Next」で進んでOK（デフォルト設定で大丈夫）
+                </div>
+            </div>
+            
+            <div class="warning-box">
+                💡 各インストール完了後、PC再起動を推奨
+            </div>
+        </div>
+    </div>
+
+    <!-- スライド8: Node.js詳細インストール -->
+    <div class="slide-container">
+        <div class="slide-content">
+            <h1>📗 Node.js詳細インストール</h1>
+            
+            <h2><span class="icon">3️⃣</span>Node.js（NPM付き）のインストール</h2>
+            <div class="step-list">
+                <div class="step-item">
+                    ✅ ブラウザで <a href="https://nodejs.org" target="_blank"><strong>https://nodejs.org</strong></a> にアクセス
+                </div>
+                <div class="step-item">
+                    ✅ 「LTS」版（長期サポート版）をクリックしてダウンロード
+                </div>
+                <div class="step-item">
+                    ✅ ダウンロードしたファイル（node-v20.x.x-x64.msi）をダブルクリック
+                </div>
+                <div class="step-item">
+                    ✅ Welcome画面で「Next」
+                </div>
+                <div class="step-item">
+                    ✅ ライセンス同意にチェックして「Next」
+                </div>
+                <div class="step-item">
+                    ✅ インストール場所はデフォルトのまま「Next」
+                </div>
+                <div class="step-item">
+                    ✅ 機能選択もデフォルトのまま「Next」
+                </div>
+                <div class="step-item">
+                    ✅ 「Install」をクリック
+                </div>
+            </div>
+            
+            <div class="success-box">
+                💡 <strong>NPMとは？</strong><br>
+                Node.jsに付属するパッケージ管理ツールです。様々なプログラミングツールやライブラリを簡単にインストールできます。
+            </div>
+            
+            <h3>📋 インストール確認</h3>
+            <div class="step-list">
+                <div class="step-item">
+                    ✅ Windowsキー + R → 「cmd」と入力してEnter
+                </div>
+                <div class="step-item">
+                    ✅ コマンドプロンプトで以下を実行:
+                </div>
+            </div>
+            <div class="command-prompt">
+                node --version<br>
+                npm --version
+            </div>
+            <div class="success-box">
+                ✅ 両方でバージョン番号が表示されればインストール成功！
+            </div>
+        </div>
+    </div>
+
+    <!-- スライド9: Claude CodeをVS Codeで使う -->
+    <div class="slide-container">
+        <div class="slide-content">
+            <h1>💻 Claude CodeをVS Codeで使う</h1>
+            
+            <h2><span class="icon">4️⃣</span>VS Code内でClaude Codeをインストール</h2>
+            <div class="step-list">
+                <div class="step-item">
+                    ✅ Visual Studio Codeを起動
+                </div>
+                <div class="step-item">
+                    ✅ VS Codeでターミナルを開く：<strong>Ctrl + `</strong>（バッククォート）
+                </div>
+                <div class="step-item">
+                    ✅ または メニュー → 「表示」→「ターミナル」
+                </div>
+            </div>
+            
+            <h2><span class="icon">5️⃣</span>ターミナルでClaude Codeをインストール</h2>
+            <div class="step-list">
+                <div class="step-item">
+                    ✅ VS Code下部のターミナル画面で以下のコマンドを実行:
+                </div>
+            </div>
+            <div class="command-prompt">
+                npm install -g claude-code
+            </div>
+            <div class="step-list">
+                <div class="step-item">
+                    ✅ インストール完了まで待つ（数分かかる場合があります）
+                </div>
+            </div>
+            
+            <h2><span class="icon">6️⃣</span>Claude Codeを起動</h2>
+            <div class="step-list">
+                <div class="step-item">
+                    ✅ 同じターミナルで以下のコマンドを実行:
+                </div>
+            </div>
+            <div class="command-prompt">
+                claude
+            </div>
+            <div class="step-list">
+                <div class="step-item">
+                    ✅ 初回起動時はAPI設定画面が表示される場合があります
+                </div>
+                <div class="step-item">
+                    ✅ 画面の指示に従って設定を完了してください
+                </div>
+            </div>
+            
+            <div class="success-box">
+                🎉 これでVS Code内のターミナルでClaude Codeが使えるようになりました！<br>
+                コードエディタとAIアシスタントを同じ画面で使える便利な環境の完成です！
+            </div>
+        </div>
+    </div>
+
+    <!-- スライド10: VS Codeで実習 -->
+    <div class="slide-container">
+        <div class="slide-content">
+            <h1>🎯 VS Codeで実習：Hello Worldを作ろう！</h1>
+            
+            <h2><span class="icon">💻</span>VS Codeでの作業の流れ</h2>
+            <div class="step-list">
+                <div class="step-item">
+                    ✅ VS Codeで新しいファイルを作成（Ctrl + N）
+                </div>
+                <div class="step-item">
+                    ✅ 「.js」拡張子で保存（例：hello.js）
+                </div>
+                <div class="step-item">
+                    ✅ VS Code内のターミナルでClaude Codeを起動（`claude`コマンド）
+                </div>
+                <div class="step-item">
+                    ✅ Claude CodeでAIにプログラムを作成してもらう
+                </div>
+                <div class="step-item">
+                    ✅ 生成されたコードをエディタにコピー＆ペースト
+                </div>
+                <div class="step-item">
+                    ✅ ターミナルで `node hello.js` でプログラム実行
+                </div>
+            </div>
+            
+            <h2><span class="icon">📝</span>課題1：あいさつプログラム</h2>
+            <div class="code-box">
+VS Code内のターミナルでClaude Codeに話しかけてみよう：<br>
+<strong>「JavaScriptで、ユーザーの名前を聞いてあいさつするプログラムを作成してください」</strong>
+            </div>
+            
+            <h2><span class="icon">🧮</span>課題2：計算プログラム</h2>
+            <div class="code-box">
+次にClaude Codeに話しかけてみよう：<br>
+<strong>「JavaScriptで、2つの数字を足し算する電卓プログラムを作成してください」</strong>
+            </div>
+            
+            <div class="success-box">
+                💡 <strong>VS Codeの便利な機能</strong><br>
+                • エディタとターミナルを同時に表示<br>
+                • コードを書いてすぐに `node ファイル名.js` で実行<br>
+                • エラーがあればClaude Codeが修正を提案<br>
+                • Ctrl + ` でターミナルの表示・非表示を切り替え
+            </div>
+        </div>
+    </div>
+
+    <!-- スライド10: まとめ -->
+    <div class="slide-container">
+        <div class="slide-content">
+            <h1>📚 第1回のまとめ</h1>
+            <div class="feature-grid">
+                <div class="feature-card">
+                    <div class="feature-icon">✅</div>
+                    <h3>学んだこと</h3>
+                    <ul style="text-align: left; margin-top: 10px;">
+                        <li>Claude Codeの特徴</li>
+                        <li>ChatGPTとの違い</li>
+                        <li>VS Code + Claude Codeの環境構築</li>
+                        <li>統合開発環境での実習</li>
+                    </ul>
+                </div>
+                <div class="feature-card">
+                    <div class="feature-icon">🎯</div>
+                    <h3>できるようになったこと</h3>
+                    <ul style="text-align: left; margin-top: 10px;">
+                        <li>VS CodeでのClaude Code使用</li>
+                        <li>AIとの日本語対話</li>
+                        <li>コード生成と実行</li>
+                        <li>統合開発環境での作業</li>
+                    </ul>
+                </div>
+            </div>
+            
+            <h2><span class="icon">📅</span>次回予告</h2>
+            <div class="warning-box">
+                第2回：Claude Codeの基本操作 & GitHub入門
+                <ul style="margin-top: 10px;">
+                    <li>より複雑なプログラムの作成</li>
+                    <li>GitHubでコードを保存・共有</li>
+                    <li>他の人のコードを使ってみる</li>
+                </ul>
+            </div>
+            
+            <div style="text-align: center; margin-top: 40px;">
+                <p style="font-size: 2em;">お疲れ様でした！<span class="emoji-large">👏</span></p>
+            </div>
+        </div>
+    </div>
+
+    <div class="navigation">
+        <button class="nav-btn" id="prevBtn" onclick="changeSlide(-1)">← 前へ</button>
+        <button class="nav-btn" id="nextBtn" onclick="changeSlide(1)">次へ →</button>
+        <button class="nav-btn" id="backToDashboard" onclick="backToDashboard()" style="display: none; background: #28a745;">📚 ダッシュボードに戻る</button>
+    </div>
+
+    <script>
+        let currentSlide = 1;
+        // スライド数を自動検出
+        const totalSlides = document.getElementsByClassName('slide-container').length;
+
+        function showSlide(n) {
+            const slides = document.getElementsByClassName('slide-container');
+            
+            if (n > totalSlides) currentSlide = totalSlides;
+            if (n < 1) currentSlide = 1;
+            
+            for (let i = 0; i < slides.length; i++) {
+                slides[i].classList.remove('active');
+            }
+            
+            slides[currentSlide - 1].classList.add('active');
+            
+            document.getElementById('currentSlide').textContent = currentSlide;
+            document.getElementById('prevBtn').disabled = currentSlide === 1;
+            document.getElementById('nextBtn').disabled = currentSlide === totalSlides;
+            
+            // 最後のスライドでダッシュボードに戻るボタンを表示
+            const backBtn = document.getElementById('backToDashboard');
+            if (currentSlide === totalSlides) {
+                backBtn.style.display = 'inline-block';
+            } else {
+                backBtn.style.display = 'none';
+            }
+            
+            // 進捗をリアルタイム更新
+            updateProgress();
+        }
+
+        function changeSlide(n) {
+            currentSlide += n;
+            showSlide(currentSlide);
+        }
+
+        function updateProgress() {
+            const token = localStorage.getItem('token');
+            if (token) {
+                const status = currentSlide === totalSlides ? 'completed' : 'in_progress';
+                fetch('/api/progress', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                        'Authorization': `Bearer ${token}`
+                    },
+                    body: JSON.stringify({
+                        lesson_id: 1,
+                        status: status,
+                        last_slide: currentSlide,
+                        time_spent: Math.floor(Date.now() / 1000 - sessionStart)
+                    })
+                }).catch(error => {
+                    console.log('進捗更新エラー:', error);
+                });
+            }
+        }
+
+        function backToDashboard() {
+            // レッスン完了を記録
+            const token = localStorage.getItem('token');
+            if (token) {
+                fetch('/api/progress', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                        'Authorization': `Bearer ${token}`
+                    },
+                    body: JSON.stringify({
+                        lesson_id: 1,
+                        status: 'completed',
+                        last_slide: totalSlides,
+                        time_spent: Math.floor(Date.now() / 1000 - sessionStart)
+                    })
+                }).then(() => {
+                    // ダッシュボードに戻る
+                    window.location.href = '/student-dashboard.html';
+                }).catch(() => {
+                    // エラーでもダッシュボードに戻る
+                    window.location.href = '/student-dashboard.html';
+                });
+            } else {
+                window.location.href = '/login.html';
+            }
+        }
+
+        // キーボードナビゲーション
+        document.addEventListener('keydown', function(e) {
+            if (e.key === 'ArrowLeft') changeSlide(-1);
+            if (e.key === 'ArrowRight') changeSlide(1);
+        });
+
+        // セッション開始時刻を記録
+        const sessionStart = Math.floor(Date.now() / 1000);
+
+        // 初期表示
+        showSlide(1);
+    </script>
+</body>
+</html>

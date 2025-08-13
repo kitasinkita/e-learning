@@ -1,0 +1,1020 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Claude Code eラーニング - 管理者ダッシュボード</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+JP:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Noto Sans JP', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+            background: #f8f9fa;
+            color: #2c3e50;
+            line-height: 1.6;
+        }
+
+        .header {
+            background: linear-gradient(135deg, #1e3c72 0%, #2a5298 100%);
+            color: white;
+            padding: 20px 0;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+        }
+
+        .header-content {
+            max-width: 1400px;
+            margin: 0 auto;
+            padding: 0 20px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .header h1 {
+            font-size: 2em;
+            font-weight: 700;
+        }
+
+        .user-info {
+            display: flex;
+            align-items: center;
+            gap: 20px;
+        }
+
+        .logout-btn {
+            background: rgba(255,255,255,0.2);
+            color: white;
+            border: none;
+            padding: 10px 20px;
+            border-radius: 8px;
+            cursor: pointer;
+            font-weight: 500;
+            transition: background 0.3s;
+        }
+
+        .logout-btn:hover {
+            background: rgba(255,255,255,0.3);
+        }
+
+        .main-content {
+            max-width: 1400px;
+            margin: 40px auto;
+            padding: 0 20px;
+        }
+
+        .tabs {
+            background: white;
+            border-radius: 15px;
+            margin-bottom: 30px;
+            overflow: hidden;
+            box-shadow: 0 5px 15px rgba(0,0,0,0.08);
+        }
+
+        .tab-buttons {
+            display: flex;
+            background: #ecf0f1;
+        }
+
+        .tab-button {
+            flex: 1;
+            padding: 20px;
+            background: none;
+            border: none;
+            font-weight: 600;
+            cursor: pointer;
+            transition: background 0.3s;
+        }
+
+        .tab-button.active {
+            background: white;
+            color: #34495e;
+        }
+
+        .tab-content {
+            display: none;
+            padding: 30px;
+        }
+
+        .tab-content.active {
+            display: block;
+        }
+
+        .overview-stats {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 20px;
+            margin-bottom: 30px;
+        }
+
+        .stat-card {
+            background: linear-gradient(135deg, #34495e 0%, #2c3e50 100%);
+            color: white;
+            padding: 30px;
+            border-radius: 12px;
+            text-align: center;
+        }
+
+        .stat-number {
+            font-size: 2.5em;
+            font-weight: 700;
+            margin-bottom: 5px;
+        }
+
+        .stat-label {
+            font-size: 1em;
+            opacity: 0.9;
+        }
+
+        .data-table {
+            background: white;
+            border-radius: 12px;
+            overflow: hidden;
+            box-shadow: 0 5px 15px rgba(0,0,0,0.08);
+        }
+
+        .table {
+            width: 100%;
+            border-collapse: collapse;
+        }
+
+        .table th {
+            background: #34495e;
+            color: white;
+            padding: 15px;
+            text-align: left;
+            font-weight: 600;
+        }
+
+        .table td {
+            padding: 15px;
+            border-bottom: 1px solid #ecf0f1;
+        }
+
+        .table tr:hover {
+            background: #f8f9fa;
+        }
+
+        .status-badge {
+            padding: 5px 12px;
+            border-radius: 20px;
+            font-size: 0.8em;
+            font-weight: 600;
+        }
+
+        .status-not-started {
+            background: #ecf0f1;
+            color: #7f8c8d;
+        }
+
+        .status-in-progress {
+            background: #fff3cd;
+            color: #856404;
+        }
+
+        .status-completed {
+            background: #d4edda;
+            color: #155724;
+        }
+
+        .status-pending {
+            background: #fff3cd;
+            color: #856404;
+        }
+
+        .status-submitted {
+            background: #d1ecf1;
+            color: #0c5460;
+        }
+
+        .status-approved {
+            background: #d4edda;
+            color: #155724;
+        }
+
+        .status-rejected {
+            background: #f8d7da;
+            color: #721c24;
+        }
+
+        .action-buttons {
+            display: flex;
+            gap: 5px;
+        }
+
+        .btn {
+            padding: 8px 16px;
+            border: none;
+            border-radius: 6px;
+            font-weight: 500;
+            cursor: pointer;
+            font-size: 0.9em;
+            transition: all 0.3s;
+        }
+
+        .btn-primary {
+            background: #34495e;
+            color: white;
+        }
+
+        .btn-primary:hover {
+            background: #2c3e50;
+        }
+
+        .btn-success {
+            background: #27ae60;
+            color: white;
+        }
+
+        .btn-success:hover {
+            background: #219a52;
+        }
+
+        .btn-danger {
+            background: #e74c3c;
+            color: white;
+        }
+
+        .btn-danger:hover {
+            background: #c0392b;
+        }
+
+        .btn-info {
+            background: #3498db;
+            color: white;
+        }
+
+        .btn-info:hover {
+            background: #2980b9;
+        }
+
+        .add-user-form {
+            background: white;
+            border-radius: 12px;
+            padding: 30px;
+            margin-bottom: 30px;
+            box-shadow: 0 5px 15px rgba(0,0,0,0.08);
+        }
+
+        .form-row {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 20px;
+            margin-bottom: 20px;
+        }
+
+        .form-group {
+            margin-bottom: 20px;
+        }
+
+        .form-group label {
+            display: block;
+            margin-bottom: 8px;
+            font-weight: 600;
+            color: #34495e;
+        }
+
+        .form-group input, .form-group select, .form-group textarea {
+            width: 100%;
+            padding: 12px;
+            border: 2px solid #ecf0f1;
+            border-radius: 8px;
+            font-size: 1em;
+            font-family: 'Noto Sans JP', sans-serif;
+            transition: border-color 0.3s;
+        }
+
+        .form-group input:focus, .form-group select:focus, .form-group textarea:focus {
+            outline: none;
+            border-color: #34495e;
+        }
+
+        .progress-chart {
+            background: white;
+            border-radius: 12px;
+            padding: 30px;
+            margin-bottom: 30px;
+            box-shadow: 0 5px 15px rgba(0,0,0,0.08);
+        }
+
+        .lesson-progress {
+            margin-bottom: 20px;
+        }
+
+        .lesson-title {
+            font-weight: 600;
+            margin-bottom: 10px;
+        }
+
+        .progress-bar {
+            background: #ecf0f1;
+            height: 8px;
+            border-radius: 4px;
+            overflow: hidden;
+            margin-bottom: 5px;
+        }
+
+        .progress-fill {
+            background: linear-gradient(90deg, #34495e, #2c3e50);
+            height: 100%;
+            transition: width 0.3s ease;
+        }
+
+        .demo-evidence {
+            background: #f8f9fa;
+            padding: 15px;
+            border-radius: 8px;
+            margin: 10px 0;
+            border-left: 4px solid #34495e;
+        }
+
+        .modal {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0,0,0,0.5);
+            z-index: 1000;
+        }
+
+        .modal-content {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            background: white;
+            border-radius: 15px;
+            padding: 30px;
+            max-width: 600px;
+            width: 90%;
+            max-height: 80vh;
+            overflow-y: auto;
+        }
+
+        @media (max-width: 768px) {
+            .header-content {
+                flex-direction: column;
+                gap: 15px;
+                text-align: center;
+            }
+
+            .tab-buttons {
+                flex-direction: column;
+            }
+
+            .overview-stats {
+                grid-template-columns: repeat(2, 1fr);
+            }
+
+            .form-row {
+                grid-template-columns: 1fr;
+            }
+
+            .table {
+                font-size: 0.9em;
+            }
+
+            .action-buttons {
+                flex-direction: column;
+            }
+        }
+    </style>
+</head>
+<body>
+    <header class="header">
+        <div class="header-content">
+            <h1>🔧 管理者ダッシュボード</h1>
+            <div class="user-info">
+                <span class="user-name" id="admin-name">管理者</span>
+                <button class="logout-btn" onclick="logout()">ログアウト</button>
+            </div>
+        </div>
+    </header>
+
+    <main class="main-content">
+        <!-- タブメニュー -->
+        <div class="tabs">
+            <div class="tab-buttons">
+                <button class="tab-button active" onclick="showTab('overview')">📊 概要</button>
+                <button class="tab-button" onclick="showTab('users')">👥 ユーザー管理</button>
+                <button class="tab-button" onclick="showTab('progress')">📚 学習進捗</button>
+                <button class="tab-button" onclick="showTab('demonstrations')">🎯 実演管理</button>
+            </div>
+
+            <!-- 概要タブ -->
+            <div id="overview" class="tab-content active">
+                <h2>システム概要</h2>
+                <div class="overview-stats" id="overview-stats">
+                    <div class="stat-card">
+                        <div class="stat-number" id="total-users">0</div>
+                        <div class="stat-label">登録ユーザー数</div>
+                    </div>
+                    <div class="stat-card">
+                        <div class="stat-number" id="active-learners">0</div>
+                        <div class="stat-label">学習中ユーザー</div>
+                    </div>
+                    <div class="stat-card">
+                        <div class="stat-number" id="completed-courses">0</div>
+                        <div class="stat-label">コース完了者</div>
+                    </div>
+                    <div class="stat-card">
+                        <div class="stat-number" id="pending-demos">0</div>
+                        <div class="stat-label">承認待ち実演</div>
+                    </div>
+                </div>
+
+                <div class="progress-chart">
+                    <h3>全体学習進捗</h3>
+                    <div id="overall-progress">
+                        <!-- JavaScriptで生成 -->
+                    </div>
+                </div>
+            </div>
+
+            <!-- ユーザー管理タブ -->
+            <div id="users" class="tab-content">
+                <h2>ユーザー管理</h2>
+                
+                <div class="add-user-form">
+                    <h3>新規ユーザー登録</h3>
+                    <form id="add-user-form">
+                        <div class="form-row">
+                            <div class="form-group">
+                                <label>社員ID</label>
+                                <input type="text" name="employee_id" required>
+                            </div>
+                            <div class="form-group">
+                                <label>氏名</label>
+                                <input type="text" name="name" required>
+                            </div>
+                        </div>
+                        <div class="form-row">
+                            <div class="form-group">
+                                <label>メールアドレス</label>
+                                <input type="email" name="email" required>
+                            </div>
+                            <div class="form-group">
+                                <label>部署</label>
+                                <input type="text" name="department">
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <label>初期パスワード</label>
+                            <input type="password" name="password" required>
+                        </div>
+                        <button type="submit" class="btn btn-primary">ユーザー登録</button>
+                    </form>
+                </div>
+
+                <div class="data-table">
+                    <table class="table">
+                        <thead>
+                            <tr>
+                                <th>社員ID</th>
+                                <th>氏名</th>
+                                <th>メール</th>
+                                <th>部署</th>
+                                <th>最終ログイン</th>
+                                <th>操作</th>
+                            </tr>
+                        </thead>
+                        <tbody id="users-table">
+                            <!-- JavaScriptで生成 -->
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+
+            <!-- 学習進捗タブ -->
+            <div id="progress" class="tab-content">
+                <h2>学習進捗管理</h2>
+                <div class="data-table">
+                    <table class="table">
+                        <thead>
+                            <tr>
+                                <th>ユーザー</th>
+                                <th>部署</th>
+                                <th>レッスン1</th>
+                                <th>レッスン2</th>
+                                <th>レッスン3</th>
+                                <th>レッスン4</th>
+                                <th>レッスン5</th>
+                                <th>全体進捗</th>
+                            </tr>
+                        </thead>
+                        <tbody id="progress-table">
+                            <!-- JavaScriptで生成 -->
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+
+            <!-- 実演管理タブ -->
+            <div id="demonstrations" class="tab-content">
+                <h2>実演記録管理</h2>
+                <div class="data-table">
+                    <table class="table">
+                        <thead>
+                            <tr>
+                                <th>ユーザー</th>
+                                <th>レッスン</th>
+                                <th>課題</th>
+                                <th>提出日時</th>
+                                <th>ステータス</th>
+                                <th>操作</th>
+                            </tr>
+                        </thead>
+                        <tbody id="demonstrations-table">
+                            <!-- JavaScriptで生成 -->
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+    </main>
+
+    <!-- 実演詳細モーダル -->
+    <div id="demo-modal" class="modal">
+        <div class="modal-content">
+            <h3>実演記録詳細</h3>
+            <div id="demo-detail">
+                <!-- JavaScriptで生成 -->
+            </div>
+            <div style="margin-top: 20px;">
+                <button class="btn btn-success" onclick="approveDemonstration()">承認</button>
+                <button class="btn btn-danger" onclick="rejectDemonstration()">却下</button>
+                <button class="btn" onclick="closeModal()">閉じる</button>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        const API_BASE = window.location.origin;
+        let currentUser = null;
+        let currentDemoId = null;
+
+        // 認証チェック
+        async function checkAuth() {
+            const token = localStorage.getItem('token');
+            
+            if (!token) {
+                window.location.href = '/login.html';
+                return false;
+            }
+            
+            try {
+                const response = await fetch(`${API_BASE}/api/verify-token`, {
+                    headers: {
+                        'Authorization': `Bearer ${token}`
+                    }
+                });
+                
+                if (response.ok) {
+                    const userData = await response.json();
+                    
+                    if (userData.role !== 'admin') {
+                        alert('管理者権限が必要です');
+                        window.location.href = '/student-dashboard.html';
+                        return false;
+                    }
+                    
+                    currentUser = userData;
+                    document.getElementById('admin-name').textContent = `管理者`;
+                    return true;
+                } else {
+                    // 無効なトークン
+                    localStorage.removeItem('token');
+                    localStorage.removeItem('user');
+                    window.location.href = '/login.html';
+                    return false;
+                }
+            } catch (error) {
+                console.error('認証エラー:', error);
+                localStorage.removeItem('token');
+                localStorage.removeItem('user');
+                window.location.href = '/login.html';
+                return false;
+            }
+        }
+
+        // ログアウト
+        function logout() {
+            localStorage.removeItem('token');
+            localStorage.removeItem('user');
+            window.location.href = '/login.html';
+        }
+
+        // タブ切り替え
+        function showTab(tabId) {
+            // タブボタンの状態更新
+            document.querySelectorAll('.tab-button').forEach(btn => btn.classList.remove('active'));
+            event.target.classList.add('active');
+            
+            // タブコンテンツの表示切り替え
+            document.querySelectorAll('.tab-content').forEach(content => content.classList.remove('active'));
+            document.getElementById(tabId).classList.add('active');
+
+            // データ読み込み
+            switch(tabId) {
+                case 'overview':
+                    loadOverview();
+                    break;
+                case 'users':
+                    loadUsers();
+                    break;
+                case 'progress':
+                    loadProgress();
+                    break;
+                case 'demonstrations':
+                    loadDemonstrations();
+                    break;
+            }
+        }
+
+        // 概要データ読み込み
+        async function loadOverview() {
+            try {
+                const token = localStorage.getItem('token');
+                const [usersRes, progressRes, demosRes] = await Promise.all([
+                    fetch(`${API_BASE}/api/admin/users`, {
+                        headers: { 'Authorization': `Bearer ${token}` }
+                    }),
+                    fetch(`${API_BASE}/api/admin/progress`, {
+                        headers: { 'Authorization': `Bearer ${token}` }
+                    }),
+                    fetch(`${API_BASE}/api/admin/demonstrations`, {
+                        headers: { 'Authorization': `Bearer ${token}` }
+                    })
+                ]);
+
+                const users = await usersRes.json();
+                const progress = await progressRes.json();
+                const demonstrations = await demosRes.json();
+
+                // 統計更新
+                const studentUsers = users.filter(u => u.role !== 'admin');
+                document.getElementById('total-users').textContent = studentUsers.length;
+                
+                // 学習中ユーザー: 少なくとも1つのレッスンを開始したユニークユーザー数
+                const activeUserIds = new Set(progress.map(p => p.user_id));
+                document.getElementById('active-learners').textContent = activeUserIds.size;
+                
+                // 全レッスン完了者: 5レッスン全てを完了したユニークユーザー数
+                const userProgress = {};
+                progress.forEach(p => {
+                    if (!userProgress[p.user_id]) {
+                        userProgress[p.user_id] = new Set();
+                    }
+                    if (p.status === 'completed') {
+                        userProgress[p.user_id].add(p.lesson_id);
+                    }
+                });
+                const completedUsers = Object.values(userProgress).filter(lessons => lessons.size === 5).length;
+                document.getElementById('completed-courses').textContent = completedUsers;
+                
+                document.getElementById('pending-demos').textContent = demonstrations.filter(d => d.status === 'submitted').length;
+
+                // 全体進捗チャート
+                renderOverallProgress(progress, users);
+
+            } catch (error) {
+                console.error('概要データの読み込み失敗:', error);
+            }
+        }
+
+        // 全体進捗チャート
+        function renderOverallProgress(progress, users) {
+            const lessonNames = ['レッスン1', 'レッスン2', 'レッスン3', 'レッスン4', 'レッスン5'];
+            const container = document.getElementById('overall-progress');
+            
+            const lessonProgress = lessonNames.map((name, index) => {
+                const lessonId = index + 1;
+                const completed = progress.filter(p => p.lesson_id === lessonId && p.status === 'completed').length;
+                const total = users.filter(u => u.role !== 'admin').length;
+                const percentage = total > 0 ? Math.round((completed / total) * 100) : 0;
+                
+                return `
+                    <div class="lesson-progress">
+                        <div class="lesson-title">${name} (${completed}/${total}人完了)</div>
+                        <div class="progress-bar">
+                            <div class="progress-fill" style="width: ${percentage}%"></div>
+                        </div>
+                    </div>
+                `;
+            }).join('');
+            
+            container.innerHTML = lessonProgress;
+        }
+
+        // ユーザー一覧読み込み
+        async function loadUsers() {
+            try {
+                const token = localStorage.getItem('token');
+                const response = await fetch(`${API_BASE}/api/admin/users`, {
+                    headers: { 'Authorization': `Bearer ${token}` }
+                });
+
+                const users = await response.json();
+                const tableBody = document.getElementById('users-table');
+                
+                tableBody.innerHTML = users.filter(u => u.role !== 'admin').map(user => `
+                    <tr>
+                        <td>${user.employee_id}</td>
+                        <td>${user.name}</td>
+                        <td>${user.email}</td>
+                        <td>${user.department || '-'}</td>
+                        <td>${user.last_login ? new Date(user.last_login).toLocaleDateString('ja-JP') : '未ログイン'}</td>
+                        <td>
+                            <div class="action-buttons">
+                                <button class="btn btn-info btn-sm">詳細</button>
+                                <button class="btn btn-danger btn-sm">削除</button>
+                            </div>
+                        </td>
+                    </tr>
+                `).join('');
+
+            } catch (error) {
+                console.error('ユーザーデータの読み込み失敗:', error);
+            }
+        }
+
+        // ユーザー登録フォーム
+        document.getElementById('add-user-form')?.addEventListener('submit', async (e) => {
+            e.preventDefault();
+            
+            const formData = new FormData(e.target);
+            const userData = {
+                employee_id: formData.get('employee_id'),
+                name: formData.get('name'),
+                email: formData.get('email'),
+                department: formData.get('department'),
+                password: formData.get('password')
+            };
+
+            try {
+                const token = localStorage.getItem('token');
+                const response = await fetch(`${API_BASE}/api/register`, {
+                    method: 'POST',
+                    headers: {
+                        'Authorization': `Bearer ${token}`,
+                        'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify(userData)
+                });
+
+                const result = await response.json();
+                
+                if (response.ok) {
+                    alert('ユーザーが正常に登録されました');
+                    e.target.reset();
+                    loadUsers();
+                } else {
+                    alert(result.error || '登録に失敗しました');
+                }
+            } catch (error) {
+                console.error('ユーザー登録エラー:', error);
+                alert('登録に失敗しました');
+            }
+        });
+
+        // 進捗一覧読み込み
+        async function loadProgress() {
+            try {
+                const token = localStorage.getItem('token');
+                const [progressRes, usersRes] = await Promise.all([
+                    fetch(`${API_BASE}/api/admin/progress`, {
+                        headers: { 'Authorization': `Bearer ${token}` }
+                    }),
+                    fetch(`${API_BASE}/api/admin/users`, {
+                        headers: { 'Authorization': `Bearer ${token}` }
+                    })
+                ]);
+
+                const progress = await progressRes.json();
+                const users = await usersRes.json();
+                
+                // ユーザーごとの進捗をまとめる
+                const userProgress = {};
+                users.filter(u => u.role !== 'admin').forEach(user => {
+                    userProgress[user.id] = {
+                        user: user,
+                        lessons: {}
+                    };
+                });
+
+                progress.forEach(p => {
+                    if (userProgress[p.user_id]) {
+                        userProgress[p.user_id].lessons[p.lesson_id] = p;
+                    }
+                });
+
+                const tableBody = document.getElementById('progress-table');
+                tableBody.innerHTML = Object.values(userProgress).map(up => {
+                    const getStatusBadge = (lessonId) => {
+                        const lesson = up.lessons[lessonId];
+                        if (!lesson) return '<span class="status-badge status-not-started">未開始<br><small>0%</small></span>';
+                        
+                        let className = 'status-not-started';
+                        let text = '未開始';
+                        let progressText = '0%';
+                        
+                        // 動的スライド数を取得
+                        const totalSlides = lessonSlideCounts[lessonId] || 10;
+                        
+                        if (lesson.status === 'in_progress') {
+                            className = 'status-in-progress';
+                            text = '学習中';
+                            const percentage = Math.round((lesson.last_slide / totalSlides) * 100);
+                            progressText = `${percentage}% (${lesson.last_slide}/${totalSlides})`;
+                        } else if (lesson.status === 'completed') {
+                            className = 'status-completed';
+                            text = '完了';
+                            progressText = `100% (${totalSlides}/${totalSlides})`;
+                        }
+                        
+                        return `<span class="status-badge ${className}">${text}<br><small>${progressText}</small></span>`;
+                    };
+                    
+                    const completedCount = Object.values(up.lessons).filter(l => l.status === 'completed').length;
+                    const overallProgress = Math.round((completedCount / 5) * 100);
+                    
+                    return `
+                        <tr>
+                            <td>${up.user.name}<br><small>${up.user.employee_id}</small></td>
+                            <td>${up.user.department || '-'}</td>
+                            <td>${getStatusBadge(1)}</td>
+                            <td>${getStatusBadge(2)}</td>
+                            <td>${getStatusBadge(3)}</td>
+                            <td>${getStatusBadge(4)}</td>
+                            <td>${getStatusBadge(5)}</td>
+                            <td><strong>${overallProgress}%</strong></td>
+                        </tr>
+                    `;
+                }).join('');
+
+            } catch (error) {
+                console.error('進捗データの読み込み失敗:', error);
+            }
+        }
+
+        // 実演記録読み込み
+        async function loadDemonstrations() {
+            try {
+                const token = localStorage.getItem('token');
+                const response = await fetch(`${API_BASE}/api/admin/demonstrations`, {
+                    headers: { 'Authorization': `Bearer ${token}` }
+                });
+
+                const demonstrations = await response.json();
+                const tableBody = document.getElementById('demonstrations-table');
+                
+                tableBody.innerHTML = demonstrations.map(demo => {
+                    let statusClass = 'status-pending';
+                    let statusText = '待機中';
+                    
+                    if (demo.status === 'submitted') {
+                        statusClass = 'status-submitted';
+                        statusText = '提出済み';
+                    } else if (demo.status === 'approved') {
+                        statusClass = 'status-approved';
+                        statusText = '承認済み';
+                    } else if (demo.status === 'rejected') {
+                        statusClass = 'status-rejected';
+                        statusText = '却下';
+                    }
+                    
+                    return `
+                        <tr>
+                            <td>${demo.name}<br><small>${demo.employee_id}</small></td>
+                            <td>レッスン${demo.lesson_id}</td>
+                            <td>${demo.task_id}</td>
+                            <td>${new Date(demo.submitted_at).toLocaleDateString('ja-JP')}</td>
+                            <td><span class="status-badge ${statusClass}">${statusText}</span></td>
+                            <td>
+                                <div class="action-buttons">
+                                    <button class="btn btn-info btn-sm" onclick="viewDemonstration(${demo.id})">詳細</button>
+                                </div>
+                            </td>
+                        </tr>
+                    `;
+                }).join('');
+
+            } catch (error) {
+                console.error('実演データの読み込み失敗:', error);
+            }
+        }
+
+        // 実演詳細表示
+        function viewDemonstration(demoId) {
+            // TODO: 実演詳細データを取得して表示
+            currentDemoId = demoId;
+            document.getElementById('demo-detail').innerHTML = `
+                <div class="demo-evidence">
+                    <p><strong>実演内容:</strong></p>
+                    <p>サンプル実演内容がここに表示されます...</p>
+                </div>
+                <div class="form-group">
+                    <label>フィードバック</label>
+                    <textarea id="feedback-text" rows="4" placeholder="フィードバックを入力してください..."></textarea>
+                </div>
+            `;
+            document.getElementById('demo-modal').style.display = 'block';
+        }
+
+        // 実演承認
+        async function approveDemonstration() {
+            await updateDemonstrationStatus('approved');
+        }
+
+        // 実演却下
+        async function rejectDemonstration() {
+            await updateDemonstrationStatus('rejected');
+        }
+
+        // 実演ステータス更新
+        async function updateDemonstrationStatus(status) {
+            const feedback = document.getElementById('feedback-text').value;
+            
+            try {
+                const token = localStorage.getItem('token');
+                const response = await fetch(`${API_BASE}/api/admin/demonstration/${currentDemoId}`, {
+                    method: 'PUT',
+                    headers: {
+                        'Authorization': `Bearer ${token}`,
+                        'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify({
+                        status: status,
+                        feedback: feedback
+                    })
+                });
+
+                if (response.ok) {
+                    alert(`実演記録を${status === 'approved' ? '承認' : '却下'}しました`);
+                    closeModal();
+                    loadDemonstrations();
+                } else {
+                    alert('更新に失敗しました');
+                }
+            } catch (error) {
+                console.error('実演ステータス更新エラー:', error);
+                alert('更新に失敗しました');
+            }
+        }
+
+        // モーダルを閉じる
+        function closeModal() {
+            document.getElementById('demo-modal').style.display = 'none';
+            currentDemoId = null;
+        }
+
+        // レッスンのスライド数データ
+        const lessonSlideCounts = {};
+
+        // スライド数を動的に取得
+        async function loadSlideCounts() {
+            try {
+                for (let lessonId = 1; lessonId <= 5; lessonId++) {
+                    const response = await fetch(`${API_BASE}/api/lesson/${lessonId}/slide-count`);
+                    if (response.ok) {
+                        const data = await response.json();
+                        lessonSlideCounts[lessonId] = data.totalSlides;
+                        console.log(`レッスン${lessonId}: ${lessonSlideCounts[lessonId]}スライド`);
+                    } else {
+                        // フォールバック
+                        lessonSlideCounts[lessonId] = 10;
+                        console.warn(`レッスン${lessonId}: スライド数取得失敗、デフォルト値(10)を使用`);
+                    }
+                }
+            } catch (error) {
+                console.error('スライド数取得エラー:', error);
+                // エラー時はデフォルト値を設定
+                for (let lessonId = 1; lessonId <= 5; lessonId++) {
+                    lessonSlideCounts[lessonId] = 10;
+                }
+            }
+        }
+
+        // 初期化
+        async function init() {
+            if (!checkAuth()) return;
+            
+            // スライド数を最初に取得
+            await loadSlideCounts();
+            
+            loadOverview();
+        }
+
+        // ページ読み込み時に初期化
+        document.addEventListener('DOMContentLoaded', init);
+    </script>
+</body>
+</html>

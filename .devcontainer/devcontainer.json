@@ -1,0 +1,21 @@
+{
+  "name": "Claude Code eLearning System",
+  "image": "mcr.microsoft.com/devcontainers/javascript-node:18",
+  "postCreateCommand": "npm install && node setup.js",
+  "forwardPorts": [3000],
+  "portsAttributes": {
+    "3000": {
+      "label": "eLearning System",
+      "onAutoForward": "notify",
+      "visibility": "public"
+    }
+  },
+  "customizations": {
+    "vscode": {
+      "extensions": [
+        "dbaeumer.vscode-eslint",
+        "esbenp.prettier-vscode"
+      ]
+    }
+  }
+}

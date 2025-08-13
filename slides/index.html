@@ -1,0 +1,369 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Claude Code 初心者向け講習資料</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+JP:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        body {
+            font-family: 'Noto Sans JP', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+            background: linear-gradient(135deg, #1e3c72 0%, #2a5298 100%);
+            color: #2c3e50;
+            min-height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 20px;
+        }
+        
+        .container {
+            background: white;
+            border-radius: 20px;
+            padding: 60px;
+            box-shadow: 0 20px 60px rgba(0,0,0,0.3);
+            max-width: 1000px;
+            width: 100%;
+            text-align: center;
+        }
+        
+        h1 {
+            color: #2c3e50;
+            font-size: 3.5em;
+            margin-bottom: 20px;
+            background: linear-gradient(135deg, #34495e 0%, #2c3e50 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+            font-weight: 700;
+        }
+        
+        .subtitle {
+            font-size: 1.5em;
+            color: #7f8c8d;
+            margin-bottom: 50px;
+            font-weight: 400;
+        }
+        
+        .course-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 30px;
+            margin: 40px 0;
+        }
+        
+        .course-card {
+            background: linear-gradient(135deg, #34495e 0%, #2c3e50 100%);
+            color: white;
+            padding: 40px 30px;
+            border-radius: 15px;
+            text-decoration: none;
+            transition: transform 0.3s, box-shadow 0.3s;
+            display: block;
+            position: relative;
+            overflow: hidden;
+        }
+        
+        .course-card:hover {
+            transform: translateY(-10px) scale(1.02);
+            box-shadow: 0 20px 40px rgba(0,0,0,0.3);
+        }
+        
+        .course-card::before {
+            content: '';
+            position: absolute;
+            top: -50%;
+            right: -50%;
+            width: 200%;
+            height: 200%;
+            background: linear-gradient(45deg, transparent, rgba(255,255,255,0.1), transparent);
+            transform: rotate(45deg);
+            transition: all 0.6s;
+        }
+        
+        .course-card:hover::before {
+            animation: shine 0.6s ease-in-out;
+        }
+        
+        @keyframes shine {
+            0% { transform: translateX(-100%) translateY(-100%) rotate(45deg); }
+            100% { transform: translateX(100%) translateY(100%) rotate(45deg); }
+        }
+        
+        .course-number {
+            font-size: 3em;
+            font-weight: bold;
+            margin-bottom: 15px;
+            opacity: 0.8;
+        }
+        
+        .course-title {
+            font-size: 1.5em;
+            font-weight: bold;
+            margin-bottom: 15px;
+        }
+        
+        .course-description {
+            font-size: 1em;
+            opacity: 0.9;
+            line-height: 1.6;
+        }
+        
+        .course-topics {
+            list-style: none;
+            margin-top: 20px;
+            text-align: left;
+        }
+        
+        .course-topics li {
+            margin: 8px 0;
+            padding-left: 20px;
+            position: relative;
+        }
+        
+        .course-topics li::before {
+            content: '✓';
+            position: absolute;
+            left: 0;
+            font-weight: bold;
+        }
+        
+        .info-section {
+            background: #f8f9fa;
+            border-radius: 15px;
+            padding: 30px;
+            margin: 40px 0;
+        }
+        
+        .info-title {
+            color: #34495e;
+            font-size: 1.8em;
+            margin-bottom: 20px;
+            font-weight: 600;
+        }
+        
+        .info-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 30px;
+            margin-top: 30px;
+        }
+        
+        .info-item {
+            text-align: left;
+        }
+        
+        .info-item h3 {
+            color: #2c3e50;
+            margin-bottom: 10px;
+            font-size: 1.2em;
+            font-weight: 600;
+        }
+        
+        .info-item p {
+            line-height: 1.6;
+            color: #5d6d7e;
+            font-weight: 400;
+        }
+        
+        .warning-box {
+            background: #f8f9fa;
+            border: 2px solid #95a5a6;
+            border-radius: 10px;
+            padding: 20px;
+            margin: 30px 0;
+        }
+        
+        .warning-box h3 {
+            color: #34495e;
+            margin-bottom: 10px;
+            font-weight: 600;
+        }
+        
+        .footer {
+            margin-top: 50px;
+            padding-top: 30px;
+            border-top: 2px solid #e0e0e0;
+            color: #666;
+        }
+        
+        .github-link {
+            display: inline-block;
+            background: #34495e;
+            color: white;
+            padding: 15px 30px;
+            border-radius: 30px;
+            text-decoration: none;
+            margin: 20px 10px;
+            transition: background 0.3s;
+            font-weight: 500;
+        }
+        
+        .github-link:hover {
+            background: #2c3e50;
+        }
+        
+        @media (max-width: 768px) {
+            .container {
+                padding: 40px 20px;
+            }
+            
+            h1 {
+                font-size: 2.5em;
+            }
+            
+            .course-grid {
+                grid-template-columns: 1fr;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>🤖 Claude Code 初心者向け講習</h1>
+        <p class="subtitle">Windows環境 × GitHub × MCP × Playwright 対応</p>
+        
+        <div class="info-section">
+            <div class="info-title">📋 講習概要</div>
+            <div class="info-grid">
+                <div class="info-item">
+                    <h3>🎯 目標</h3>
+                    <p>AIと協力してプログラミングができるようになり、日常の作業を自動化できるスキルを身につける</p>
+                </div>
+                <div class="info-item">
+                    <h3>⏰ 期間</h3>
+                    <p>全5回（各回60分）<br>週1回ペースで約1ヶ月</p>
+                </div>
+                <div class="info-item">
+                    <h3>💻 対象者</h3>
+                    <p>プログラミング未経験者〜初心者<br>Windows PC使用者</p>
+                </div>
+                <div class="info-item">
+                    <h3>🛠️ 必要なもの</h3>
+                    <p>Windows PC、インターネット接続<br>Visual Studio Code、Git Bash<br>GitHubアカウント（講習中に作成）</p>
+                </div>
+            </div>
+        </div>
+        
+        <div class="course-grid">
+            <a href="lesson1_slides.html" class="course-card">
+                <div class="course-number">01</div>
+                <div class="course-title">Claude Code入門</div>
+                <div class="course-description">AIプログラミングの基礎とWindows環境構築</div>
+                <ul class="course-topics">
+                    <li>Claude Codeとは？</li>
+                    <li>ChatGPTとの違い</li>
+                    <li>Windows環境構築</li>
+                    <li>Hello World作成</li>
+                </ul>
+            </a>
+            
+            <a href="lesson2_slides.html" class="course-card">
+                <div class="course-number">02</div>
+                <div class="course-title">基本操作 & GitHub</div>
+                <div class="course-description">効果的なプロンプトとコード管理の基礎</div>
+                <ul class="course-topics">
+                    <li>画面構成と基本操作</li>
+                    <li>プロンプトの書き方</li>
+                    <li>GitHubアカウント作成</li>
+                    <li>ファイル処理実習</li>
+                </ul>
+            </a>
+            
+            <a href="lesson3_slides.html" class="course-card">
+                <div class="course-number">03</div>
+                <div class="course-title">MCP外部ツール連携</div>
+                <div class="course-description">プラグインで機能を拡張しよう</div>
+                <ul class="course-topics">
+                    <li>MCPの概念と仕組み</li>
+                    <li>プラグイン導入方法</li>
+                    <li>CSV/Excel連携</li>
+                    <li>画像処理自動化</li>
+                </ul>
+            </a>
+            
+            <a href="lesson4_slides.html" class="course-card">
+                <div class="course-number">04</div>
+                <div class="course-title">Playwright Web自動化</div>
+                <div class="course-description">ブラウザ操作を自動化しよう</div>
+                <ul class="course-topics">
+                    <li>Playwrightとは？</li>
+                    <li>スクリーンショット自動取得</li>
+                    <li>フォーム自動入力</li>
+                    <li>複数サイト巡回</li>
+                </ul>
+            </a>
+            
+            <a href="lesson5_slides.html" class="course-card">
+                <div class="course-number">05</div>
+                <div class="course-title">総まとめ & ツール作成</div>
+                <div class="course-description">実用的なツールを完成させよう</div>
+                <ul class="course-topics">
+                    <li>全技術の統合</li>
+                    <li>実践プロジェクト</li>
+                    <li>GitHubで公開</li>
+                    <li>今後の学習プラン</li>
+                </ul>
+            </a>
+        </div>
+        
+        <div class="warning-box">
+            <h3>⚠️ 受講前の準備</h3>
+            <p>第1回の講習前に、Windows PCの準備とインターネット環境の確認をお願いします。その他のソフトウェアは講習中に一緒にインストールしますので、事前準備は不要です。</p>
+        </div>
+        
+        <div class="info-section">
+            <div class="info-title">🎓 講習終了後に身につくスキル</div>
+            <div class="info-grid">
+                <div class="info-item">
+                    <h3>🤖 AIプログラミング</h3>
+                    <p>Claude Codeを使った効率的な開発手法</p>
+                </div>
+                <div class="info-item">
+                    <h3>📤 コード管理</h3>
+                    <p>GitHubを使ったバージョン管理と共有</p>
+                </div>
+                <div class="info-item">
+                    <h3>🔌 機能拡張</h3>
+                    <p>MCPプラグインによる外部ツール連携</p>
+                </div>
+                <div class="info-item">
+                    <h3>🌐 Web自動化</h3>
+                    <p>Playwrightによるブラウザ操作自動化</p>
+                </div>
+                <div class="info-item">
+                    <h3>⚡ 業務効率化</h3>
+                    <p>日常作業の自動化とツール開発</p>
+                </div>
+                <div class="info-item">
+                    <h3>🚀 継続学習</h3>
+                    <p>次のステップへの学習計画</p>
+                </div>
+            </div>
+        </div>
+        
+        <div class="footer">
+            <p><strong>使用方法：</strong> 各講習のカードをクリックしてスライドを開いてください</p>
+            <p><strong>操作：</strong> ← → キーまたは画面下のボタンでスライド操作</p>
+            
+            <div style="margin-top: 30px;">
+                <a href="#" class="github-link">📁 サンプルコード</a>
+                <a href="#" class="github-link">📖 補足資料</a>
+            </div>
+            
+            <p style="margin-top: 30px; font-size: 0.9em;">
+                © 2024 Claude Code 初心者向け講習資料<br>
+                作成日：2024年1月15日
+            </p>
+        </div>
+    </div>
+</body>
+</html>

@@ -1,0 +1,893 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>第2回：Claude Codeの基本操作 & GitHub入門</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+JP:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        body {
+            font-family: 'Noto Sans JP', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+            background: linear-gradient(135deg, #1e3c72 0%, #2a5298 100%);
+            color: #2c3e50;
+            overflow: hidden;
+        }
+        
+        .slide-container {
+            display: none;
+            width: 100vw;
+            height: 100vh;
+            padding: 40px;
+            animation: slideIn 0.5s ease-in-out;
+        }
+        
+        .slide-container.active {
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+        }
+        
+        @keyframes slideIn {
+            from { opacity: 0; transform: translateX(50px); }
+            to { opacity: 1; transform: translateX(0); }
+        }
+        
+        .slide-content {
+            background: white;
+            border-radius: 20px;
+            padding: 60px;
+            box-shadow: 0 20px 60px rgba(0,0,0,0.3);
+            max-width: 1200px;
+            width: 100%;
+            max-height: 80vh;
+            overflow-y: auto;
+        }
+        
+        h1 {
+            color: #2c3e50;
+            font-size: 3em;
+            margin-bottom: 30px;
+            text-align: center;
+            border-bottom: 3px solid #34495e;
+            padding-bottom: 20px;
+            font-weight: 700;
+        }
+        
+        h2 {
+            color: #34495e;
+            font-size: 2.2em;
+            margin: 30px 0 20px;
+            display: flex;
+            align-items: center;
+            gap: 15px;
+            font-weight: 600;
+        }
+        
+        h3 {
+            color: #2c3e50;
+            font-size: 1.8em;
+            margin: 25px 0 15px;
+            font-weight: 600;
+        }
+        
+        .icon {
+            font-size: 1.5em;
+        }
+        
+        .feature-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 30px;
+            margin: 30px 0;
+        }
+        
+        .feature-card {
+            background: linear-gradient(135deg, #f093fb 0%, #f5576c 100%);
+            color: white;
+            padding: 30px;
+            border-radius: 15px;
+            text-align: center;
+            transition: transform 0.3s;
+        }
+        
+        .feature-card:hover {
+            transform: translateY(-5px);
+        }
+        
+        .feature-icon {
+            font-size: 3em;
+            margin-bottom: 15px;
+        }
+        
+        .code-box {
+            background: #1e1e1e;
+            color: #fff;
+            padding: 25px;
+            border-radius: 10px;
+            margin: 20px 0;
+            font-family: 'Courier New', monospace;
+            font-size: 1.1em;
+            overflow-x: auto;
+            box-shadow: 0 5px 15px rgba(0,0,0,0.3);
+        }
+        
+        .command-prompt {
+            background: #000;
+            color: #0f0;
+            padding: 20px;
+            border-radius: 10px;
+            margin: 20px 0;
+            font-family: 'Consolas', monospace;
+            font-size: 1.2em;
+            position: relative;
+            box-shadow: 0 5px 15px rgba(0,0,0,0.3);
+        }
+        
+        .command-prompt::before {
+            content: 'C:\\Users\\User>';
+            color: #888;
+            margin-right: 10px;
+        }
+        
+        .git-bash {
+            background: #000;
+            color: #ffeb3b;
+            padding: 20px;
+            border-radius: 10px;
+            margin: 20px 0;
+            font-family: 'Consolas', monospace;
+            font-size: 1.2em;
+            position: relative;
+            box-shadow: 0 5px 15px rgba(0,0,0,0.3);
+        }
+        
+        .git-bash::before {
+            content: '$ ';
+            color: #4caf50;
+            margin-right: 10px;
+        }
+        
+        .diagram {
+            display: flex;
+            justify-content: space-around;
+            align-items: center;
+            margin: 40px 0;
+            padding: 30px;
+            background: #f8f9fa;
+            border-radius: 15px;
+        }
+        
+        .diagram-item {
+            text-align: center;
+            flex: 1;
+        }
+        
+        .diagram-icon {
+            font-size: 4em;
+            margin-bottom: 10px;
+            color: #3494E6;
+        }
+        
+        .arrow {
+            font-size: 2em;
+            color: #EC6EAD;
+            margin: 0 20px;
+        }
+        
+        .step-list {
+            counter-reset: step-counter;
+            margin: 30px 0;
+        }
+        
+        .step-item {
+            counter-increment: step-counter;
+            margin: 20px 0;
+            padding: 20px;
+            background: #f8f9fa;
+            border-radius: 10px;
+            position: relative;
+            padding-left: 70px;
+            font-size: 1.2em;
+        }
+        
+        .step-item::before {
+            content: counter(step-counter);
+            position: absolute;
+            left: 20px;
+            top: 50%;
+            transform: translateY(-50%);
+            background: #3494E6;
+            color: white;
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: bold;
+            font-size: 1.2em;
+        }
+        
+        .highlight {
+            background: linear-gradient(120deg, #f093fb 0%, #f5576c 100%);
+            color: white;
+            padding: 5px 15px;
+            border-radius: 20px;
+            display: inline-block;
+            margin: 10px 5px;
+            font-weight: bold;
+        }
+        
+        .ui-mockup {
+            border: 3px solid #ddd;
+            border-radius: 10px;
+            margin: 20px 0;
+            overflow: hidden;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.2);
+        }
+        
+        .ui-header {
+            background: #2c3e50;
+            color: white;
+            padding: 10px 20px;
+            font-weight: bold;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+        
+        .ui-body {
+            background: #2c3e50;
+            padding: 20px;
+            min-height: 200px;
+        }
+        
+        .ui-section {
+            background: #34495e;
+            border-radius: 5px;
+            padding: 15px;
+            margin: 10px 0;
+            color: white;
+        }
+        
+        .navigation {
+            position: fixed;
+            bottom: 30px;
+            right: 30px;
+            display: flex;
+            gap: 20px;
+            z-index: 1000;
+        }
+        
+        .nav-btn {
+            background: #34495e;
+            color: white;
+            border: none;
+            padding: 15px 30px;
+            border-radius: 30px;
+            cursor: pointer;
+            font-size: 1.1em;
+            font-weight: 500;
+            transition: all 0.3s;
+            box-shadow: 0 5px 15px rgba(0,0,0,0.2);
+        }
+        
+        .nav-btn:hover {
+            background: #2c3e50;
+            transform: translateY(-2px);
+        }
+        
+        .nav-btn:disabled {
+            opacity: 0.5;
+            cursor: not-allowed;
+        }
+        
+        .slide-number {
+            position: fixed;
+            top: 30px;
+            right: 30px;
+            background: rgba(255,255,255,0.9);
+            padding: 10px 20px;
+            border-radius: 20px;
+            font-weight: bold;
+            color: #34495e;
+            font-size: 1.2em;
+            font-weight: 600;
+        }
+        
+        .emoji-large {
+            font-size: 2em;
+            vertical-align: middle;
+            margin: 0 10px;
+        }
+        
+        .warning-box {
+            background: #fff3cd;
+            border-left: 5px solid #ffc107;
+            padding: 20px;
+            margin: 20px 0;
+            border-radius: 10px;
+            font-size: 1.1em;
+        }
+        
+        .success-box {
+            background: #d4edda;
+            border-left: 5px solid #28a745;
+            padding: 20px;
+            margin: 20px 0;
+            border-radius: 10px;
+            font-size: 1.1em;
+        }
+        
+        .info-box {
+            background: #d1ecf1;
+            border-left: 5px solid #17a2b8;
+            padding: 20px;
+            margin: 20px 0;
+            border-radius: 10px;
+            font-size: 1.1em;
+        }
+        
+        .github-flow {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            margin: 30px 0;
+        }
+        
+        .github-step {
+            background: white;
+            border: 3px solid #3494E6;
+            border-radius: 15px;
+            padding: 20px 40px;
+            margin: 10px 0;
+            font-size: 1.2em;
+            font-weight: bold;
+            position: relative;
+        }
+        
+        .github-step::after {
+            content: '↓';
+            position: absolute;
+            bottom: -30px;
+            left: 50%;
+            transform: translateX(-50%);
+            font-size: 2em;
+            color: #EC6EAD;
+        }
+        
+        .github-step:last-child::after {
+            display: none;
+        }
+    </style>
+</head>
+<body>
+    <div class="slide-number">
+        <span id="currentSlide">1</span> / <span id="totalSlides">12</span>
+    </div>
+
+    <!-- スライド1: タイトル -->
+    <div class="slide-container active">
+        <div class="slide-content">
+            <h1>💻 第2回：Claude Code基本操作 & GitHub入門</h1>
+            <div style="text-align: center; margin: 50px 0;">
+                <div style="font-size: 6em; margin: 30px 0;">🤖🔧📤</div>
+                <h2 style="justify-content: center;">コードを書いて、保存して、共有しよう！</h2>
+                <p style="font-size: 1.5em; margin-top: 30px; color: #666;">
+                    Claude CodeとGitHubで本格的な開発を始める
+                </p>
+            </div>
+        </div>
+    </div>
+
+    <!-- スライド2: 本日の内容 -->
+    <div class="slide-container">
+        <div class="slide-content">
+            <h1>📋 本日の学習内容</h1>
+            <div class="step-list">
+                <div class="step-item">
+                    Claude Codeの画面構成を理解する
+                </div>
+                <div class="step-item">
+                    効果的なプロンプトの書き方
+                </div>
+                <div class="step-item">
+                    GitHubアカウント作成と基本設定
+                </div>
+                <div class="step-item">
+                    コードの保存と共有の実践
+                </div>
+            </div>
+            <div class="success-box">
+                🎯 今日のゴール：自分で作ったコードをGitHubにアップロードして、誰でも使えるようにする！
+            </div>
+        </div>
+    </div>
+
+    <!-- スライド3: Claude Codeの画面説明 -->
+    <div class="slide-container">
+        <div class="slide-content">
+            <h1>🖥️ Claude Codeの画面構成</h1>
+            <div class="ui-mockup">
+                <div class="ui-header">
+                    <span>🤖</span> Claude Code Interface
+                </div>
+                <div class="ui-body">
+                    <div class="ui-section">
+                        <strong>📝 エディタエリア</strong>
+                        <p style="margin-top: 10px;">コードが表示・編集される場所</p>
+                    </div>
+                    <div class="ui-section">
+                        <strong>💬 チャットエリア</strong>
+                        <p style="margin-top: 10px;">Claudeと会話する場所</p>
+                    </div>
+                    <div class="ui-section">
+                        <strong>📁 ファイルエクスプローラー</strong>
+                        <p style="margin-top: 10px;">プロジェクトのファイル一覧</p>
+                    </div>
+                    <div class="ui-section">
+                        <strong>⚡ ターミナル</strong>
+                        <p style="margin-top: 10px;">コマンド実行と結果表示</p>
+                    </div>
+                </div>
+            </div>
+            <div class="info-box">
+                💡 ヒント：各エリアはドラッグで大きさを調整できます！
+            </div>
+        </div>
+    </div>
+
+    <!-- スライド4: プロンプトの書き方 -->
+    <div class="slide-container">
+        <div class="slide-content">
+            <h1>✍️ 効果的なプロンプトの書き方</h1>
+            <div class="feature-grid">
+                <div class="feature-card">
+                    <div class="feature-icon">❌</div>
+                    <h3>悪い例</h3>
+                    <p style="font-size: 0.9em;">「計算して」<br>「ファイル処理」<br>「データ変換」</p>
+                </div>
+                <div class="feature-card">
+                    <div class="feature-icon">✅</div>
+                    <h3>良い例</h3>
+                    <p style="font-size: 0.9em;">「消費税を計算する電卓を作って」<br>「CSVファイルを読み込んでExcelに変換」<br>「画像を一括でリサイズ」</p>
+                </div>
+            </div>
+            
+            <h2><span class="icon">🎯</span>プロンプトの5つのコツ</h2>
+            <div class="step-list">
+                <div class="step-item">
+                    <strong>具体的に</strong>：何をしたいか明確に伝える
+                </div>
+                <div class="step-item">
+                    <strong>背景を説明</strong>：なぜ必要かを伝える
+                </div>
+                <div class="step-item">
+                    <strong>入出力を明示</strong>：何を入れて何が出るか
+                </div>
+                <div class="step-item">
+                    <strong>制約条件</strong>：特別な要件があれば伝える
+                </div>
+                <div class="step-item">
+                    <strong>段階的に</strong>：複雑な場合は分けて依頼
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- スライド5: 会話型開発の流れ -->
+    <div class="slide-container">
+        <div class="slide-content">
+            <h1>🔄 会話型開発の流れ</h1>
+            <div class="diagram">
+                <div class="diagram-item">
+                    <div class="diagram-icon">💭</div>
+                    <p><strong>1. 要求</strong></p>
+                    <p style="font-size: 0.9em;">「〜を作って」</p>
+                </div>
+                <div class="arrow">→</div>
+                <div class="diagram-item">
+                    <div class="diagram-icon">🤖</div>
+                    <p><strong>2. 生成</strong></p>
+                    <p style="font-size: 0.9em;">コード作成</p>
+                </div>
+                <div class="arrow">→</div>
+                <div class="diagram-item">
+                    <div class="diagram-icon">▶️</div>
+                    <p><strong>3. 実行</strong></p>
+                    <p style="font-size: 0.9em;">動作確認</p>
+                </div>
+                <div class="arrow">→</div>
+                <div class="diagram-item">
+                    <div class="diagram-icon">🔧</div>
+                    <p><strong>4. 改善</strong></p>
+                    <p style="font-size: 0.9em;">「ここを変えて」</p>
+                </div>
+            </div>
+            
+            <h3>実例：TODO リストアプリ</h3>
+            <div class="code-box">
+あなた：「TODOリストアプリを作って」
+Claude：[基本的なTODOアプリを生成]
+あなた：「完了したタスクに線を引いて」
+Claude：[取り消し線機能を追加]
+あなた：「優先度も設定できるようにして」
+Claude：[優先度機能を追加]
+            </div>
+        </div>
+    </div>
+
+    <!-- スライド6: GitHubとは -->
+    <div class="slide-container">
+        <div class="slide-content">
+            <h1>🐙 GitHubとは？</h1>
+            <div style="text-align: center; margin: 30px 0;">
+                <div style="font-size: 5em;">☁️ 📦 🌍</div>
+                <h2 style="justify-content: center; margin-top: 20px;">コードのクラウド保管庫</h2>
+            </div>
+            
+            <div class="feature-grid">
+                <div class="feature-card">
+                    <div class="feature-icon">💾</div>
+                    <h3>バックアップ</h3>
+                    <p>PCが壊れても安心</p>
+                </div>
+                <div class="feature-card">
+                    <div class="feature-icon">🌐</div>
+                    <h3>どこでもアクセス</h3>
+                    <p>ネットがあればOK</p>
+                </div>
+                <div class="feature-card">
+                    <div class="feature-icon">👥</div>
+                    <h3>共有・協力</h3>
+                    <p>チームで開発可能</p>
+                </div>
+                <div class="feature-card">
+                    <div class="feature-icon">📜</div>
+                    <h3>履歴管理</h3>
+                    <p>変更履歴を記録</p>
+                </div>
+                <div class="feature-card">
+                    <div class="feature-icon">🆓</div>
+                    <h3>無料で利用可</h3>
+                    <p>個人利用は無料</p>
+                </div>
+                <div class="feature-card">
+                    <div class="feature-icon">🎨</div>
+                    <h3>ポートフォリオ</h3>
+                    <p>実績として公開</p>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- スライド7: GitHubアカウント作成 -->
+    <div class="slide-container">
+        <div class="slide-content">
+            <h1>📝 GitHubアカウント作成</h1>
+            <div class="step-list">
+                <div class="step-item">
+                    ブラウザで https://github.com にアクセス
+                </div>
+                <div class="step-item">
+                    「Sign up」をクリック
+                </div>
+                <div class="step-item">
+                    メールアドレスを入力
+                </div>
+                <div class="step-item">
+                    パスワードを設定（8文字以上）
+                </div>
+                <div class="step-item">
+                    ユーザー名を決める（英数字、世界で唯一）
+                </div>
+                <div class="step-item">
+                    メール認証を完了
+                </div>
+            </div>
+            
+            <div class="warning-box">
+                ⚠️ ユーザー名は後から変更可能ですが、URLが変わるので慎重に！
+                <br>例：github.com/<strong>あなたのユーザー名</strong>/プロジェクト名
+            </div>
+            
+            <div class="success-box">
+                ✅ 無料プランで十分！プライベートリポジトリも無制限に作成可能
+            </div>
+        </div>
+    </div>
+
+    <!-- スライド8: Git初期設定 -->
+    <div class="slide-container">
+        <div class="slide-content">
+            <h1>⚙️ Git初期設定</h1>
+            <h2><span class="icon">1️⃣</span>ユーザー情報の設定</h2>
+            <div class="git-bash">
+                git config --global user.name "あなたの名前"
+            </div>
+            <div class="git-bash">
+                git config --global user.email "your-email@example.com"
+            </div>
+            
+            <h2><span class="icon">2️⃣</span>設定の確認</h2>
+            <div class="git-bash">
+                git config --list
+            </div>
+            
+            <div class="info-box">
+                💡 この設定は最初に一度だけ行えばOK！全てのプロジェクトで共通で使われます
+            </div>
+            
+            <h2><span class="icon">3️⃣</span>作業フォルダの作成</h2>
+            <div class="command-prompt">
+                mkdir MyProjects
+            </div>
+            <div class="command-prompt">
+                cd MyProjects
+            </div>
+        </div>
+    </div>
+
+    <!-- スライド9: Gitの基本コマンド -->
+    <div class="slide-container">
+        <div class="slide-content">
+            <h1>🔧 Gitの基本コマンド</h1>
+            <div class="github-flow">
+                <div class="github-step">
+                    <span class="icon">📁</span> git init
+                    <p style="font-size: 0.8em; margin-top: 5px;">新しいリポジトリを作成</p>
+                </div>
+                <div class="github-step">
+                    <span class="icon">➕</span> git add .
+                    <p style="font-size: 0.8em; margin-top: 5px;">ファイルを追跡対象に追加</p>
+                </div>
+                <div class="github-step">
+                    <span class="icon">💾</span> git commit -m "メッセージ"
+                    <p style="font-size: 0.8em; margin-top: 5px;">変更を記録</p>
+                </div>
+                <div class="github-step">
+                    <span class="icon">🔗</span> git remote add origin URL
+                    <p style="font-size: 0.8em; margin-top: 5px;">GitHubと接続</p>
+                </div>
+                <div class="github-step">
+                    <span class="icon">📤</span> git push -u origin main
+                    <p style="font-size: 0.8em; margin-top: 5px;">GitHubにアップロード</p>
+                </div>
+            </div>
+            
+            <div class="success-box">
+                🎉 これだけ覚えれば基本的な操作はOK！
+            </div>
+        </div>
+    </div>
+
+    <!-- スライド10: 実習準備 -->
+    <div class="slide-container">
+        <div class="slide-content">
+            <h1>🎯 実習：ファイル処理スクリプト</h1>
+            <h2><span class="icon">📝</span>課題：テキスト置換ツール</h2>
+            
+            <div class="info-box">
+                作るもの：複数のテキストファイル内の特定の文字列を一括置換するツール
+            </div>
+            
+            <h3>Claude Codeへの指示例</h3>
+            <div class="code-box">
+「フォルダ内の全てのテキストファイル（.txt）で、
+指定した文字列を別の文字列に置換するプログラムを作って。
+置換前と置換後の文字列はユーザーに入力させて。
+何個のファイルで何箇所置換したか表示して。」
+            </div>
+            
+            <h3>期待される動作</h3>
+            <div class="command-prompt" style="background: #f0f0f0; color: #333;">
+                置換前の文字列: 古い文字
+                <br>置換後の文字列: 新しい文字
+                <br>処理中...
+                <br>✅ 5個のファイルで合計12箇所を置換しました！
+            </div>
+        </div>
+    </div>
+
+    <!-- スライド11: GitHubへのアップロード実習 -->
+    <div class="slide-container">
+        <div class="slide-content">
+            <h1>📤 GitHubへアップロード実習</h1>
+            <div class="step-list">
+                <div class="step-item">
+                    GitHubで新しいリポジトリを作成
+                    <p style="font-size: 0.9em; margin-top: 5px;">「New repository」→ 名前を入力 → 「Create」</p>
+                </div>
+                <div class="step-item">
+                    ローカルでGitを初期化
+                    <div class="git-bash" style="margin-top: 10px;">git init</div>
+                </div>
+                <div class="step-item">
+                    ファイルを追加
+                    <div class="git-bash" style="margin-top: 10px;">git add .</div>
+                </div>
+                <div class="step-item">
+                    コミット（記録）
+                    <div class="git-bash" style="margin-top: 10px;">git commit -m "テキスト置換ツールを追加"</div>
+                </div>
+                <div class="step-item">
+                    GitHubと接続
+                    <div class="git-bash" style="margin-top: 10px;">git remote add origin https://github.com/ユーザー名/リポジトリ名.git</div>
+                </div>
+                <div class="step-item">
+                    プッシュ（アップロード）
+                    <div class="git-bash" style="margin-top: 10px;">git push -u origin main</div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- スライド12: まとめ -->
+    <div class="slide-container">
+        <div class="slide-content">
+            <h1>📚 第2回のまとめ</h1>
+            <div class="feature-grid">
+                <div class="feature-card">
+                    <div class="feature-icon">✅</div>
+                    <h3>習得したスキル</h3>
+                    <ul style="text-align: left; margin-top: 10px; font-size: 0.9em;">
+                        <li>Claude Codeの画面操作</li>
+                        <li>効果的なプロンプト作成</li>
+                        <li>GitHubアカウント作成</li>
+                        <li>Gitの基本コマンド</li>
+                        <li>コードのアップロード</li>
+                    </ul>
+                </div>
+                <div class="feature-card">
+                    <div class="feature-icon">🎯</div>
+                    <h3>できるようになったこと</h3>
+                    <ul style="text-align: left; margin-top: 10px; font-size: 0.9em;">
+                        <li>会話型での開発</li>
+                        <li>コードの保存と管理</li>
+                        <li>GitHubへの公開</li>
+                        <li>変更履歴の記録</li>
+                        <li>他人との共有</li>
+                    </ul>
+                </div>
+            </div>
+            
+            <h2><span class="icon">📅</span>次回予告</h2>
+            <div class="warning-box">
+                第3回：MCP（Model Context Protocol）で外部ツール連携
+                <ul style="margin-top: 10px;">
+                    <li>MCPの仕組みを理解</li>
+                    <li>外部ツールの追加方法</li>
+                    <li>CSV・Excel連携の実装</li>
+                    <li>画像処理の自動化</li>
+                </ul>
+            </div>
+            
+            <div class="success-box">
+                🏆 宿題：今日作ったツールをGitHubで公開して、READMEを書いてみよう！
+            </div>
+            
+            <div style="text-align: center; margin-top: 40px;">
+                <p style="font-size: 2em;">お疲れ様でした！<span class="emoji-large">👏</span></p>
+            </div>
+        </div>
+    </div>
+
+    <div class="navigation">
+        <button class="nav-btn" id="prevBtn" onclick="changeSlide(-1)">← 前へ</button>
+        <button class="nav-btn" id="nextBtn" onclick="changeSlide(1)">次へ →</button>
+        <button class="nav-btn" id="backToDashboard" onclick="backToDashboard()" style="display: none; background: #28a745;">📚 ダッシュボードに戻る</button>
+    </div>
+
+    <script>
+        let currentSlide = 1;
+        // スライド数を自動検出
+        const totalSlides = document.getElementsByClassName('slide-container').length;
+
+        function showSlide(n) {
+            const slides = document.getElementsByClassName('slide-container');
+            
+            if (n > totalSlides) currentSlide = totalSlides;
+            if (n < 1) currentSlide = 1;
+            
+            for (let i = 0; i < slides.length; i++) {
+                slides[i].classList.remove('active');
+            }
+            
+            slides[currentSlide - 1].classList.add('active');
+            
+            document.getElementById('currentSlide').textContent = currentSlide;
+            document.getElementById('prevBtn').disabled = currentSlide === 1;
+            document.getElementById('nextBtn').disabled = currentSlide === totalSlides;
+            
+            // 最後のスライドでダッシュボードに戻るボタンを表示
+            const backBtn = document.getElementById('backToDashboard');
+            if (currentSlide === totalSlides) {
+                backBtn.style.display = 'inline-block';
+            } else {
+                backBtn.style.display = 'none';
+            }
+                    
+            // 進捗をリアルタイム更新
+            updateProgress();
+        }
+
+        
+
+        function changeSlide(n) {
+            currentSlide += n;
+            showSlide(currentSlide);
+        }
+
+        
+        
+        function updateProgress() {
+            const token = localStorage.getItem('token');
+            if (token) {
+                const status = currentSlide === totalSlides ? 'completed' : 'in_progress';
+                fetch('/api/progress', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                        'Authorization': `Bearer ${token}`
+                    },
+                    body: JSON.stringify({
+                        lesson_id: 2,
+                        status: status,
+                        last_slide: currentSlide,
+                        time_spent: Math.floor(Date.now() / 1000 - sessionStart)
+                    })
+                }).catch(error => {
+                    console.log('進捗更新エラー:', error);
+                });
+            }
+        }
+function backToDashboard() {
+            // レッスン完了を記録
+            const token = localStorage.getItem('token');
+            if (token) {
+                fetch('/api/progress', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                        'Authorization': `Bearer ${token}`
+                    },
+                    body: JSON.stringify({
+                        lesson_id: 2,
+                        status: 'completed',
+                        last_slide: totalSlides,
+                        time_spent: Math.floor(Date.now() / 1000 - sessionStart)
+                    })
+                }).then(() => {
+                    // ダッシュボードに戻る
+                    window.location.href = '/student-dashboard.html';
+                }).catch(() => {
+                    // エラーでもダッシュボードに戻る
+                    window.location.href = '/student-dashboard.html';
+                });
+            } else {
+                window.location.href = '/login.html';
+            }
+        }
+// キーボードナビゲーション
+        document.addEventListener('keydown', function(e) {
+            if (e.key === 'ArrowLeft') changeSlide(-1);
+            if (e.key === 'ArrowRight') changeSlide(1);
+        });
+
+        // セッション開始時刻を記録
+        const sessionStart = Math.floor(Date.now() / 1000);
+
+        // 初期表示
+        showSlide(1);
+    </script>
+</body>
+</html>

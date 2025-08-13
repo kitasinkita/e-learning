@@ -1,0 +1,344 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Claude Code eラーニング - ログイン</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+JP:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Noto Sans JP', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+            background: linear-gradient(135deg, #1e3c72 0%, #2a5298 100%);
+            color: #2c3e50;
+            min-height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 20px;
+        }
+
+        .login-container {
+            background: white;
+            border-radius: 20px;
+            padding: 50px;
+            box-shadow: 0 20px 60px rgba(0,0,0,0.3);
+            max-width: 450px;
+            width: 100%;
+        }
+
+        .logo {
+            text-align: center;
+            margin-bottom: 40px;
+        }
+
+        .logo h1 {
+            color: #2c3e50;
+            font-size: 2.5em;
+            font-weight: 700;
+            margin-bottom: 10px;
+        }
+
+        .logo p {
+            color: #7f8c8d;
+            font-size: 1.1em;
+            font-weight: 500;
+        }
+
+        .form-group {
+            margin-bottom: 25px;
+        }
+
+        .form-group label {
+            display: block;
+            margin-bottom: 8px;
+            font-weight: 600;
+            color: #34495e;
+        }
+
+        .form-group input {
+            width: 100%;
+            padding: 15px;
+            border: 2px solid #ecf0f1;
+            border-radius: 10px;
+            font-size: 1em;
+            font-family: 'Noto Sans JP', sans-serif;
+            transition: border-color 0.3s;
+        }
+
+        .form-group input:focus {
+            outline: none;
+            border-color: #34495e;
+        }
+
+        .login-btn {
+            width: 100%;
+            padding: 15px;
+            background: #34495e;
+            color: white;
+            border: none;
+            border-radius: 10px;
+            font-size: 1.1em;
+            font-weight: 600;
+            cursor: pointer;
+            transition: background 0.3s;
+            margin-bottom: 20px;
+        }
+
+        .login-btn:hover {
+            background: #2c3e50;
+        }
+
+        .login-btn:disabled {
+            background: #bdc3c7;
+            cursor: not-allowed;
+        }
+
+        .error-message {
+            background: #e74c3c;
+            color: white;
+            padding: 12px;
+            border-radius: 8px;
+            margin-bottom: 20px;
+            text-align: center;
+            display: none;
+        }
+
+        .success-message {
+            background: #27ae60;
+            color: white;
+            padding: 12px;
+            border-radius: 8px;
+            margin-bottom: 20px;
+            text-align: center;
+            display: none;
+        }
+
+        .demo-credentials {
+            background: #f8f9fa;
+            border: 2px solid #e9ecef;
+            border-radius: 10px;
+            padding: 20px;
+            margin-top: 30px;
+        }
+
+        .demo-credentials h3 {
+            color: #34495e;
+            margin-bottom: 15px;
+            font-size: 1.2em;
+        }
+
+        .demo-credentials .credential {
+            background: white;
+            padding: 10px 15px;
+            border-radius: 8px;
+            margin-bottom: 10px;
+            font-family: monospace;
+            font-size: 0.9em;
+            color: #2c3e50;
+        }
+
+        .loading {
+            display: none;
+            text-align: center;
+            margin: 20px 0;
+        }
+
+        .loading::after {
+            content: "ログイン中...";
+            animation: dots 1.5s steps(5, end) infinite;
+        }
+
+        @keyframes dots {
+            0%, 20% { content: "ログイン中"; }
+            40% { content: "ログイン中."; }
+            60% { content: "ログイン中.."; }
+            80%, 100% { content: "ログイン中..."; }
+        }
+
+        @media (max-width: 480px) {
+            .login-container {
+                padding: 30px 20px;
+            }
+            
+            .logo h1 {
+                font-size: 2em;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="login-container">
+        <div class="logo">
+            <h1>🤖 Claude Code</h1>
+            <p>社内eラーニングシステム</p>
+        </div>
+
+        <div id="error-message" class="error-message"></div>
+        <div id="success-message" class="success-message"></div>
+
+        <form id="login-form">
+            <div class="form-group">
+                <label for="employee_id">社員ID</label>
+                <input type="text" id="employee_id" name="employee_id" required>
+            </div>
+
+            <div class="form-group">
+                <label for="password">パスワード</label>
+                <input type="password" id="password" name="password" required>
+            </div>
+
+            <button type="submit" class="login-btn" id="login-btn">ログイン</button>
+            
+            <div id="loading" class="loading"></div>
+        </form>
+
+        <div class="demo-credentials">
+            <h3>📋 デモアカウント</h3>
+            <div class="credential">
+                <strong>管理者:</strong> ADMIN001 / admin123
+            </div>
+            <div class="credential">
+                <strong>受講者:</strong> EMP001 (伊藤) / password123
+            </div>
+            <div class="credential">
+                <strong>受講者:</strong> EMP002 (柳沢) / password123
+            </div>
+            <div class="credential">
+                <strong>受講者:</strong> EMP003 (渡辺) / password123
+            </div>
+        </div>
+    </div>
+
+    <script>
+        const API_BASE = window.location.origin;
+
+        // ログインフォーム処理
+        document.getElementById('login-form').addEventListener('submit', async (e) => {
+            e.preventDefault();
+            
+            const loginBtn = document.getElementById('login-btn');
+            const loading = document.getElementById('loading');
+            const errorMessage = document.getElementById('error-message');
+            const successMessage = document.getElementById('success-message');
+            
+            // UI更新
+            loginBtn.disabled = true;
+            loading.style.display = 'block';
+            errorMessage.style.display = 'none';
+            successMessage.style.display = 'none';
+
+            const formData = new FormData(e.target);
+            const credentials = {
+                employee_id: formData.get('employee_id'),
+                password: formData.get('password')
+            };
+
+            try {
+                const response = await fetch(`${API_BASE}/api/login`, {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify(credentials)
+                });
+
+                const data = await response.json();
+
+                if (response.ok) {
+                    // ログイン成功
+                    localStorage.setItem('token', data.token);
+                    localStorage.setItem('user', JSON.stringify(data.user));
+                    
+                    successMessage.textContent = 'ログインに成功しました！';
+                    successMessage.style.display = 'block';
+                    
+                    // ダッシュボードにリダイレクト
+                    setTimeout(() => {
+                        if (data.user.role === 'admin') {
+                            window.location.href = '/admin-dashboard.html';
+                        } else {
+                            window.location.href = '/student-dashboard.html';
+                        }
+                    }, 1000);
+                } else {
+                    // ログイン失敗
+                    errorMessage.textContent = data.error || 'ログインに失敗しました';
+                    errorMessage.style.display = 'block';
+                }
+            } catch (error) {
+                console.error('Login error:', error);
+                errorMessage.textContent = 'サーバーとの通信に失敗しました';
+                errorMessage.style.display = 'block';
+            } finally {
+                loginBtn.disabled = false;
+                loading.style.display = 'none';
+            }
+        });
+
+        // デモアカウントクリックで自動入力
+        document.addEventListener('click', (e) => {
+            if (e.target.closest('.credential')) {
+                const credentialText = e.target.textContent;
+                if (credentialText.includes('ADMIN001')) {
+                    document.getElementById('employee_id').value = 'ADMIN001';
+                    document.getElementById('password').value = 'admin123';
+                } else if (credentialText.includes('EMP001')) {
+                    document.getElementById('employee_id').value = 'EMP001';
+                    document.getElementById('password').value = 'password123';
+                } else if (credentialText.includes('EMP002')) {
+                    document.getElementById('employee_id').value = 'EMP002';
+                    document.getElementById('password').value = 'password123';
+                } else if (credentialText.includes('EMP003')) {
+                    document.getElementById('employee_id').value = 'EMP003';
+                    document.getElementById('password').value = 'password123';
+                }
+            }
+        });
+
+        // 既にログイン済みかチェック
+        function checkExistingLogin() {
+            const token = localStorage.getItem('token');
+            if (token) {
+                // トークンの有効性をサーバーで確認
+                fetch('/api/verify-token', {
+                    headers: {
+                        'Authorization': `Bearer ${token}`
+                    }
+                })
+                .then(response => {
+                    if (response.ok) {
+                        return response.json();
+                    } else {
+                        // 無効なトークンの場合、削除
+                        localStorage.removeItem('token');
+                        localStorage.removeItem('user');
+                        throw new Error('Invalid token');
+                    }
+                })
+                .then(user => {
+                    if (user.role === 'admin') {
+                        window.location.href = '/admin-dashboard.html';
+                    } else {
+                        window.location.href = '/student-dashboard.html';
+                    }
+                })
+                .catch(error => {
+                    console.log('Token verification failed:', error);
+                    // ログインページを表示
+                });
+            }
+        }
+        
+        // ページ読み込み時にチェック
+        checkExistingLogin();
+    </script>
+</body>
+</html>
