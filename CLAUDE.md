@@ -1,46 +1,121 @@
-# 🤖 Claude Code開発ガイド
+# 🤖 SmartLearn Pro 開発ガイド
 
 ## 📋 プロジェクト概要
 
-Claude Code eラーニングシステムの開発・保守において、Claude Codeを効果的に活用するためのガイドです。
+SmartLearn Pro（旧Claude Code eラーニングシステム）の開発・保守において、Claude Codeを効果的に活用するためのガイドです。
+
+**プロジェクト名**: SmartLearn Pro - カスタマイズ型eラーニングシステム  
+**開発元**: AI研修法人  
+**コンセプト**: スライド差し替えだけで、あらゆる業界・職種の研修に対応可能な汎用eラーニングプラットフォーム
 
 ### プロジェクト構成
 ```
-elearning-system/
-├── server.js              # Express.js メインサーバー
-├── setup.js               # SQLite DB初期化スクリプト
-├── public/                # フロントエンド（HTML/CSS/JS）
-├── slides/                # レッスンスライド（HTML）
-├── elearning.db          # SQLiteデータベース
-└── docs/                 # ドキュメント類
+smartlearn-pro/
+├── server.js                    # Express.js メインサーバー
+├── setup.js                     # SQLite DB初期化スクリプト
+├── auto-deploy.sh               # AWS自動デプロイスクリプト
+├── package.json                 # Node.js依存関係
+├── public/                      # フロントエンド（HTML/CSS/JS）
+│   ├── login.html              # ログイン画面
+│   ├── student-dashboard.html  # 受講者ダッシュボード
+│   └── admin-dashboard.html    # 管理者ダッシュボード
+├── slides/                      # レッスンスライド（HTML）
+│   ├── lesson1_slides.html     # レッスン1: Claude Code入門（デモ例）
+│   ├── lesson2_slides.html     # レッスン2: 基本操作
+│   ├── lesson3_slides.html     # レッスン3: MCP連携
+│   ├── lesson4_slides.html     # レッスン4: Playwright
+│   ├── lesson5_slides.html     # レッスン5: 総まとめ
+│   └── system-overview.html    # システム概要（営業資料）
+├── elearning.db                # SQLiteデータベース
+├── CLAUDE.md                    # 本ファイル（開発ガイド）
+└── docs/                       # その他ドキュメント類
+    ├── TECHNICAL_SPEC.md
+    ├── SETUP_GUIDE.md
+    └── TROUBLESHOOTING.md
 ```
 
 ### 技術スタック
 - **バックエンド**: Node.js + Express.js + SQLite3
 - **認証**: JWT + bcrypt
 - **フロントエンド**: Vanilla JavaScript + HTML/CSS
-- **デプロイ**: GitHub Codespaces / Render
+- **デプロイ**: AWS EC2 (52.195.12.32) / GitHub Codespaces
+
+### 🌐 本番環境・デプロイ情報
+
+#### AWS EC2本番サーバー
+- **サーバーIP**: 52.195.12.32
+- **アクセスURL**: http://52.195.12.32:3000
+- **SSH接続**: `ssh -i "$HOME/elearning-key.pem" ubuntu@52.195.12.32`
+- **ファイルアップロード**: `scp -i "$HOME/elearning-key.pem" ファイル名 ubuntu@52.195.12.32:/var/www/elearning/`
+- **SSHキー**: $HOME/elearning-key.pem (既存キー、**必ず使用**、新規作成禁止)
+- **サーバーパス**: /var/www/elearning (アプリケーションディレクトリ)
+
+#### デプロイ方法
+1. **Git経由（推奨）**:
+   ```bash
+   ssh -i "$HOME/elearning-key.pem" ubuntu@52.195.12.32 "cd /var/www/elearning && git pull origin main"
+   ```
+
+2. **自動デプロイスクリプト**:
+   ```bash
+   ./auto-deploy.sh  # 初回セットアップ時のみ
+   ```
+
+3. **個別ファイルアップロード**:
+   ```bash
+   scp -i "$HOME/elearning-key.pem" ./slides/new-file.html ubuntu@52.195.12.32:/var/www/elearning/slides/
+   ```
+
+#### デフォルトアカウント
+- **管理者**: ADMIN001 / admin123
+- **受講者**: EMP001 (伊藤) / password123
+- **受講者**: EMP002 (柳沢) / password123  
+- **受講者**: EMP003 (渡辺) / password123
+
+#### GitHub連携
+- **リポジトリ**: https://github.com/kitasinkita/e-learning.git
+- **ブランチ**: main
+- **重要**: 新機能開発後は必ずGitHubにプッシュしてからAWSに反映
 
 ---
 
 ## 🚀 Claude Codeでの開発フロー
 
-### 1. 環境セットアップ
+### 🔧 必須：プロジェクト開始時のセットアップ
 
 ```bash
-# プロジェクトクローン
+# 1. プロジェクトクローン
 git clone https://github.com/kitasinkita/e-learning.git
 cd e-learning
 
-# 依存関係インストール
+# 2. 依存関係インストール
 npm install
 
-# データベース初期化
+# 3. データベース初期化
 node setup.js
 
-# 開発サーバー起動
+# 4. 開発サーバー起動
 npm start
 ```
+
+**重要**: 初回起動後は http://localhost:3000 でローカル環境をテスト
+
+### 📋 開始前チェックリスト
+
+#### Claude Code使用時の必須確認事項
+- [ ] CLAUDE.mdを読み込み済み
+- [ ] プロジェクトのコンセプト理解（SmartLearn Pro = カスタマイズ型システム）
+- [ ] AWS接続情報確認（SSH鍵: $HOME/elearning-key.pem）
+- [ ] GitHubリポジトリ接続確認
+- [ ] ローカル開発環境動作確認
+
+#### 新機能開発時の流れ
+1. **要件確認**: カスタマイズ性を損なわない設計か確認
+2. **ローカル開発**: npm start で開発環境起動
+3. **テスト**: simple-e2e-test.js実行
+4. **Git管理**: add → commit → push
+5. **AWS反映**: ssh経由でgit pull実行
+6. **動作確認**: http://52.195.12.32:3000で本番確認
 
 ### 2. 開発時の基本コマンド
 
@@ -421,6 +496,26 @@ npm audit も実行してセキュリティチェックしてください。
 
 ## 🚨 開発履歴・トラブルシューティング記録
 
+### 📅 開発履歴
+
+### 2025-08-13 SmartLearn Pro への名称変更・カスタマイズ対応強化
+
+#### 主要変更内容
+1. **システム名変更**: Claude Code eラーニング → SmartLearn Pro
+2. **コンセプト変更**: 特定用途システム → カスタマイズ型汎用プラットフォーム
+3. **営業資料作成**: system-overview.html（6スライド構成）
+4. **業界対応例追加**: 飲食店、税理士事務所、医療機関、小売業、製造業、一般企業
+
+#### ファイル変更
+- `slides/system-overview.html`: 新規作成（営業用プレゼンテーション）
+- `public/login.html`: システム概要へのリンク追加
+- `CLAUDE.md`: 包括的な開発ガイドに改訂
+
+#### 技術メモ
+- スライド差し替えによる完全カスタマイズ対応
+- 既存機能はそのままに汎用性を拡張
+- AWS本番環境も正常に反映済み
+
 ### 2025-08-13 進捗表示バグ修正作業
 
 #### 発見された問題
@@ -473,4 +568,107 @@ npm audit も実行してセキュリティチェックしてください。
 
 ---
 
-このCLAUDE.mdを参考に、Claude Codeでの開発を効率的に進めてください。具体的な状況に応じてプロンプトをカスタマイズしてご利用ください。
+---
+
+## 🎯 SmartLearn Pro カスタマイズガイド
+
+### 🔄 新業界対応のスライド作成手順
+
+#### 1. 要件ヒアリング用プロンプト
+```
+[業界名]向けの研修システムを構築したいと思います。
+
+以下の情報を整理してください:
+1. 業界の特徴・課題
+2. 必要な研修内容（5-7項目）
+3. 実演・実習で学ぶべきスキル
+4. 評価・修了基準
+5. 受講対象者（新人/中堅/管理職等）
+
+この情報を基に、lesson1-5の構成でスライドを作成します。
+```
+
+#### 2. スライド作成用プロンプト
+```
+[業界名]向けの研修スライドを作成してください。
+
+業界: [飲食店/税理士事務所/医療機関等]
+レッスン数: 5レッスン
+各レッスン: 12-15スライド構成
+
+要件:
+- 既存のlesson1_slides.htmlと同じHTML構造
+- 業界特有の用語・手順を含む
+- 実演課題2つ/レッスン
+- ビジュアル重視（絵文字・色分け活用）
+
+ファイル名: slides/[業界名]_lesson[1-5]_slides.html
+```
+
+#### 3. システム設定変更用プロンプト
+```
+新しい研修コースを追加してください。
+
+作業内容:
+1. student-dashboard.htmlのlessons配列更新
+2. server.jsのルート追加
+3. setup.jsのサンプルデータ追加（新業界用ユーザー）
+4. admin-dashboard.htmlに新コース管理機能追加
+
+既存のClaude Code研修はデモとして残し、新研修を並行運用します。
+```
+
+### 🏢 営業・提案資料の活用
+
+#### system-overview.html の使い方
+1. **ログインページから**: 「システムの特徴・導入効果はこちら」リンク
+2. **営業プレゼン**: 6スライド構成で顧客にシステム概要説明
+3. **カスタマイズ事例**: 業界別対応例を具体的に提示
+
+#### 提案時のポイント
+- スライド差し替えだけで即導入可能
+- 初月無料・導入サポート付き
+- 従来研修費の1/10以下のコスト
+- リアルタイム進捗管理機能
+
+---
+
+## ⚠️ 重要な注意事項・制約
+
+### 絶対に守るべきルール
+1. **SSH鍵**: `$HOME/elearning-key.pem`以外は使用禁止
+2. **新機能開発**: カスタマイズ性を損なわない設計必須
+3. **本番反映**: 必ずGitHub → AWS の順序で実行
+4. **データベース**: 本番データの直接操作禁止
+5. **セキュリティ**: 認証なしのエンドポイント追加禁止
+
+### Claude Code使用時の注意
+- CLAUDE.mdを必ず最初に読み込む
+- 新しいSSH鍵を作成しようとした場合は即座に制止
+- プロジェクトコンセプト（カスタマイズ型）を常に意識
+- 既存機能を壊さない増分開発を心がける
+
+---
+
+## 🚀 今後の開発ロードマップ
+
+### Phase 1: 基盤強化（完了）
+- ✅ カスタマイズ型システムへの転換
+- ✅ 営業資料・デモ環境整備
+- ✅ AWS本番環境安定化
+
+### Phase 2: 機能拡張（予定）
+- [ ] 複数コース同時運用機能
+- [ ] 業界テンプレート管理システム
+- [ ] 自動スライド生成AI機能
+- [ ] 詳細分析・レポート機能
+
+### Phase 3: スケール対応（将来）
+- [ ] マルチテナント対応
+- [ ] 大規模ユーザー対応
+- [ ] 外部システム連携API
+- [ ] モバイルアプリ対応
+
+---
+
+このCLAUDE.mdを参考に、SmartLearn Proの開発を効率的に進めてください。プロジェクト開始時は必ず「📋 開始前チェックリスト」を確認し、具体的な状況に応じてプロンプトをカスタマイズしてご利用ください。
