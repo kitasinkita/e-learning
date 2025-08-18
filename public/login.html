@@ -27,147 +27,207 @@
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+JP:wght@400;500;600;700&display=swap" rel="stylesheet">
     <style>
+        /* Apple Design System準拠のリセット */
         * {
             margin: 0;
             padding: 0;
             box-sizing: border-box;
         }
 
+        /* Apple風カラーシステム & レイアウト */
         body {
             font-family: 'Noto Sans JP', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
-            background: linear-gradient(135deg, #1e3c72 0%, #2a5298 100%);
-            color: #2c3e50;
+            background: linear-gradient(135deg, #3B82F6 0%, #1D4ED8 100%);
+            color: #111827; /* gray-900 */
             min-height: 100vh;
             display: flex;
             align-items: center;
             justify-content: center;
-            padding: 20px;
+            padding: 16px; /* p-4 */
         }
 
+        /* メインコンテナ - 24px角丸、影システム適用 */
         .login-container {
-            background: white;
-            border-radius: 20px;
-            padding: 50px;
-            box-shadow: 0 20px 60px rgba(0,0,0,0.3);
-            max-width: 450px;
+            background: #FFFFFF; /* white */
+            border-radius: 24px; /* rounded-3xl モーダル相当 */
+            padding: 32px; /* p-8 */
+            box-shadow: 0 20px 25px rgba(0, 0, 0, 0.1); /* shadow-xl */
+            max-width: 28rem; /* max-w-md */
             width: 100%;
+            border: 1px solid #D1D5DB; /* border-gray-300 視認性確保 */
         }
 
+        /* ロゴセクション */
         .logo {
             text-align: center;
-            margin-bottom: 40px;
+            margin-bottom: 32px; /* mb-8 */
         }
 
         .logo h1 {
-            color: #2c3e50;
-            font-size: 2.5em;
-            font-weight: 700;
-            margin-bottom: 10px;
+            color: #111827; /* text-gray-900 最高コントラスト */
+            font-size: 2.25rem; /* text-4xl */
+            font-weight: 700; /* font-bold */
+            margin-bottom: 8px; /* mb-2 */
+            line-height: 1.25; /* leading-tight */
         }
 
         .logo p {
-            color: #7f8c8d;
-            font-size: 1.1em;
-            font-weight: 500;
+            color: #4B5563; /* text-gray-600 コントラスト7:1 */
+            font-size: 1.125rem; /* text-lg */
+            font-weight: 400; /* font-normal */
+            line-height: 1.5; /* leading-normal */
         }
 
+        /* フォームグループ - 8pxベース余白 */
         .form-group {
-            margin-bottom: 25px;
+            margin-bottom: 24px; /* mb-6 */
         }
 
         .form-group label {
             display: block;
-            margin-bottom: 8px;
-            font-weight: 600;
-            color: #34495e;
+            margin-bottom: 8px; /* mb-2 */
+            font-weight: 600; /* font-semibold */
+            color: #374151; /* text-gray-700 コントラスト12.6:1 */
+            font-size: 0.875rem; /* text-sm */
         }
 
+        /* 入力フィールド - 最小44px高さ、アクセシビリティ対応 */
         .form-group input {
             width: 100%;
-            padding: 15px;
-            border: 2px solid #ecf0f1;
-            border-radius: 10px;
-            font-size: 1em;
+            padding: 12px 16px; /* py-3 px-4 */
+            border: 1px solid #D1D5DB; /* border-gray-300 */
+            border-radius: 8px; /* rounded-lg */
+            font-size: 1rem; /* text-base */
             font-family: 'Noto Sans JP', sans-serif;
-            transition: border-color 0.3s;
+            transition: all 0.15s ease-in-out; /* transition-all duration-150 */
+            background: #FFFFFF; /* bg-white */
+            min-height: 48px; /* 最小タッチターゲット */
+            color: #111827; /* text-gray-900 */
         }
 
+        /* フォーカス状態 - アクセシビリティ重要 */
         .form-group input:focus {
             outline: none;
-            border-color: #34495e;
+            border-color: #3B82F6; /* border-blue-500 */
+            box-shadow: 0 0 0 2px rgba(59, 130, 246, 0.2); /* ring-2 ring-blue-500 ring-opacity-20 */
         }
 
+        .form-group input::placeholder {
+            color: #6B7280; /* placeholder-gray-500 */
+        }
+
+        /* プライマリボタン - Apple風設計 */
         .login-btn {
             width: 100%;
-            padding: 15px;
-            background: #34495e;
-            color: white;
+            padding: 12px 24px; /* py-3 px-6 48px高さ確保 */
+            background: #3B82F6; /* bg-blue-500 */
+            color: #FFFFFF; /* text-white */
             border: none;
-            border-radius: 10px;
-            font-size: 1.1em;
-            font-weight: 600;
+            border-radius: 12px; /* rounded-xl 標準ボタン */
+            font-size: 1rem; /* text-base */
+            font-weight: 600; /* font-semibold 視認性重視 */
             cursor: pointer;
-            transition: background 0.3s;
-            margin-bottom: 20px;
+            transition: all 0.2s ease-in-out; /* transition-all duration-200 */
+            margin-bottom: 16px; /* mb-4 */
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.07); /* shadow-md 常時適用 */
+            min-height: 48px; /* 最小タッチターゲット44px+ */
         }
 
-        .login-btn:hover {
-            background: #2c3e50;
+        /* ホバー状態 - 影の強化 + 色深化 */
+        .login-btn:hover:not(:disabled) {
+            background: #2563EB; /* bg-blue-600 */
+            box-shadow: 0 10px 15px rgba(0, 0, 0, 0.1); /* shadow-lg */
+            transform: scale(1.02); /* わずかな拡大 */
         }
 
+        /* フォーカス状態 */
+        .login-btn:focus {
+            outline: none;
+            box-shadow: 0 0 0 2px #3B82F6, 0 0 0 4px rgba(59, 130, 246, 0.2); /* ring-2 ring-blue-500 ring-offset-2 */
+        }
+
+        /* 無効状態 */
         .login-btn:disabled {
-            background: #bdc3c7;
+            background: #9CA3AF; /* bg-gray-400 */
             cursor: not-allowed;
+            opacity: 0.5;
+            transform: none;
+            box-shadow: 0 1px 2px rgba(0, 0, 0, 0.05); /* shadow-sm */
         }
 
+        /* システムカラー - コントラスト配慮 */
         .error-message {
-            background: #e74c3c;
-            color: white;
-            padding: 12px;
-            border-radius: 8px;
-            margin-bottom: 20px;
+            background: #DC2626; /* red-600 コントラスト比7:1 */
+            color: #FFFFFF;
+            padding: 12px 16px; /* py-3 px-4 */
+            border-radius: 8px; /* rounded-lg */
+            margin-bottom: 16px; /* mb-4 */
             text-align: center;
             display: none;
+            font-weight: 600; /* font-semibold */
+            font-size: 0.875rem; /* text-sm */
         }
 
         .success-message {
-            background: #27ae60;
-            color: white;
-            padding: 12px;
-            border-radius: 8px;
-            margin-bottom: 20px;
+            background: #059669; /* green-600 コントラスト比7:1 */
+            color: #FFFFFF;
+            padding: 12px 16px; /* py-3 px-4 */
+            border-radius: 8px; /* rounded-lg */
+            margin-bottom: 16px; /* mb-4 */
             text-align: center;
             display: none;
+            font-weight: 600; /* font-semibold */
+            font-size: 0.875rem; /* text-sm */
         }
 
+        /* カード設計 - 境界線必須 */
         .demo-credentials {
-            background: #f8f9fa;
-            border: 2px solid #e9ecef;
-            border-radius: 10px;
-            padding: 20px;
-            margin-top: 30px;
+            background: #FFFFFF; /* bg-white */
+            border: 1px solid #D1D5DB; /* border-gray-300 視認性確保 */
+            border-radius: 16px; /* rounded-2xl カード */
+            padding: 20px; /* p-5 標準カード */
+            margin-top: 24px; /* mt-6 */
+            box-shadow: 0 1px 2px rgba(0, 0, 0, 0.05); /* shadow-sm */
         }
 
         .demo-credentials h3 {
-            color: #34495e;
-            margin-bottom: 15px;
-            font-size: 1.2em;
+            color: #111827; /* text-gray-900 */
+            margin-bottom: 12px; /* mb-3 */
+            font-size: 1.125rem; /* text-lg */
+            font-weight: 600; /* font-semibold */
         }
 
+        /* インタラクティブカード要素 */
         .demo-credentials .credential {
-            background: white;
-            padding: 10px 15px;
-            border-radius: 8px;
-            margin-bottom: 10px;
-            font-family: monospace;
-            font-size: 0.9em;
-            color: #2c3e50;
+            background: #F9FAFB; /* bg-gray-50 セクション背景 */
+            padding: 12px 16px; /* py-3 px-4 */
+            border-radius: 8px; /* rounded-lg */
+            margin-bottom: 8px; /* mb-2 */
+            font-family: ui-monospace, 'SF Mono', Consolas, monospace;
+            font-size: 0.875rem; /* text-sm */
+            color: #111827; /* text-gray-900 */
+            border: 1px solid #E5E7EB; /* border-gray-200 */
+            cursor: pointer;
+            transition: all 0.15s ease-in-out;
+            min-height: 44px; /* 最小タッチターゲット */
+            display: flex;
+            align-items: center;
         }
 
+        /* カードホバー効果 */
+        .demo-credentials .credential:hover {
+            background: #EFF6FF; /* bg-blue-50 */
+            border-color: #93C5FD; /* border-blue-300 */
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.07); /* shadow-md */
+        }
+
+        /* ローディング状態 */
         .loading {
             display: none;
             text-align: center;
-            margin: 20px 0;
+            margin: 16px 0; /* my-4 */
+            color: #6B7280; /* text-gray-500 */
+            font-size: 0.875rem; /* text-sm */
         }
 
         .loading::after {
@@ -182,14 +242,86 @@
             80%, 100% { content: "ログイン中..."; }
         }
 
-        @media (max-width: 480px) {
+        /* レスポンシブ対応 */
+        @media (max-width: 640px) { /* sm未満 */
+            body {
+                padding: 16px; /* px-4 */
+            }
+            
             .login-container {
-                padding: 30px 20px;
+                padding: 24px; /* p-6 */
             }
             
             .logo h1 {
-                font-size: 2em;
+                font-size: 1.875rem; /* text-3xl */
             }
+            
+            .logo p {
+                font-size: 1rem; /* text-base */
+            }
+        }
+
+        @media (max-width: 480px) {
+            .login-container {
+                padding: 20px 16px; /* p-5 px-4 */
+            }
+        }
+
+        /* システム概要カード - プライマリカラー使用 */
+        .system-overview-card {
+            background: linear-gradient(135deg, #3B82F6 0%, #1D4ED8 100%);
+            color: #FFFFFF;
+            border-radius: 16px; /* rounded-2xl */
+            padding: 20px; /* p-5 */
+            margin-top: 16px; /* mt-4 */
+            text-align: center;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.07); /* shadow-md */
+        }
+
+        .system-overview-card h3 {
+            color: #FFFFFF;
+            margin-bottom: 8px; /* mb-2 */
+            font-size: 1.125rem; /* text-lg */
+            font-weight: 600; /* font-semibold */
+        }
+
+        .system-overview-card p {
+            margin-bottom: 12px; /* mb-3 */
+            font-size: 0.875rem; /* text-sm */
+            line-height: 1.625; /* leading-relaxed */
+            opacity: 0.9;
+        }
+
+        /* セカンダリボタン */
+        .system-overview-link {
+            background: #FFFFFF;
+            color: #1D4ED8; /* text-blue-700 */
+            padding: 12px 20px; /* py-3 px-5 */
+            border-radius: 8px; /* rounded-lg */
+            text-decoration: none;
+            font-weight: 600; /* font-semibold */
+            display: inline-block;
+            transition: all 0.15s ease-in-out;
+            box-shadow: 0 1px 2px rgba(0, 0, 0, 0.05); /* shadow-sm */
+            min-height: 44px; /* 最小タッチターゲット */
+            line-height: 1.25;
+        }
+
+        .system-overview-link:hover {
+            background: #EFF6FF; /* bg-blue-50 */
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.07); /* shadow-md */
+            transform: translateY(-2px);
+        }
+
+        /* フッター */
+        .footer {
+            position: fixed;
+            bottom: 10px;
+            left: 50%;
+            transform: translateX(-50%);
+            font-size: 0.75rem; /* text-xs */
+            color: rgba(255, 255, 255, 0.7);
+            text-align: center;
         }
     </style>
 </head>
@@ -235,11 +367,10 @@
             </div>
         </div>
         
-        <div style="background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); color: white; border-radius: 10px; padding: 20px; margin-top: 20px; text-align: center;">
-            <h3 style="color: white; margin-bottom: 10px;">🏢 本システムについて</h3>
-            <p style="margin-bottom: 15px; font-size: 0.9em;">本システムはAI研修法人で開発したものです。</p>
-            <a href="../slides/system-overview.html" target="_blank" style="background: white; color: #667eea; padding: 10px 20px; border-radius: 8px; text-decoration: none; font-weight: bold; display: inline-block; transition: transform 0.3s;" 
-               onmouseover="this.style.transform='translateY(-2px)'" onmouseout="this.style.transform='translateY(0)'">
+        <div class="system-overview-card">
+            <h3>🏢 本システムについて</h3>
+            <p>本システムはAI研修法人で開発したものです。</p>
+            <a href="../slides/system-overview.html" target="_blank" class="system-overview-link">
                 ✨ システムの特徴・導入効果はこちら
             </a>
         </div>
@@ -369,7 +500,7 @@
         checkExistingLogin();
     </script>
     
-    <footer style="position: fixed; bottom: 10px; left: 50%; transform: translateX(-50%); font-size: 0.7em; color: #999; text-align: center;">
+    <footer class="footer">
         © 2025 AI研修法人. All rights reserved.
     </footer>
 </body>
