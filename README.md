@@ -1,6 +1,13 @@
-# Claude Code eラーニングシステム
+# SmartLearn Pro - カスタマイズ型eラーニングシステム
 
-AIプログラミング学習のためのeラーニングシステムです。
+スライド差し替えだけで、あらゆる業界・職種の研修に対応可能な次世代eラーニングプラットフォームです。
+
+## ✨ 新機能 (2025-08-18更新)
+
+- **🎨 Apple風デザインシステム**: WCAG準拠のアクセシビリティとモダンなUI/UX
+- **📱 完全レスポンシブ対応**: デスクトップ・タブレット・モバイル最適化
+- **🔧 DESIGN_RULE.md準拠**: 540行の包括的デザインガイドライン
+- **🌐 本番環境**: http://52.195.12.32:3000 で稼働中
 
 ## 🚀 GitHub Codespacesでの起動方法
 
@@ -45,10 +52,11 @@ npm start
 
 ## 🔧 技術スタック
 
-- Node.js + Express.js
-- SQLite3 (データベース)
-- JWT認証
-- Vanilla JavaScript (フロントエンド)
+- **バックエンド**: Node.js + Express.js + SQLite3
+- **フロントエンド**: Vanilla JavaScript + Apple風デザインシステム
+- **認証**: JWT + bcrypt
+- **デプロイ**: AWS EC2 + PM2
+- **デザイン**: DESIGN_RULE.md準拠（WCAG 2.1対応）
 
 ## 📝 機能
 

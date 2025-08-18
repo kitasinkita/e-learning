@@ -566,6 +566,62 @@ npm audit も実行してセキュリティチェックしてください。
 2. 進捗データ変更時はブラウザ強制リロード推奨
 3. E2Eテストは Playwright MCP 推奨
 
+### 2025-08-18 Apple風デザインシステム適用・AWS本番反映
+
+#### 主要変更内容
+1. **デザインシステム統一**: DESIGN_RULE.md準拠のApple風デザイン適用
+2. **プライマリカラー変更**: #34495e系 → #3B82F6 (blue-500) 系
+3. **アクセシビリティ向上**: WCAG 2.1準拠のコントラスト比・タッチターゲット
+4. **レスポンシブ強化**: モバイル・タブレット最適化
+5. **AWS本番環境反映**: SSH接続問題解決後の完全デプロイ
+
+#### ファイル変更
+- `DESIGN_RULE.md`: 新規作成（540行のApple風デザインガイドライン）
+- `public/login.html`: 完全リデザイン（Apple風UI/UX）
+- `public/student-dashboard.html`: デザインシステム適用
+- `public/admin-dashboard.html`: 管理画面UI刷新
+
+#### 技術的改善
+- **8pxベース余白システム**: 一貫したスペーシング
+- **角丸統一**: rounded-lg(8px), rounded-xl(12px), rounded-2xl(16px), rounded-3xl(24px)
+- **影システム**: shadow-sm, shadow-md, shadow-xl
+- **カラーシステム**: プライマリ・グレースケール・システムカラーの体系化
+- **タイポグラフィ**: font-semibold以上、適切な行間設定
+
+#### AWS反映トラブルシューティング
+**問題**: SSH接続タイムアウト（Operation timed out）
+**原因**: セキュリティグループのIP制限（22番ポート）
+- 許可IP: 122.210.79.154/32, 103.5.140.137/32
+- 現在IP: 223.132.9.11 → 許可リストに追加必要
+
+**解決手順**:
+1. 現在IPをセキュリティグループに追加
+2. SSH接続確認: `ssh -i '/Users/sk/elearning-key.pem' ubuntu@52.195.12.32`
+3. git pull実行: `cd /var/www/elearning && git pull origin main`
+4. PM2再起動: `pm2 restart elearning`
+
+#### 最終確認結果
+- **全ページタイトル更新**: "SmartLearn Pro" に統一 ✅
+- **Apple風デザイン反映**: プライマリカラー #3B82F6 確認 ✅
+- **レスポンシブ動作**: モバイル・デスクトップ対応 ✅
+- **本番環境**: http://52.195.12.32:3000 正常動作 ✅
+
+#### デプロイコマンド（今後用）
+```bash
+# ローカル → GitHub
+git add . && git commit -m "変更内容" && git push origin main
+
+# GitHub → AWS（IP許可済み前提）
+ssh -i '/Users/sk/elearning-key.pem' ubuntu@52.195.12.32 \
+  "cd /var/www/elearning && git pull origin main && pm2 restart elearning"
+```
+
+#### 今後の注意点
+1. **SSH接続**: IP変更時はセキュリティグループ更新必須
+2. **デザイン追加**: DESIGN_RULE.md準拠を維持
+3. **デプロイ**: 必ずGitHub → AWS の順序で実行
+4. **動作確認**: デプロイ後は必ず本番環境での確認実施
+
 ---
 
 ---
