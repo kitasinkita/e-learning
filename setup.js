@@ -110,6 +110,14 @@ db.serialize(() => {
             password: bcrypt.hashSync('password123', 10),
             department: '営業部',
             role: 'student'
+        },
+        {
+            employee_id: 'EMP005',
+            name: '安谷屋',
+            email: 'adaniya@company.com',
+            password: bcrypt.hashSync('password123', 10),
+            department: '営業部',
+            role: 'student'
         }
     ];
 
@@ -235,6 +243,7 @@ db.serialize(() => {
     console.log('   社員ID: EMP002 (柳沢) / パスワード: password123'); 
     console.log('   社員ID: EMP003 (渡辺) / パスワード: password123');
     console.log('   社員ID: EMP004 (北川) / パスワード: password123');
+    console.log('   社員ID: EMP005 (安谷屋) / パスワード: password123');
     console.log('');
     console.log('🚀 サーバーを起動するには: npm start');
     console.log('🌐 アクセスURL: http://localhost:3000');
