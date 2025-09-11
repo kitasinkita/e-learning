@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>第5回：総まとめ & 自分専用ツール作成</title>
+    <title>第5回：AIチャットボットを作ろう！</title>
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+JP:wght@400;500;600;700&display=swap" rel="stylesheet">
@@ -430,12 +430,12 @@
     <!-- スライド1: タイトル -->
     <div class="slide-container active">
         <div class="slide-content">
-            <h1>🎊 第5回：総まとめ & ツール作成</h1>
+            <h1>🤖 第5回：AIチャットボットを作ろう！</h1>
             <div style="text-align: center; margin: 50px 0;">
-                <div style="font-size: 6em; margin: 30px 0;">🏆🚀🎯</div>
-                <h2 style="justify-content: center;">完走おめでとう！</h2>
+                <div style="font-size: 6em; margin: 30px 0;">💬🧠📚</div>
+                <h2 style="justify-content: center;">自分専用のAIアシスタント</h2>
                 <p style="font-size: 1.5em; margin-top: 30px; color: #666;">
-                    学んだ全てを組み合わせて、実用ツールを完成させよう
+                    Claude Codeを使って、RAG機能付きチャットボットを作成しよう
                 </p>
             </div>
         </div>
@@ -444,440 +444,401 @@
     <!-- スライド2: 本日の内容 -->
     <div class="slide-container">
         <div class="slide-content">
-            <h1>📋 最終回の内容</h1>
+            <h1>📋 本日のゴール</h1>
             <div class="step-list">
                 <div class="step-item">
-                    これまでの復習と技術の統合
+                    OpenAI APIを使ったチャットボットの基本実装
                 </div>
                 <div class="step-item">
-                    実践プロジェクト：ニュース収集ツール
+                    RAG機能でローカルファイルから回答生成
                 </div>
                 <div class="step-item">
-                    実践プロジェクト：フォーム自動化ツール
+                    PDFやテキストファイルの読み込み機能
                 </div>
                 <div class="step-item">
-                    今後の学習ロードマップ
+                    Webインターフェースの作成
                 </div>
             </div>
             <div class="success-box">
-                🎯 最終ゴール：自分だけのオリジナルツールを完成させ、GitHubで公開する！
+                🎯 完成イメージ：自分の資料を学習したAIアシスタントが質問に答えてくれる！
             </div>
         </div>
     </div>
 
-    <!-- スライド3: 5週間の振り返り -->
+    <!-- スライド3: チャットボットとRAGとは -->
     <div class="slide-container">
         <div class="slide-content">
-            <h1>📚 5週間の学習の旅</h1>
-            <div class="timeline">
-                <div class="timeline-item">
-                    <div class="timeline-week">第1回</div>
-                    <strong>Claude Code入門</strong>
-                    <p>AIプログラミングの基礎、Windows環境構築</p>
-                </div>
-                <div class="timeline-item">
-                    <div class="timeline-week">第2回</div>
-                    <strong>基本操作 & GitHub</strong>
-                    <p>プロンプト作成、コード管理、共有</p>
-                </div>
-                <div class="timeline-item">
-                    <div class="timeline-week">第3回</div>
-                    <strong>MCP連携</strong>
-                    <p>外部ツール統合、機能拡張</p>
-                </div>
-                <div class="timeline-item">
-                    <div class="timeline-week">第4回</div>
-                    <strong>Playwright</strong>
-                    <p>Web自動化、ブラウザ操作</p>
-                </div>
-                <div class="timeline-item">
-                    <div class="timeline-week">第5回</div>
-                    <strong>統合実践</strong>
-                    <p>全技術を組み合わせた実用ツール作成</p>
-                </div>
-            </div>
-        </div>
-    </div>
-
-    <!-- スライド4: 技術スタック総復習 -->
-    <div class="slide-container">
-        <div class="slide-content">
-            <h1>🛠️ 習得した技術スタック</h1>
-            <div class="diagram">
-                <div class="diagram-item">
-                    <div class="diagram-icon">🤖</div>
-                    <p><strong>Claude Code</strong></p>
-                    <p style="font-size: 0.9em; color: #666;">AIアシスタント</p>
-                </div>
-                <div class="arrow">+</div>
-                <div class="diagram-item">
-                    <div class="diagram-icon">🐙</div>
-                    <p><strong>GitHub</strong></p>
-                    <p style="font-size: 0.9em; color: #666;">コード管理</p>
-                </div>
-                <div class="arrow">+</div>
-                <div class="diagram-item">
-                    <div class="diagram-icon">🔌</div>
-                    <p><strong>MCP</strong></p>
-                    <p style="font-size: 0.9em; color: #666;">機能拡張</p>
-                </div>
-                <div class="arrow">+</div>
-                <div class="diagram-item">
-                    <div class="diagram-icon">🎭</div>
-                    <p><strong>Playwright</strong></p>
-                    <p style="font-size: 0.9em; color: #666;">Web自動化</p>
-                </div>
-            </div>
-            
-            <div class="success-box">
-                💪 この4つを組み合わせれば、ほぼ何でも自動化できる！
-            </div>
-        </div>
-    </div>
-
-    <!-- スライド5: プロジェクト1説明 -->
-    <div class="slide-container">
-        <div class="slide-content">
-            <h1>🎯 実践プロジェクト①</h1>
-            <div class="project-showcase">
-                <div class="project-header">
-                    <div class="project-icon">📰</div>
-                    <div class="project-title">ニュース自動収集ツール</div>
-                </div>
-                <div class="project-description">
-                    複数のニュースサイトから最新情報を収集し、<br>
-                    カテゴリ別に整理してCSVファイルに保存。<br>
-                    毎日自動実行して、GitHubにアップロード。
-                </div>
-                <div class="tech-stack">
-                    <span class="tech-badge">Claude Code</span>
-                    <span class="tech-badge">Playwright</span>
-                    <span class="tech-badge">MCP</span>
-                    <span class="tech-badge">GitHub</span>
-                </div>
-            </div>
-            
-            <h3>機能要件</h3>
-            <ul style="font-size: 1.1em; line-height: 1.8;">
-                <li>✅ 3つ以上のニュースサイトを巡回</li>
-                <li>✅ タイトル、URL、日時、カテゴリを取得</li>
-                <li>✅ CSV形式で保存（日付別）</li>
-                <li>✅ 重複記事の除外</li>
-                <li>✅ GitHubに自動アップロード</li>
-            </ul>
-        </div>
-    </div>
-
-    <!-- スライド6: プロジェクト1実装 -->
-    <div class="slide-container">
-        <div class="slide-content">
-            <h1>💻 プロジェクト①の実装</h1>
-            <h2><span class="icon">📝</span>Claude Codeへの指示</h2>
-            <div class="code-box">
-「以下の機能を持つニュース収集ツールを作って：
-
-1. Yahoo、Google、日経のニュースサイトを巡回
-2. 各サイトから最新10件のニュースを取得
-3. タイトル、URL、取得日時、カテゴリをCSVに保存
-4. 重複したニュースは除外
-5. news_YYYY-MM-DD.csvという名前で保存
-6. 実行後、自動でGitHubにコミット＆プッシュ
-
-Playwrightを使って実装して、
-エラーハンドリングも入れて」
-            </div>
-            
-            <h3>期待される出力</h3>
-            <div style="background: #f8f9fa; padding: 20px; border-radius: 10px; margin: 20px 0;">
-                <strong>📁 news_2024-01-15.csv</strong>
-                <pre style="margin-top: 10px; font-family: monospace;">
-タイトル,URL,カテゴリ,取得日時
-新技術発表で株価上昇,https://...,経済,2024-01-15 10:30
-スポーツ大会開催決定,https://...,スポーツ,2024-01-15 10:31
-                </pre>
-            </div>
-        </div>
-    </div>
-
-    <!-- スライド7: プロジェクト2説明 -->
-    <div class="slide-container">
-        <div class="slide-content">
-            <h1>🎯 実践プロジェクト②</h1>
-            <div class="project-showcase" style="background: linear-gradient(135deg, #3494E6 0%, #EC6EAD 100%);">
-                <div class="project-header">
-                    <div class="project-icon">📝</div>
-                    <div class="project-title">Webフォーム自動化ツール</div>
-                </div>
-                <div class="project-description">
-                    定型的なWebフォームへの入力を自動化。<br>
-                    複数のパターンを登録可能で、<br>
-                    入力後のスクリーンショットも自動保存。
-                </div>
-                <div class="tech-stack">
-                    <span class="tech-badge">Claude Code</span>
-                    <span class="tech-badge">Playwright</span>
-                    <span class="tech-badge">JSON設定</span>
-                    <span class="tech-badge">画像処理</span>
-                </div>
-            </div>
-            
-            <h3>機能要件</h3>
-            <ul style="font-size: 1.1em; line-height: 1.8;">
-                <li>✅ JSONファイルから入力データを読み込み</li>
-                <li>✅ 複数のフォームパターンに対応</li>
-                <li>✅ 入力前後でスクリーンショット撮影</li>
-                <li>✅ エラー時の自動リトライ</li>
-                <li>✅ 実行ログの記録</li>
-            </ul>
-        </div>
-    </div>
-
-    <!-- スライド8: プロジェクト2実装 -->
-    <div class="slide-container">
-        <div class="slide-content">
-            <h1>💻 プロジェクト②の実装</h1>
-            <h2><span class="icon">⚙️</span>設定ファイル（form_data.json）</h2>
-            <div class="code-box">
-{
-  "forms": [
-    {
-      "name": "お問い合わせフォーム",
-      "url": "https://example.com/contact",
-      "fields": {
-        "name": "山田太郎",
-        "email": "yamada@example.com",
-        "message": "テスト送信です"
-      }
-    }
-  ]
-}
-            </div>
-            
-            <h3>実装のポイント</h3>
-            <div class="step-list">
-                <div class="step-item">
-                    JSONファイルから設定を読み込む
-                </div>
-                <div class="step-item">
-                    各フォームに対してPlaywrightで自動入力
-                </div>
-                <div class="step-item">
-                    スクリーンショットを before/after で保存
-                </div>
-                <div class="step-item">
-                    実行結果をログファイルに記録
-                </div>
-            </div>
-        </div>
-    </div>
-
-    <!-- スライド9: 統合プロジェクト -->
-    <div class="slide-container">
-        <div class="slide-content">
-            <h1>🚀 全技術統合プロジェクト</h1>
-            <h2><span class="icon">🎯</span>最終課題：業務効率化ツール</h2>
-            
-            <div class="info-box">
-                全ての学習内容を組み合わせた、あなただけのオリジナルツールを作成！
-            </div>
-            
-            <h3>アイデア例</h3>
+            <h1>🤔 チャットボット＆RAGとは？</h1>
             <div class="feature-grid">
                 <div class="feature-card">
-                    <div class="feature-icon">📊</div>
-                    <h3>売上レポート自動化</h3>
-                    <p style="font-size: 0.9em;">ECサイトから売上データ取得→Excel変換→メール送信</p>
+                    <div class="feature-icon">💬</div>
+                    <h3>チャットボット</h3>
+                    <p style="font-size: 0.9em;">AIと対話形式でやり取りできるプログラム</p>
                 </div>
-                <div class="feature-card">
-                    <div class="feature-icon">📸</div>
-                    <h3>SNS投稿自動化</h3>
-                    <p style="font-size: 0.9em;">画像編集→キャプション生成→複数SNSに投稿</p>
-                </div>
-                <div class="feature-card">
-                    <div class="feature-icon">📈</div>
-                    <h3>株価監視ツール</h3>
-                    <p style="font-size: 0.9em;">指定銘柄の価格チェック→閾値でアラート→記録</p>
+                <div class="feature-card" style="background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);">
+                    <div class="feature-icon">📚</div>
+                    <h3>RAG機能</h3>
+                    <p style="font-size: 0.9em;">Retrieval-Augmented Generation<br>文書から情報を取得して回答</p>
                 </div>
             </div>
             
+            <div class="info-box">
+                💡 <strong>RAGの仕組み</strong>
+                <ol style="margin-top: 10px;">
+                    <li>ユーザーが質問する</li>
+                    <li>関連する文書を検索</li>
+                    <li>文書の内容を基にAIが回答生成</li>
+                </ol>
+            </div>
+            
             <div class="success-box">
-                💡 自分の日常で「面倒だな」と思うことを自動化しよう！
+                🎯 メリット：最新情報や社内文書など、AIが知らない情報でも回答可能！
             </div>
         </div>
     </div>
 
-    <!-- スライド10: GitHubでの公開 -->
+    <!-- スライド4: 必要な準備 -->
     <div class="slide-container">
         <div class="slide-content">
-            <h1>📤 GitHubで作品を公開</h1>
-            <h2><span class="icon">📝</span>README.mdの書き方</h2>
+            <h1>🛠️ 必要な準備</h1>
+            <div class="step-list">
+                <div class="step-item">
+                    <strong>Claude Code</strong> - インストール済み（前提）
+                </div>
+                <div class="step-item">
+                    <strong>Node.js</strong> - JavaScriptランタイム
+                </div>
+                <div class="step-item">
+                    <strong>OpenAI APIキー</strong> - チャット機能用
+                </div>
+                <div class="step-item">
+                    <strong>テキストエディタ</strong> - VS Code推奨
+                </div>
+            </div>
+            
+            <div class="warning-box">
+                ⚠️ <strong>APIキーの取得方法</strong>
+                <ol style="margin-top: 10px;">
+                    <li>OpenAIのサイトでアカウント作成</li>
+                    <li>API Keysページで新規キー生成</li>
+                    <li>キーは一度しか表示されないので必ず保存</li>
+                </ol>
+            </div>
+            
+            <div class="info-box">
+                💡 APIキーは環境変数（.env）で管理します（セキュリティ重要！）
+            </div>
+        </div>
+    </div>
+
+    <!-- スライド5: プロジェクトセットアップ -->
+    <div class="slide-container">
+        <div class="slide-content">
+            <h1>🚀 プロジェクトのセットアップ</h1>
+            <h2><span class="icon">💬</span>Claude Codeへ気軽にお願い！</h2>
             <div class="code-box">
-# 📰 ニュース自動収集ツール
+「こんにちは！チャットボット作りたいんですが、手伝ってもらえますか？
 
-## 概要
-複数のニュースサイトから最新情報を自動収集するツール
+やりたいこと：
+🤖 自分の資料（PDFやテキスト）を読み込んで、
+   それを元に質問に答えてくれるチャットボット
 
-## 機能
-- ✅ 3サイト同時巡回
-- ✅ CSV形式で保存
-- ✅ 重複除外機能
+条件：
+- WindowsのVSCodeで開発
+- OpenAI APIを使いたい（キーは持ってます）
+- 初心者でも分かりやすく
+- Webブラウザで使えるようにしたい
 
-## 使い方
-```bash
-npm install
-node news-collector.js
-```
-
-## 必要環境
-- Node.js 18以上
-- Claude Code
-- Playwright
-
-## 作者
-あなたの名前
-            </div>
-            
-            <div class="warning-box">
-                ⚠️ 公開前にAPIキーやパスワードが含まれていないか確認！
-            </div>
-        </div>
-    </div>
-
-    <!-- スライド11: セキュリティ注意点 -->
-    <div class="slide-container">
-        <div class="slide-content">
-            <h1>🔐 セキュリティ・注意事項</h1>
-            
-            <div class="warning-box">
-                <strong>❌ 絶対にやってはいけないこと</strong>
-                <ul style="margin-top: 10px;">
-                    <li>パスワードをコードに直接書く</li>
-                    <li>APIキーをGitHubに公開</li>
-                    <li>他人のサイトに負荷をかける</li>
-                    <li>利用規約に違反する自動化</li>
-                </ul>
+技術的なことは全然分からないので、
+どんなファイルが必要で、どう作ればいいか
+一から教えてください！」
             </div>
             
             <div class="success-box">
-                <strong>✅ 推奨される対策</strong>
+                💡 Claude Codeが技術選択から丁寧にサポートしてくれます！
+            </div>
+        </div>
+    </div>
+
+    <!-- スライド6: 環境変数の設定 -->
+    <div class="slide-container">
+        <div class="slide-content">
+            <h1>🔐 環境変数の設定</h1>
+            <h2><span class="icon">📝</span>.envファイルの作成</h2>
+            <div class="code-box">
+# .env
+OPENAI_API_KEY=sk-proj-xxxxxxxxxxxxx
+PORT=3000
+            </div>
+            
+            <div class="warning-box">
+                ⚠️ <strong>重要：セキュリティ対策</strong>
                 <ul style="margin-top: 10px;">
-                    <li>環境変数（.env）を使用</li>
-                    <li>.gitignoreで機密情報を除外</li>
-                    <li>適切な待機時間を設定</li>
-                    <li>robots.txtを確認</li>
+                    <li>.envファイルは絶対にGitHubにアップしない</li>
+                    <li>.gitignoreに必ず.envを追加</li>
+                    <li>APIキーは他人と共有しない</li>
                 </ul>
+            </div>
+            
+            <h3>.gitignoreの設定</h3>
+            <div class="code-box">
+node_modules/
+.env
+*.log
+.DS_Store
             </div>
             
             <div class="info-box">
-                💡 業務利用する場合は、必ず会社のセキュリティポリシーを確認
+                💡 環境変数はprocess.env.OPENAI_API_KEYでアクセスできます
             </div>
         </div>
     </div>
 
-    <!-- スライド12: 今後の学習ロードマップ -->
+    <!-- スライド7: 基本的なチャット機能 -->
     <div class="slide-container">
         <div class="slide-content">
-            <h1>🗺️ 今後の学習ロードマップ</h1>
-            
-            <div class="roadmap-card">
-                <span class="roadmap-level">初級→中級</span>
-                <h3>3ヶ月後の目標</h3>
-                <ul style="margin-top: 10px;">
-                    <li>Python基礎を学ぶ</li>
-                    <li>データ分析（pandas）に挑戦</li>
-                    <li>APIを使った開発</li>
-                </ul>
+            <h1>💬 基本的なチャット機能をお願い</h1>
+            <h2><span class="icon">🗣️</span>Claude Codeへの続きの依頼</h2>
+            <div class="code-box">
+「プロジェクトができたので、次は基本的なチャット機能を作ってください！
+
+具体的には：
+📝 ユーザーがメッセージを入力
+🤖 OpenAI APIで返答を生成
+💬 チャット形式で表示
+
+まずはRAG機能なしで、
+普通にChatGPTみたいに会話できるものから始めたいです。
+
+サーバー側とWebページ、両方お願いします！」
             </div>
             
-            <div class="roadmap-card">
-                <span class="roadmap-level">中級→上級</span>
-                <h3>6ヶ月後の目標</h3>
-                <ul style="margin-top: 10px;">
-                    <li>Webアプリケーション開発</li>
-                    <li>データベース連携</li>
-                    <li>機械学習の基礎</li>
-                </ul>
+            <div class="info-box">
+                💡 Claude Codeが必要なコードを全部書いてくれます！
+            </div>
+        </div>
+    </div>
+
+    <!-- スライド8: フロントエンドUI -->
+    <div class="slide-container">
+        <div class="slide-content">
+            <h1>🎨 動作確認してみよう！</h1>
+            <h2><span class="icon">🚀</span>実際に動かしてみる</h2>
+            <div class="code-box">
+「チャット機能ができたら、動作確認したいです！
+
+手順を教えてください：
+1️⃣ サーバーの起動方法
+2️⃣ ブラウザでのアクセス方法
+3️⃣ 実際にメッセージを送って確認
+
+もしエラーが出たときの
+対処法も教えてもらえると嬉しいです！」
             </div>
             
-            <div class="roadmap-card">
-                <span class="roadmap-level">上級</span>
-                <h3>1年後の目標</h3>
+            <div class="success-box">
+                🎯 Claude Codeが動作確認のサポートもしてくれます！
+            </div>
+        </div>
+    </div>
+
+    <!-- スライド9: RAG機能の実装 -->
+    <div class="slide-container">
+        <div class="slide-content">
+            <h1>📚 いよいよRAG機能を追加！</h1>
+            <h2><span class="icon">💭</span>Claude Codeへお願いしよう</h2>
+            <div class="code-box">
+「チャットボットが動いたので、今度はRAG機能を追加したいです！
+
+やりたいこと：
+📂 documentsフォルダを作って、そこにテキストファイルやPDFを置く
+🔍 ユーザーの質問に関連するファイルを自動で検索
+🤖 見つけた情報を元にAIが回答
+
+例えば：
+- 会社のマニュアル.pdf
+- プロジェクトの資料.txt
+- 議事録.docx
+
+これらを読み込んで、
+"昨日の会議で決まったことは？"
+みたいな質問に答えてもらいたいです。
+
+どうやって実装すればいいでしょうか？」
+            </div>
+            
+            <div class="info-box">
+                💡 Claude Codeがファイル読み込みから検索まで全部作ってくれます！
+            </div>
+        </div>
+    </div>
+
+    <!-- スライド10: 実際にテストしてみよう -->
+    <div class="slide-container">
+        <div class="slide-content">
+            <h1>🧪 実際にテストしてみよう！</h1>
+            <h2><span class="icon">📝</span>Claude Codeへテスト依頼</h2>
+            <div class="code-box">
+「RAG機能ができたら、実際にテストしたいです！
+
+テスト手順：
+1️⃣ documentsフォルダにサンプルファイルを置く
+   - 自己紹介.txt
+   - 趣味について.pdf
+   - プロジェクト概要.docx など
+
+2️⃣ "私の趣味は何ですか？"と質問してみる
+3️⃣ ファイルの内容を元に回答されるか確認
+
+もしうまく動かない場合の
+デバッグ方法も教えてください！」
+            </div>
+            
+            <div class="success-box">
+                🎯 Claude Codeがテスト方法とデバッグも教えてくれます！
+            </div>
+            
+            <div class="info-box">
+                💡 実際のファイルで動作確認することで完成度アップ！
+            </div>
+        </div>
+    </div>
+
+    <!-- スライド11: RAG統合とプロンプト設計 -->
+    <div class="slide-container">
+        <div class="slide-content">
+            <h1>🎉 さらなる改善をお願い！</h1>
+            <h2><span class="icon">💡</span>Claude Codeへの最終依頼</h2>
+            <div class="code-box">
+「チャットボットがうまく動いたので、もう少し改善したいです！
+
+追加したい機能：
+🎨 チャット画面をもっとかっこよく
+📱 スマホでも使いやすいように
+💾 会話履歴を保存機能
+🔍 どのファイルから情報を取得したか表示
+⚡ 回答速度の向上
+
+どれか一つでもいいので、
+やりやすそうなものから教えてください！
+
+あと、このチャットボットを
+他の人にも使ってもらうには
+どうすればいいでしょうか？」
+            </div>
+            
+            <div class="success-box">
+                🎯 Claude Codeが更なる機能向上をサポート！
+            </div>
+        </div>
+    </div>
+
+    <!-- スライド12: 動作テストとデバッグ -->
+    <div class="slide-container">
+        <div class="slide-content">
+            <h1>🧪 動作テストとデバッグ</h1>
+            
+            <div class="step-list">
+                <div class="step-item">
+                    <strong>サーバー起動</strong><br>
+                    <code>node server.js</code> でサーバーを起動
+                </div>
+                <div class="step-item">
+                    <strong>ブラウザアクセス</strong><br>
+                    <code>http://localhost:3000</code> を開く
+                </div>
+                <div class="step-item">
+                    <strong>テスト質問</strong><br>
+                    documentsフォルダ内の内容について質問
+                </div>
+                <div class="step-item">
+                    <strong>デバッグ</strong><br>
+                    console.logで処理の流れを確認
+                </div>
+            </div>
+            
+            <div class="warning-box">
+                ⚠️ <strong>よくあるエラー</strong>
                 <ul style="margin-top: 10px;">
-                    <li>フルスタック開発</li>
-                    <li>クラウドサービス活用</li>
-                    <li>チーム開発への参加</li>
+                    <li>APIキーが設定されていない → .envファイル確認</li>
+                    <li>ポートが使用中 → 別のポート番号を指定</li>
+                    <li>CORS エラー → express.static設定を追加</li>
                 </ul>
             </div>
         </div>
     </div>
 
-    <!-- スライド13: 修了証 -->
+    <!-- スライド13: 発展的な機能追加 -->
     <div class="slide-container">
         <div class="slide-content">
+            <h1>🚀 発展的な機能追加</h1>
+            
+            <div class="feature-grid">
+                <div class="feature-card">
+                    <div class="feature-icon">💾</div>
+                    <h3>会話履歴保存</h3>
+                    <p style="font-size: 0.9em;">データベースに履歴を保存して過去の会話を参照</p>
+                </div>
+                <div class="feature-card" style="background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);">
+                    <div class="feature-icon">🔍</div>
+                    <h3>ベクトル検索</h3>
+                    <p style="font-size: 0.9em;">Embeddingを使った高度な文書検索</p>
+                </div>
+                <div class="feature-card">
+                    <div class="feature-icon">🌐</div>
+                    <h3>多言語対応</h3>
+                    <p style="font-size: 0.9em;">英語・中国語など複数言語での質問応答</p>
+                </div>
+            </div>
+            
+            <div class="info-box">
+                💡 <strong>更なる改善アイデア</strong>
+                <ul style="margin-top: 10px;">
+                    <li>音声入力・音声読み上げ機能</li>
+                    <li>画像やグラフの解析機能</li>
+                    <li>複数のAIモデル切り替え（GPT-4、Claude等）</li>
+                    <li>Webサイトクローリング機能</li>
+                </ul>
+            </div>
+        </div>
+    </div>
+
+    <!-- スライド14: 完成とまとめ -->
+    <div class="slide-container">
+        <div class="slide-content">
+            <h1>🎊 完成おめでとう！</h1>
+            
             <div class="certificate">
-                <h2>🏆 修了証 🏆</h2>
-                <div style="font-size: 1.5em; margin: 30px 0;">
-                    Claude Code 初心者向け講習
-                    <br><br>
-                    全5回を完走されました！
-                </div>
-                <div style="font-size: 1.2em;">
-                    あなたは今、AIと協力して<br>
-                    プログラミングができる<br>
-                    <span style="font-size: 1.5em; font-weight: bold;">「AIプログラマー」</span>です！
+                <h2>🤖 AIチャットボット完成 🤖</h2>
+                <div style="font-size: 1.3em; margin: 30px 0;">
+                    RAG機能付きチャットボットが完成しました！
                 </div>
             </div>
             
             <div class="success-box">
-                🎊 習得スキル
+                <strong>今日作ったもの</strong>
                 <ul style="margin-top: 10px;">
-                    <li>✅ Claude Codeの活用</li>
-                    <li>✅ GitHubでのコード管理</li>
-                    <li>✅ MCPによる機能拡張</li>
-                    <li>✅ PlaywrightでのWeb自動化</li>
-                    <li>✅ 実用ツールの開発</li>
+                    <li>✅ OpenAI APIを使ったチャット機能</li>
+                    <li>✅ ローカルファイルを読み込むRAG機能</li>
+                    <li>✅ PDF・テキストファイル対応</li>
+                    <li>✅ Webインターフェース</li>
+                    <li>✅ セキュアな環境変数管理</li>
                 </ul>
-            </div>
-        </div>
-    </div>
-
-    <!-- スライド14: 最後のメッセージ -->
-    <div class="slide-container">
-        <div class="slide-content">
-            <h1>🌟 最後に</h1>
-            
-            <div style="text-align: center; margin: 40px 0;">
-                <div style="font-size: 5em;">🚀</div>
-                <h2 style="justify-content: center; color: #ff6b6b;">これからが本当のスタート！</h2>
             </div>
             
             <div class="info-box">
-                <strong>覚えておいてほしいこと</strong>
-                <ul style="margin-top: 15px; font-size: 1.1em; line-height: 1.8;">
-                    <li>💡 プログラミングは「問題解決」のツール</li>
-                    <li>🤝 AIは「協力者」として活用する</li>
-                    <li>📚 学習は「継続」が大切</li>
-                    <li>🎯 小さな自動化から始めよう</li>
-                    <li>👥 コミュニティで情報交換しよう</li>
-                </ul>
-            </div>
-            
-            <div class="success-box">
-                <strong>継続学習のためのリソース</strong>
+                <strong>次のステップ</strong>
                 <ul style="margin-top: 10px;">
-                    <li>📖 Claude Code公式ドキュメント</li>
-                    <li>🐙 GitHubで他の人のコードを読む</li>
-                    <li>💬 技術コミュニティへの参加</li>
-                    <li>🎥 YouTube技術チャンネル</li>
+                    <li>📚 自分の資料を追加してカスタマイズ</li>
+                    <li>🎨 UIデザインの改善</li>
+                    <li>☁️ クラウドへのデプロイ</li>
+                    <li>🔧 新機能の追加</li>
                 </ul>
             </div>
             
-            <div style="text-align: center; margin-top: 50px;">
-                <p style="font-size: 2.5em; font-weight: bold; color: #ff6b6b;">
-                    お疲れ様でした！
-                </p>
-                <p style="font-size: 1.5em; margin-top: 20px;">
-                    素晴らしい作品を作ってください！<span class="emoji-large">🎊</span>
+            <div style="text-align: center; margin-top: 40px;">
+                <p style="font-size: 2em; font-weight: bold; color: #ff6b6b;">
+                    素晴らしいチャットボットを<br>作ってくれてありがとう！
                 </p>
             </div>
         </div>
@@ -970,10 +931,10 @@ function backToDashboard() {
                     })
                 }).then(() => {
                     // ダッシュボードに戻る
-                    window.location.href = '/student-dashboard.html';
+                    window.location.href = '/index.html';
                 }).catch(() => {
                     // エラーでもダッシュボードに戻る
-                    window.location.href = '/student-dashboard.html';
+                    window.location.href = '/index.html';
                 });
             } else {
                 window.location.href = '/login.html';
