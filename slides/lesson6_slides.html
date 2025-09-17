@@ -1,0 +1,1029 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>第6回：クラウドデプロイ実践</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Segoe UI', 'メイリオ', sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: #333;
+            overflow: hidden;
+        }
+
+        .slide-container {
+            display: none;
+            width: 100vw;
+            height: 100vh;
+            padding: 40px;
+            animation: slideIn 0.5s ease-in-out;
+        }
+
+        .slide-container.active {
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+        }
+
+        @keyframes slideIn {
+            from { opacity: 0; transform: translateX(50px); }
+            to { opacity: 1; transform: translateX(0); }
+        }
+
+        .slide-content {
+            background: white;
+            border-radius: 20px;
+            padding: 60px;
+            box-shadow: 0 20px 60px rgba(0,0,0,0.3);
+            max-width: 1200px;
+            width: 100%;
+            max-height: 80vh;
+            overflow-y: auto;
+        }
+
+        h1 {
+            color: #667eea;
+            font-size: 3em;
+            margin-bottom: 30px;
+            text-align: center;
+            border-bottom: 3px solid #667eea;
+            padding-bottom: 20px;
+        }
+
+        h2 {
+            color: #764ba2;
+            font-size: 2.2em;
+            margin: 30px 0 20px;
+            display: flex;
+            align-items: center;
+            gap: 15px;
+        }
+
+        h3 {
+            color: #667eea;
+            font-size: 1.8em;
+            margin: 25px 0 15px;
+        }
+
+        .icon {
+            font-size: 1.5em;
+        }
+
+        .feature-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 30px;
+            margin: 30px 0;
+        }
+
+        .feature-card {
+            background: linear-gradient(135deg, #f5f7fa 0%, #c3cfe2 100%);
+            padding: 30px;
+            border-radius: 15px;
+            text-align: center;
+            transition: transform 0.3s;
+        }
+
+        .feature-card:hover {
+            transform: translateY(-5px);
+        }
+
+        .feature-icon {
+            font-size: 3em;
+            margin-bottom: 15px;
+        }
+
+        .feature-title {
+            font-size: 1.3em;
+            color: #667eea;
+            margin-bottom: 10px;
+            font-weight: bold;
+        }
+
+        ul {
+            margin: 20px 0;
+            padding-left: 30px;
+            line-height: 2;
+            font-size: 1.1em;
+        }
+
+        ol {
+            margin: 20px 0;
+            padding-left: 30px;
+            line-height: 2;
+            font-size: 1.1em;
+        }
+
+        li {
+            margin: 10px 0;
+        }
+
+        .code-block {
+            background: #2d2d2d;
+            color: #f8f8f2;
+            padding: 20px;
+            border-radius: 10px;
+            margin: 20px 0;
+            font-family: 'Courier New', monospace;
+            overflow-x: auto;
+            line-height: 1.5;
+        }
+
+        .highlight-box {
+            background: linear-gradient(135deg, #ffeaa7 0%, #fdcb6e 100%);
+            padding: 25px;
+            border-radius: 15px;
+            margin: 30px 0;
+            box-shadow: 0 5px 15px rgba(253, 203, 110, 0.3);
+        }
+
+        .warning-box {
+            background: linear-gradient(135deg, #fab1a0 0%, #ff7675 100%);
+            color: white;
+            padding: 25px;
+            border-radius: 15px;
+            margin: 30px 0;
+            box-shadow: 0 5px 15px rgba(255, 118, 117, 0.3);
+        }
+
+        .success-box {
+            background: linear-gradient(135deg, #81ecec 0%, #6c5ce7 100%);
+            color: white;
+            padding: 25px;
+            border-radius: 15px;
+            margin: 30px 0;
+            box-shadow: 0 5px 15px rgba(108, 92, 231, 0.3);
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin: 30px 0;
+            background: white;
+            box-shadow: 0 5px 15px rgba(0,0,0,0.1);
+            border-radius: 10px;
+            overflow: hidden;
+        }
+
+        th {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            padding: 15px;
+            text-align: left;
+            font-size: 1.1em;
+        }
+
+        td {
+            padding: 15px;
+            border-bottom: 1px solid #eee;
+        }
+
+        tr:hover {
+            background: #f8f9fa;
+        }
+
+        .navigation {
+            position: fixed;
+            bottom: 30px;
+            left: 50%;
+            transform: translateX(-50%);
+            display: flex;
+            gap: 20px;
+            background: rgba(255, 255, 255, 0.95);
+            padding: 15px 30px;
+            border-radius: 50px;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.3);
+            z-index: 1000;
+        }
+
+        .nav-btn {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            border: none;
+            padding: 10px 20px;
+            border-radius: 25px;
+            cursor: pointer;
+            font-size: 16px;
+            transition: transform 0.2s;
+        }
+
+        .nav-btn:hover {
+            transform: scale(1.1);
+        }
+
+        .nav-btn:disabled {
+            opacity: 0.5;
+            cursor: not-allowed;
+        }
+
+        #slideNumber {
+            display: flex;
+            align-items: center;
+            font-weight: bold;
+            color: #667eea;
+            font-size: 18px;
+        }
+
+        .centered {
+            text-align: center;
+        }
+
+        .emoji-icon {
+            font-size: 5em;
+            margin: 20px 0;
+        }
+
+        .step-number {
+            display: inline-block;
+            width: 30px;
+            height: 30px;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            text-align: center;
+            line-height: 30px;
+            border-radius: 50%;
+            margin-right: 10px;
+            font-weight: bold;
+        }
+
+        .section-divider {
+            height: 3px;
+            background: linear-gradient(90deg, #667eea, #764ba2, #667eea);
+            margin: 40px 0;
+            border-radius: 2px;
+        }
+
+        .demo-section {
+            background: linear-gradient(135deg, #e0f7fa 0%, #b2ebf2 100%);
+            border-left: 5px solid #00acc1;
+            padding: 25px;
+            margin: 30px 0;
+            border-radius: 10px;
+        }
+
+        .demo-title {
+            color: #00acc1;
+            font-size: 1.5em;
+            margin-bottom: 15px;
+            font-weight: bold;
+        }
+
+        p {
+            line-height: 1.8;
+            font-size: 1.1em;
+            margin: 15px 0;
+        }
+
+        .comparison-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 30px;
+            margin: 30px 0;
+        }
+
+        .comparison-card {
+            padding: 25px;
+            border-radius: 15px;
+            border: 2px solid #eee;
+        }
+
+        .comparison-card.good {
+            background: linear-gradient(135deg, #d4fc79 0%, #96e6a1 100%);
+            border-color: #96e6a1;
+        }
+
+        .comparison-card.bad {
+            background: linear-gradient(135deg, #ffeaa7 0%, #fdcb6e 100%);
+            border-color: #fdcb6e;
+        }
+
+        .info-box {
+            background: linear-gradient(135deg, #dfe6e9 0%, #b2bec3 100%);
+            padding: 25px;
+            border-radius: 15px;
+            margin: 30px 0;
+            border-left: 5px solid #636e72;
+        }
+    </style>
+</head>
+<body>
+    <!-- スライド1: タイトル -->
+    <div class="slide-container active">
+        <div class="slide-content">
+            <div class="centered">
+                <div class="emoji-icon">🚀</div>
+                <h1>第6回：クラウドデプロイ実践</h1>
+                <h2>ローカルからクラウドへ - 世界に公開しよう</h2>
+                <div class="highlight-box">
+                    <h3>本日学ぶこと</h3>
+                    <ul style="text-align: left; display: inline-block;">
+                        <li>☁️ 主要クラウドプラットフォームの選択</li>
+                        <li>🔄 GitHub連携による自動デプロイ</li>
+                        <li>🔐 環境変数とセキュリティ管理</li>
+                        <li>📊 本番環境のモニタリング</li>
+                        <li>🎯 実践：Renderへのデプロイ</li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- スライド2: クラウドプラットフォーム比較 -->
+    <div class="slide-container">
+        <div class="slide-content">
+            <h1>☁️ クラウドプラットフォームの選択</h1>
+            <h2>主要サービスの比較</h2>
+
+            <table>
+                <tr>
+                    <th>サービス</th>
+                    <th>特徴</th>
+                    <th>料金</th>
+                    <th>おすすめ用途</th>
+                </tr>
+                <tr>
+                    <td><strong>Vercel</strong></td>
+                    <td>Next.js特化、高速CDN</td>
+                    <td>無料枠あり</td>
+                    <td>フロントエンド、静的サイト</td>
+                </tr>
+                <tr>
+                    <td><strong>Render</strong></td>
+                    <td>シンプル、自動デプロイ</td>
+                    <td>無料枠あり</td>
+                    <td>フルスタックアプリ</td>
+                </tr>
+                <tr>
+                    <td><strong>Railway</strong></td>
+                    <td>高速、使いやすいUI</td>
+                    <td>$5〜/月</td>
+                    <td>Node.js、DB込み</td>
+                </tr>
+                <tr>
+                    <td><strong>AWS EC2</strong></td>
+                    <td>完全制御、スケーラブル</td>
+                    <td>従量課金</td>
+                    <td>大規模・カスタム要件</td>
+                </tr>
+            </table>
+
+            <div class="info-box">
+                <strong>💡 初心者におすすめ：</strong> RenderまたはRailwayから始めましょう。GitHubと連携するだけで自動デプロイが可能です。
+            </div>
+        </div>
+    </div>
+
+    <!-- スライド3: 事前準備 -->
+    <div class="slide-container">
+        <div class="slide-content">
+            <h1>📝 デプロイの事前準備</h1>
+
+            <div class="feature-grid">
+                <div class="feature-card">
+                    <div class="feature-icon">📂</div>
+                    <div class="feature-title">GitHubリポジトリ</div>
+                    <p>コードをGitHubにプッシュ</p>
+                    <div class="code-block">git init
+git add .
+git commit -m "Initial commit"
+git push origin main</div>
+                </div>
+
+                <div class="feature-card">
+                    <div class="feature-icon">📦</div>
+                    <div class="feature-title">package.json</div>
+                    <p>依存関係とスクリプト定義</p>
+                    <div class="code-block">"scripts": {
+  "start": "node server.js",
+  "dev": "nodemon server.js"
+}</div>
+                </div>
+
+                <div class="feature-card">
+                    <div class="feature-icon">🔐</div>
+                    <div class="feature-title">環境変数</div>
+                    <p>.envファイルの準備</p>
+                    <div class="code-block">DATABASE_URL=your_db_url
+JWT_SECRET=your_secret
+PORT=3000</div>
+                </div>
+
+                <div class="feature-card">
+                    <div class="feature-icon">🚫</div>
+                    <div class="feature-title">.gitignore</div>
+                    <p>機密情報の除外</p>
+                    <div class="code-block">node_modules/
+.env
+*.log
+.DS_Store</div>
+                </div>
+            </div>
+
+            <div class="warning-box">
+                <strong>⚠️ 重要：</strong> .envファイルは絶対にGitHubにプッシュしないでください！
+            </div>
+        </div>
+    </div>
+
+    <!-- スライド4: Renderでのデプロイ手順1 -->
+    <div class="slide-container">
+        <div class="slide-content">
+            <h1>🚀 Renderでデプロイ実践（前半）</h1>
+            <h2>ステップバイステップガイド</h2>
+
+            <ol>
+                <li>
+                    <h3><span class="step-number">1</span>Renderアカウント作成</h3>
+                    <p>https://render.com でGitHubアカウントでサインアップ</p>
+                    <div class="highlight-box">
+                        GitHubアカウントでログインすると、リポジトリの連携が簡単になります
+                    </div>
+                </li>
+
+                <li>
+                    <h3><span class="step-number">2</span>新規Webサービス作成</h3>
+                    <div class="code-block">Dashboard → New → Web Service
+→ Connect GitHub repository
+→ Select your repository</div>
+                    <p>リポジトリを選択すると、自動的に設定が検出されます</p>
+                </li>
+
+                <li>
+                    <h3><span class="step-number">3</span>基本設定の入力</h3>
+                    <div class="info-box">
+                        <strong>Name:</strong> my-app-name（URLになります）<br>
+                        <strong>Environment:</strong> Node<br>
+                        <strong>Region:</strong> Singapore（日本に近い）<br>
+                        <strong>Branch:</strong> main
+                    </div>
+                </li>
+            </ol>
+        </div>
+    </div>
+
+    <!-- スライド5: Renderでのデプロイ手順2 -->
+    <div class="slide-container">
+        <div class="slide-content">
+            <h1>🚀 Renderでデプロイ実践（後半）</h1>
+
+            <ol start="4">
+                <li>
+                    <h3><span class="step-number">4</span>ビルド & スタートコマンド設定</h3>
+                    <div class="info-box">
+                        <strong>Build Command:</strong> npm install<br>
+                        <strong>Start Command:</strong> npm start
+                    </div>
+                </li>
+
+                <li>
+                    <h3><span class="step-number">5</span>環境変数の設定</h3>
+                    <p>Environment → Add Environment Variable</p>
+                    <div class="code-block">DATABASE_URL = [your-database-url]
+JWT_SECRET = [your-secret-key]
+NODE_ENV = production</div>
+                </li>
+
+                <li>
+                    <h3><span class="step-number">6</span>デプロイ開始</h3>
+                    <div class="success-box">
+                        <strong>✅ Create Web Service</strong>をクリックすると自動的にデプロイが開始されます！<br>
+                        5-10分程度でデプロイが完了し、公開URLが発行されます。
+                    </div>
+                </li>
+            </ol>
+
+            <div class="highlight-box">
+                <strong>💡 ポイント：</strong> デプロイログをリアルタイムで確認できるので、エラーが出た場合はすぐに対処できます。
+            </div>
+        </div>
+    </div>
+
+    <!-- スライド6: Claude Codeでの準備 -->
+    <div class="slide-container">
+        <div class="slide-content">
+            <h1>💻 Claude Codeでデプロイ準備</h1>
+            <h2>プロンプト例：本番環境対応</h2>
+
+            <div class="highlight-box">
+                <strong>Claude Codeへのプロンプト例：</strong>
+            </div>
+
+            <div class="code-block">このアプリケーションをRenderにデプロイする準備をしてください。
+
+必要な作業：
+1. package.jsonのスクリプト確認・修正
+2. 環境変数対応（.env.example作成）
+3. ポート設定の動的化（process.env.PORT）
+4. 本番環境用のエラーハンドリング追加
+5. CORSの本番URL設定
+6. データベース接続の環境変数化</div>
+
+            <h3>Claude Codeが自動で行う作業例：</h3>
+            <div class="code-block">// server.js の修正例
+const PORT = process.env.PORT || 3000;
+
+// CORS設定
+const corsOptions = {
+  origin: process.env.NODE_ENV === 'production'
+    ? 'https://your-app.onrender.com'
+    : 'http://localhost:3000'
+};
+
+// データベース接続
+const dbPath = process.env.DATABASE_URL || './local.db';</div>
+
+            <div class="success-box">
+                💡 Claude Codeは本番環境に必要な設定を自動的に追加してくれます！
+            </div>
+        </div>
+    </div>
+
+    <!-- スライド7: 自動デプロイ設定 -->
+    <div class="slide-container">
+        <div class="slide-content">
+            <h1>🔄 自動デプロイ（CI/CD）</h1>
+            <h2>GitHub連携による継続的デプロイ</h2>
+
+            <h3>自動デプロイの流れ</h3>
+            <div class="feature-grid">
+                <div class="feature-card">
+                    <div class="feature-icon">💻</div>
+                    <div class="feature-title">1. コード変更</div>
+                    <p>ローカルで開発・テスト</p>
+                </div>
+
+                <div class="feature-card">
+                    <div class="feature-icon">📤</div>
+                    <div class="feature-title">2. Git Push</div>
+                    <p>GitHubへプッシュ</p>
+                </div>
+
+                <div class="feature-card">
+                    <div class="feature-icon">🔍</div>
+                    <div class="feature-title">3. 自動検知</div>
+                    <p>Renderが変更を検知</p>
+                </div>
+
+                <div class="feature-card">
+                    <div class="feature-icon">🚀</div>
+                    <div class="feature-title">4. 自動デプロイ</div>
+                    <p>本番環境へ反映</p>
+                </div>
+            </div>
+
+            <div class="info-box">
+                <strong>📌 ベストプラクティス：</strong>
+                <ul>
+                    <li>mainブランチは常にデプロイ可能な状態に保つ</li>
+                    <li>新機能はfeatureブランチで開発</li>
+                    <li>プルリクエストでレビュー後にマージ</li>
+                </ul>
+            </div>
+        </div>
+    </div>
+
+    <!-- スライド8: データベース設定 -->
+    <div class="slide-container">
+        <div class="slide-content">
+            <h1>🗄️ クラウドデータベースの設定</h1>
+            <h2>本番用データベースサービス</h2>
+
+            <table>
+                <tr>
+                    <th>サービス</th>
+                    <th>種類</th>
+                    <th>無料枠</th>
+                    <th>特徴</th>
+                </tr>
+                <tr>
+                    <td><strong>Supabase</strong></td>
+                    <td>PostgreSQL</td>
+                    <td>500MB</td>
+                    <td>リアルタイム機能付き</td>
+                </tr>
+                <tr>
+                    <td><strong>PlanetScale</strong></td>
+                    <td>MySQL</td>
+                    <td>5GB</td>
+                    <td>スケーラブル</td>
+                </tr>
+                <tr>
+                    <td><strong>MongoDB Atlas</strong></td>
+                    <td>NoSQL</td>
+                    <td>512MB</td>
+                    <td>フレキシブル</td>
+                </tr>
+                <tr>
+                    <td><strong>Neon</strong></td>
+                    <td>PostgreSQL</td>
+                    <td>3GB</td>
+                    <td>サーバーレス</td>
+                </tr>
+            </table>
+
+            <h3>Supabaseの接続例</h3>
+            <div class="code-block">// Claude Codeへのプロンプト
+SupabaseのPostgreSQLデータベースに接続するようにコードを修正してください。
+
+// 生成されるコード例
+const { createClient } = require('@supabase/supabase-js');
+const supabase = createClient(
+  process.env.SUPABASE_URL,
+  process.env.SUPABASE_KEY
+);</div>
+
+            <div class="warning-box">
+                ⚠️ SQLiteからPostgreSQL/MySQLへ移行時は、SQL構文の違いに注意が必要です。
+            </div>
+        </div>
+    </div>
+
+    <!-- スライド9: 環境変数管理 -->
+    <div class="slide-container">
+        <div class="slide-content">
+            <h1>🔐 環境変数とセキュリティ</h1>
+            <h2>機密情報の安全な管理</h2>
+
+            <div class="feature-grid">
+                <div class="feature-card">
+                    <div class="feature-icon">🔑</div>
+                    <div class="feature-title">APIキー</div>
+                    <p>外部サービスの認証キー</p>
+                </div>
+
+                <div class="feature-card">
+                    <div class="feature-icon">🗄️</div>
+                    <div class="feature-title">DB接続情報</div>
+                    <p>データベースのURL、パスワード</p>
+                </div>
+
+                <div class="feature-card">
+                    <div class="feature-icon">🔐</div>
+                    <div class="feature-title">シークレット</div>
+                    <p>JWT秘密鍵、暗号化キー</p>
+                </div>
+
+                <div class="feature-card">
+                    <div class="feature-icon">🌐</div>
+                    <div class="feature-title">本番URL</div>
+                    <p>APIエンドポイント、CORS設定</p>
+                </div>
+            </div>
+
+            <h3>.env.exampleファイルの作成</h3>
+            <div class="code-block"># Database
+DATABASE_URL=postgresql://user:password@host:5432/dbname
+
+# Authentication
+JWT_SECRET=your-secret-key-here
+
+# External APIs
+OPENAI_API_KEY=sk-...
+
+# Application
+NODE_ENV=production
+PORT=3000</div>
+
+            <div class="success-box">
+                ✅ .env.exampleは値を空にしてGitにコミット、実際の値は各環境で個別に設定
+            </div>
+        </div>
+    </div>
+
+    <!-- スライド10: カスタムドメイン -->
+    <div class="slide-container">
+        <div class="slide-content">
+            <h1>🌐 カスタムドメインとHTTPS</h1>
+            <h2>プロフェッショナルな公開</h2>
+
+            <ol>
+                <li>
+                    <h3><span class="step-number">1</span>ドメイン取得</h3>
+                    <p>お名前.com、Google Domains、Namecheapなどで取得（年間1,000円〜）</p>
+                </li>
+
+                <li>
+                    <h3><span class="step-number">2</span>DNSレコード設定</h3>
+                    <div class="code-block">Type: CNAME
+Name: www
+Value: your-app.onrender.com
+
+Type: A
+Name: @
+Value: [RenderのIPアドレス]</div>
+                </li>
+
+                <li>
+                    <h3><span class="step-number">3</span>Renderでカスタムドメイン追加</h3>
+                    <p>Settings → Custom Domains → Add Custom Domain</p>
+                </li>
+
+                <li>
+                    <h3><span class="step-number">4</span>SSL証明書の自動発行</h3>
+                    <div class="success-box">
+                        ✅ RenderはLet's Encryptを使用して自動的にSSL証明書を発行・更新します
+                    </div>
+                </li>
+            </ol>
+
+            <div class="info-box">
+                💡 HTTPSは現在のWeb標準です。Renderなら無料で自動設定されます。
+            </div>
+        </div>
+    </div>
+
+    <!-- スライド11: モニタリング -->
+    <div class="slide-container">
+        <div class="slide-content">
+            <h1>📊 本番環境のモニタリング</h1>
+            <h2>アプリケーションの健全性監視</h2>
+
+            <div class="feature-grid">
+                <div class="feature-card">
+                    <div class="feature-icon">🎯</div>
+                    <div class="feature-title">アップタイム</div>
+                    <p>サービスの稼働率</p>
+                    <strong>目標: 99.9%以上</strong>
+                </div>
+
+                <div class="feature-card">
+                    <div class="feature-icon">⚡</div>
+                    <div class="feature-title">レスポンスタイム</div>
+                    <p>APIの応答速度</p>
+                    <strong>目標: 200ms以下</strong>
+                </div>
+
+                <div class="feature-card">
+                    <div class="feature-icon">💾</div>
+                    <div class="feature-title">メモリ使用率</div>
+                    <p>リソース消費状況</p>
+                    <strong>警告: 80%超過時</strong>
+                </div>
+
+                <div class="feature-card">
+                    <div class="feature-icon">🚨</div>
+                    <div class="feature-title">エラー率</div>
+                    <p>エラー発生頻度</p>
+                    <strong>目標: 1%未満</strong>
+                </div>
+            </div>
+
+            <h3>ログ管理の実装</h3>
+            <div class="code-block">const winston = require('winston');
+
+const logger = winston.createLogger({
+  level: 'info',
+  format: winston.format.json(),
+  transports: [
+    new winston.transports.File({ filename: 'error.log', level: 'error' }),
+    new winston.transports.File({ filename: 'combined.log' })
+  ]
+});</div>
+
+            <div class="info-box">
+                💡 推奨ツール：Sentry（エラートラッキング）、New Relic（パフォーマンス監視）
+            </div>
+        </div>
+    </div>
+
+    <!-- スライド12: トラブルシューティング -->
+    <div class="slide-container">
+        <div class="slide-content">
+            <h1>🔧 よくあるトラブルと解決法</h1>
+
+            <div class="feature-grid">
+                <div class="feature-card" style="background: linear-gradient(135deg, #fab1a0 0%, #ff7675 100%);">
+                    <div class="feature-icon">❌</div>
+                    <div class="feature-title">ビルドエラー</div>
+                    <p><strong>原因：</strong> package.jsonの不整合</p>
+                    <div class="code-block">npm install --save [missing-package]
+rm package-lock.json
+npm install</div>
+                </div>
+
+                <div class="feature-card" style="background: linear-gradient(135deg, #fab1a0 0%, #ff7675 100%);">
+                    <div class="feature-icon">❌</div>
+                    <div class="feature-title">ポートエラー</div>
+                    <p><strong>原因：</strong> ポート番号の固定</p>
+                    <div class="code-block">const PORT = process.env.PORT || 3000;</div>
+                </div>
+
+                <div class="feature-card" style="background: linear-gradient(135deg, #fab1a0 0%, #ff7675 100%);">
+                    <div class="feature-icon">❌</div>
+                    <div class="feature-title">DB接続失敗</div>
+                    <p><strong>原因：</strong> 環境変数の未設定</p>
+                    <div class="code-block">環境変数DATABASE_URLを確認
+SSL設定の追加が必要な場合あり</div>
+                </div>
+
+                <div class="feature-card" style="background: linear-gradient(135deg, #fab1a0 0%, #ff7675 100%);">
+                    <div class="feature-icon">❌</div>
+                    <div class="feature-title">CORSエラー</div>
+                    <p><strong>原因：</strong> オリジン設定ミス</p>
+                    <div class="code-block">本番URLをCORS設定に追加
+credentials: trueの設定確認</div>
+                </div>
+            </div>
+
+            <div class="highlight-box">
+                <strong>Claude Codeを使ったデバッグ：</strong><br>
+                「Renderのログに以下のエラーが出ています。原因と解決方法を教えてください」<br>
+                → エラーログをペーストすると、Claude Codeが解決策を提示します
+            </div>
+        </div>
+    </div>
+
+    <!-- スライド13: 実演課題1 -->
+    <div class="slide-container">
+        <div class="slide-content">
+            <h1>🎯 実演課題①：ToDoアプリのデプロイ</h1>
+
+            <div class="demo-section">
+                <div class="demo-title">課題内容</div>
+                <p>Claude Codeで作成したシンプルなToDoアプリをRenderにデプロイしてください。</p>
+            </div>
+
+            <h3>実施手順：</h3>
+            <ol>
+                <li>
+                    <strong>Claude Codeでアプリ作成</strong>
+                    <div class="code-block">プロンプト:
+「シンプルなToDoアプリを作成してください。
+Express.js + SQLite + 基本的なHTML/CSSで構築。
+Renderへのデプロイを考慮した設定も含めてください。」</div>
+                </li>
+
+                <li>
+                    <strong>GitHubリポジトリ作成</strong>
+                    <p>作成したコードをGitHubにプッシュ</p>
+                </li>
+
+                <li>
+                    <strong>Renderでデプロイ</strong>
+                    <p>前述の手順に従ってデプロイ実行</p>
+                </li>
+
+                <li>
+                    <strong>動作確認</strong>
+                    <p>公開されたURLでアプリが動作することを確認</p>
+                </li>
+            </ol>
+
+            <div class="success-box">
+                🏆 <strong>達成目標：</strong> 30分以内に公開URLを取得し、他の人と共有できる状態にする
+            </div>
+        </div>
+    </div>
+
+    <!-- スライド14: 実演課題2 -->
+    <div class="slide-container">
+        <div class="slide-content">
+            <h1>🎯 実演課題②：本番環境の最適化</h1>
+
+            <div class="demo-section">
+                <div class="demo-title">課題内容</div>
+                <p>デプロイ済みのアプリケーションに本番環境向けの最適化を実装してください。</p>
+            </div>
+
+            <h3>実装項目：</h3>
+            <div class="feature-grid">
+                <div class="feature-card">
+                    <div class="feature-title">1. 環境変数の完全分離</div>
+                    <ul style="text-align: left;">
+                        <li>開発/ステージング/本番の切り替え</li>
+                        <li>.env.exampleファイルの作成</li>
+                    </ul>
+                </div>
+
+                <div class="feature-card">
+                    <div class="feature-title">2. エラーハンドリング強化</div>
+                    <ul style="text-align: left;">
+                        <li>カスタムエラーページ（404, 500）</li>
+                        <li>エラーログの記録</li>
+                    </ul>
+                </div>
+
+                <div class="feature-card">
+                    <div class="feature-title">3. セキュリティ対策</div>
+                    <ul style="text-align: left;">
+                        <li>Rate Limiting実装</li>
+                        <li>Helmet.jsの導入</li>
+                    </ul>
+                </div>
+
+                <div class="feature-card">
+                    <div class="feature-title">4. パフォーマンス最適化</div>
+                    <ul style="text-align: left;">
+                        <li>圧縮（compression）</li>
+                        <li>キャッシュ戦略</li>
+                    </ul>
+                </div>
+            </div>
+
+            <h3>Claude Codeへのプロンプト例：</h3>
+            <div class="code-block">このExpressアプリに本番環境向けの最適化を追加してください：
+- Helmet.jsでセキュリティヘッダー追加
+- express-rate-limitでAPI制限（1分間に100リクエストまで）
+- compressionで圧縮
+- winstonでログ管理
+- 本番環境用のエラーハンドリング</div>
+        </div>
+    </div>
+
+    <!-- スライド15: まとめ -->
+    <div class="slide-container">
+        <div class="slide-content">
+            <div class="centered">
+                <div class="emoji-icon">🎊</div>
+                <h1>レッスン6 完了！</h1>
+
+                <div class="success-box">
+                    <h2>✅ マスターしたスキル</h2>
+                    <ul style="text-align: left; display: inline-block;">
+                        <li>クラウドプラットフォームの選択と特徴理解</li>
+                        <li>GitHubを使った自動デプロイの設定</li>
+                        <li>環境変数によるセキュアな設定管理</li>
+                        <li>本番環境向けの最適化とモニタリング</li>
+                        <li>トラブルシューティングの基本</li>
+                    </ul>
+                </div>
+
+                <div class="section-divider"></div>
+
+                <h3>🌟 次のステップ</h3>
+                <div class="feature-grid">
+                    <div class="feature-card">
+                        <div class="feature-title">CI/CDパイプライン</div>
+                        <p>GitHub Actionsで自動化</p>
+                    </div>
+
+                    <div class="feature-card">
+                        <div class="feature-title">コンテナ化</div>
+                        <p>Dockerの活用</p>
+                    </div>
+                </div>
+
+                <div class="highlight-box">
+                    <strong>🎯 最終目標達成！</strong><br>
+                    あなたは今、Claude Codeで開発したアプリケーションを世界に公開する力を手に入れました！
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- ナビゲーション -->
+    <div class="navigation">
+        <button class="nav-btn" onclick="previousSlide()">◀ 前へ</button>
+        <span id="slideNumber">1 / 15</span>
+        <button class="nav-btn" onclick="nextSlide()">次へ ▶</button>
+    </div>
+
+    <script>
+        let currentSlide = 1;
+        const totalSlides = document.querySelectorAll('.slide-container').length;
+
+        function showSlide(n) {
+            const slides = document.querySelectorAll('.slide-container');
+
+            if (n > totalSlides) currentSlide = 1;
+            if (n < 1) currentSlide = totalSlides;
+
+            slides.forEach(slide => slide.classList.remove('active'));
+            slides[currentSlide - 1].classList.add('active');
+
+            document.getElementById('slideNumber').textContent = `${currentSlide} / ${totalSlides}`;
+
+            // ナビゲーションボタンの状態更新
+            document.querySelector('.nav-btn').disabled = currentSlide === 1;
+            document.querySelectorAll('.nav-btn')[1].disabled = currentSlide === totalSlides;
+        }
+
+        function nextSlide() {
+            currentSlide++;
+            showSlide(currentSlide);
+        }
+
+        function previousSlide() {
+            currentSlide--;
+            showSlide(currentSlide);
+        }
+
+        // キーボードナビゲーション
+        document.addEventListener('keydown', (e) => {
+            if (e.key === 'ArrowRight') nextSlide();
+            if (e.key === 'ArrowLeft') previousSlide();
+        });
+
+        // 初期表示
+        showSlide(currentSlide);
+    </script>
+</body>
+</html>

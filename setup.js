@@ -136,17 +136,19 @@ db.serialize(() => {
         // 伊藤の進捗
         { user_id: 2, lesson_id: 1, status: 'completed', last_slide: 11, time_spent: 45 },
         { user_id: 2, lesson_id: 2, status: 'in_progress', last_slide: 7, time_spent: 25 },
-        
+
         // 柳沢の進捗
         { user_id: 3, lesson_id: 1, status: 'completed', last_slide: 11, time_spent: 52 },
         { user_id: 3, lesson_id: 2, status: 'completed', last_slide: 12, time_spent: 38 },
         { user_id: 3, lesson_id: 3, status: 'in_progress', last_slide: 5, time_spent: 20 },
-        
+
         // 渡辺の進捗
         { user_id: 4, lesson_id: 1, status: 'completed', last_slide: 11, time_spent: 35 },
         { user_id: 4, lesson_id: 2, status: 'completed', last_slide: 12, time_spent: 42 },
         { user_id: 4, lesson_id: 3, status: 'completed', last_slide: 12, time_spent: 48 },
-        { user_id: 4, lesson_id: 4, status: 'in_progress', last_slide: 8, time_spent: 30 }
+        { user_id: 4, lesson_id: 4, status: 'completed', last_slide: 13, time_spent: 50 },
+        { user_id: 4, lesson_id: 5, status: 'completed', last_slide: 16, time_spent: 55 },
+        { user_id: 4, lesson_id: 6, status: 'in_progress', last_slide: 8, time_spent: 30 }
     ];
 
     const progressStmt = db.prepare(`INSERT INTO progress (user_id, lesson_id, status, started_at, completed_at, last_slide, time_spent) 
