@@ -1390,6 +1390,7 @@ Node.js、PM2、Nginx、Git、SSL証明書の設定も含めてください。�
         <button class="nav-btn" onclick="previousSlide()">◀ 前へ</button>
         <span id="slideNumber">1 / 19</span>
         <button class="nav-btn" onclick="nextSlide()">次へ ▶</button>
+        <button class="nav-btn" id="backToDashboard" onclick="backToDashboard()" style="display: none; background: #28a745;">📚 ダッシュボードに戻る</button>
     </div>
 
     <script>
@@ -1410,6 +1411,14 @@ Node.js、PM2、Nginx、Git、SSL証明書の設定も含めてください。�
             // ナビゲーションボタンの状態更新
             document.querySelector('.nav-btn').disabled = currentSlide === 1;
             document.querySelectorAll('.nav-btn')[1].disabled = currentSlide === totalSlides;
+
+            // 最後のスライドでダッシュボードに戻るボタンを表示
+            const backBtn = document.getElementById('backToDashboard');
+            if (currentSlide === totalSlides) {
+                backBtn.style.display = 'inline-block';
+            } else {
+                backBtn.style.display = 'none';
+            }
         }
 
         function nextSlide() {
@@ -1427,6 +1436,11 @@ Node.js、PM2、Nginx、Git、SSL証明書の設定も含めてください。�
             if (e.key === 'ArrowRight') nextSlide();
             if (e.key === 'ArrowLeft') previousSlide();
         });
+
+        // ダッシュボードに戻る関数
+        function backToDashboard() {
+            window.location.href = '/student-dashboard.html';
+        }
 
         // 初期表示
         showSlide(currentSlide);
