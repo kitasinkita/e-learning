@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>第6回：クラウドデプロイ実践</title>
+    <title>第6回：AWS EC2デプロイ実践</title>
     <style>
         * {
             margin: 0;
@@ -295,14 +295,14 @@
             border: 2px solid #eee;
         }
 
-        .comparison-card.good {
-            background: linear-gradient(135deg, #d4fc79 0%, #96e6a1 100%);
-            border-color: #96e6a1;
-        }
-
-        .comparison-card.bad {
+        .comparison-card.rental {
             background: linear-gradient(135deg, #ffeaa7 0%, #fdcb6e 100%);
             border-color: #fdcb6e;
+        }
+
+        .comparison-card.cloud {
+            background: linear-gradient(135deg, #d4fc79 0%, #96e6a1 100%);
+            border-color: #96e6a1;
         }
 
         .info-box {
@@ -312,6 +312,11 @@
             margin: 30px 0;
             border-left: 5px solid #636e72;
         }
+
+        .aws-orange {
+            color: #FF9900;
+            font-weight: bold;
+        }
     </style>
 </head>
 <body>
@@ -319,626 +324,794 @@
     <div class="slide-container active">
         <div class="slide-content">
             <div class="centered">
-                <div class="emoji-icon">🚀</div>
-                <h1>第6回：クラウドデプロイ実践</h1>
-                <h2>ローカルからクラウドへ - 世界に公開しよう</h2>
+                <div class="emoji-icon">☁️</div>
+                <h1>第6回：AWS EC2デプロイ実践</h1>
+                <h2>ローカルからAWSクラウドへ</h2>
                 <div class="highlight-box">
                     <h3>本日学ぶこと</h3>
                     <ul style="text-align: left; display: inline-block;">
-                        <li>☁️ 主要クラウドプラットフォームの選択</li>
-                        <li>🔄 GitHub連携による自動デプロイ</li>
-                        <li>🔐 環境変数とセキュリティ管理</li>
-                        <li>📊 本番環境のモニタリング</li>
-                        <li>🎯 実践：Renderへのデプロイ</li>
+                        <li>🏢 レンタルサーバーとクラウドサーバーの違い</li>
+                        <li>☁️ AWS EC2の基礎知識</li>
+                        <li>🚀 EC2インスタンスの作成と設定</li>
+                        <li>🔧 アプリケーションのデプロイ</li>
+                        <li>🔐 セキュリティとドメイン設定</li>
+                        <li>📊 モニタリングと運用</li>
+                    </ul>
+                </div>
+                <div class="info-box">
+                    <strong>前提条件：</strong> AWSアカウントをお持ちの方向けのレッスンです
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- スライド2: レンタルサーバーvsクラウドサーバー -->
+    <div class="slide-container">
+        <div class="slide-content">
+            <h1>🏢 レンタルサーバー vs クラウドサーバー</h1>
+            <h2>それぞれの特徴を理解しよう</h2>
+
+            <div class="comparison-grid">
+                <div class="comparison-card rental">
+                    <h3>レンタルサーバー（共用/VPS）</h3>
+                    <ul style="text-align: left;">
+                        <li>📦 <strong>固定リソース</strong><br>
+                        決まったCPU・メモリ・容量</li>
+                        <li>💰 <strong>月額固定料金</strong><br>
+                        月3,000円〜10,000円程度</li>
+                        <li>🔧 <strong>管理が簡単</strong><br>
+                        コントロールパネルで操作</li>
+                        <li>🚫 <strong>制限が多い</strong><br>
+                        ソフトウェアインストールに制限</li>
+                        <li>📈 <strong>スケーリングが困難</strong><br>
+                        プラン変更に時間がかかる</li>
+                    </ul>
+                </div>
+
+                <div class="comparison-card cloud">
+                    <h3>クラウドサーバー（AWS EC2）</h3>
+                    <ul style="text-align: left;">
+                        <li>⚡ <strong>柔軟なリソース</strong><br>
+                        必要に応じて変更可能</li>
+                        <li>💸 <strong>従量課金制</strong><br>
+                        使った分だけ支払い</li>
+                        <li>🎛️ <strong>完全なコントロール</strong><br>
+                        root権限でなんでも可能</li>
+                        <li>✅ <strong>自由度が高い</strong><br>
+                        好きなOSやソフトウェア利用可</li>
+                        <li>🚀 <strong>即座にスケーリング</strong><br>
+                        数分で性能アップ・ダウン</li>
                     </ul>
                 </div>
             </div>
-        </div>
-    </div>
-
-    <!-- スライド2: クラウドプラットフォーム比較 -->
-    <div class="slide-container">
-        <div class="slide-content">
-            <h1>☁️ クラウドプラットフォームの選択</h1>
-            <h2>主要サービスの比較</h2>
 
             <table>
                 <tr>
-                    <th>サービス</th>
-                    <th>特徴</th>
-                    <th>料金</th>
-                    <th>おすすめ用途</th>
+                    <th>項目</th>
+                    <th>レンタルサーバー</th>
+                    <th>AWS EC2（クラウド）</th>
                 </tr>
                 <tr>
-                    <td><strong>Vercel</strong></td>
-                    <td>Next.js特化、高速CDN</td>
-                    <td>無料枠あり</td>
-                    <td>フロントエンド、静的サイト</td>
+                    <td>初期費用</td>
+                    <td>3,000円〜10,000円</td>
+                    <td>無料</td>
                 </tr>
                 <tr>
-                    <td><strong>Render</strong></td>
-                    <td>シンプル、自動デプロイ</td>
-                    <td>無料枠あり</td>
-                    <td>フルスタックアプリ</td>
+                    <td>最小利用期間</td>
+                    <td>3ヶ月〜1年</td>
+                    <td>1分単位</td>
                 </tr>
                 <tr>
-                    <td><strong>Railway</strong></td>
-                    <td>高速、使いやすいUI</td>
-                    <td>$5〜/月</td>
-                    <td>Node.js、DB込み</td>
+                    <td>サーバー停止時</td>
+                    <td>料金発生</td>
+                    <td>課金停止</td>
                 </tr>
                 <tr>
-                    <td><strong>AWS EC2</strong></td>
-                    <td>完全制御、スケーラブル</td>
-                    <td>従量課金</td>
-                    <td>大規模・カスタム要件</td>
+                    <td>バックアップ</td>
+                    <td>手動 or オプション</td>
+                    <td>スナップショット自動化可</td>
                 </tr>
             </table>
-
-            <div class="info-box">
-                <strong>💡 初心者におすすめ：</strong> RenderまたはRailwayから始めましょう。GitHubと連携するだけで自動デプロイが可能です。
-            </div>
         </div>
     </div>
 
-    <!-- スライド3: 事前準備 -->
+    <!-- スライド3: AWS EC2とは -->
     <div class="slide-container">
         <div class="slide-content">
-            <h1>📝 デプロイの事前準備</h1>
+            <h1><span class="aws-orange">AWS</span> EC2とは？</h1>
+            <h2>Elastic Compute Cloud の基礎知識</h2>
 
             <div class="feature-grid">
                 <div class="feature-card">
-                    <div class="feature-icon">📂</div>
-                    <div class="feature-title">GitHubリポジトリ</div>
-                    <p>コードをGitHubにプッシュ</p>
-                    <div class="code-block">git init
-git add .
-git commit -m "Initial commit"
-git push origin main</div>
-                </div>
-
-                <div class="feature-card">
-                    <div class="feature-icon">📦</div>
-                    <div class="feature-title">package.json</div>
-                    <p>依存関係とスクリプト定義</p>
-                    <div class="code-block">"scripts": {
-  "start": "node server.js",
-  "dev": "nodemon server.js"
-}</div>
-                </div>
-
-                <div class="feature-card">
-                    <div class="feature-icon">🔐</div>
-                    <div class="feature-title">環境変数</div>
-                    <p>.envファイルの準備</p>
-                    <div class="code-block">DATABASE_URL=your_db_url
-JWT_SECRET=your_secret
-PORT=3000</div>
-                </div>
-
-                <div class="feature-card">
-                    <div class="feature-icon">🚫</div>
-                    <div class="feature-title">.gitignore</div>
-                    <p>機密情報の除外</p>
-                    <div class="code-block">node_modules/
-.env
-*.log
-.DS_Store</div>
-                </div>
-            </div>
-
-            <div class="warning-box">
-                <strong>⚠️ 重要：</strong> .envファイルは絶対にGitHubにプッシュしないでください！
-            </div>
-        </div>
-    </div>
-
-    <!-- スライド4: Renderでのデプロイ手順1 -->
-    <div class="slide-container">
-        <div class="slide-content">
-            <h1>🚀 Renderでデプロイ実践（前半）</h1>
-            <h2>ステップバイステップガイド</h2>
-
-            <ol>
-                <li>
-                    <h3><span class="step-number">1</span>Renderアカウント作成</h3>
-                    <p>https://render.com でGitHubアカウントでサインアップ</p>
-                    <div class="highlight-box">
-                        GitHubアカウントでログインすると、リポジトリの連携が簡単になります
-                    </div>
-                </li>
-
-                <li>
-                    <h3><span class="step-number">2</span>新規Webサービス作成</h3>
-                    <div class="code-block">Dashboard → New → Web Service
-→ Connect GitHub repository
-→ Select your repository</div>
-                    <p>リポジトリを選択すると、自動的に設定が検出されます</p>
-                </li>
-
-                <li>
-                    <h3><span class="step-number">3</span>基本設定の入力</h3>
-                    <div class="info-box">
-                        <strong>Name:</strong> my-app-name（URLになります）<br>
-                        <strong>Environment:</strong> Node<br>
-                        <strong>Region:</strong> Singapore（日本に近い）<br>
-                        <strong>Branch:</strong> main
-                    </div>
-                </li>
-            </ol>
-        </div>
-    </div>
-
-    <!-- スライド5: Renderでのデプロイ手順2 -->
-    <div class="slide-container">
-        <div class="slide-content">
-            <h1>🚀 Renderでデプロイ実践（後半）</h1>
-
-            <ol start="4">
-                <li>
-                    <h3><span class="step-number">4</span>ビルド & スタートコマンド設定</h3>
-                    <div class="info-box">
-                        <strong>Build Command:</strong> npm install<br>
-                        <strong>Start Command:</strong> npm start
-                    </div>
-                </li>
-
-                <li>
-                    <h3><span class="step-number">5</span>環境変数の設定</h3>
-                    <p>Environment → Add Environment Variable</p>
-                    <div class="code-block">DATABASE_URL = [your-database-url]
-JWT_SECRET = [your-secret-key]
-NODE_ENV = production</div>
-                </li>
-
-                <li>
-                    <h3><span class="step-number">6</span>デプロイ開始</h3>
-                    <div class="success-box">
-                        <strong>✅ Create Web Service</strong>をクリックすると自動的にデプロイが開始されます！<br>
-                        5-10分程度でデプロイが完了し、公開URLが発行されます。
-                    </div>
-                </li>
-            </ol>
-
-            <div class="highlight-box">
-                <strong>💡 ポイント：</strong> デプロイログをリアルタイムで確認できるので、エラーが出た場合はすぐに対処できます。
-            </div>
-        </div>
-    </div>
-
-    <!-- スライド6: Claude Codeでの準備 -->
-    <div class="slide-container">
-        <div class="slide-content">
-            <h1>💻 Claude Codeでデプロイ準備</h1>
-            <h2>プロンプト例：本番環境対応</h2>
-
-            <div class="highlight-box">
-                <strong>Claude Codeへのプロンプト例：</strong>
-            </div>
-
-            <div class="code-block">このアプリケーションをRenderにデプロイする準備をしてください。
-
-必要な作業：
-1. package.jsonのスクリプト確認・修正
-2. 環境変数対応（.env.example作成）
-3. ポート設定の動的化（process.env.PORT）
-4. 本番環境用のエラーハンドリング追加
-5. CORSの本番URL設定
-6. データベース接続の環境変数化</div>
-
-            <h3>Claude Codeが自動で行う作業例：</h3>
-            <div class="code-block">// server.js の修正例
-const PORT = process.env.PORT || 3000;
-
-// CORS設定
-const corsOptions = {
-  origin: process.env.NODE_ENV === 'production'
-    ? 'https://your-app.onrender.com'
-    : 'http://localhost:3000'
-};
-
-// データベース接続
-const dbPath = process.env.DATABASE_URL || './local.db';</div>
-
-            <div class="success-box">
-                💡 Claude Codeは本番環境に必要な設定を自動的に追加してくれます！
-            </div>
-        </div>
-    </div>
-
-    <!-- スライド7: 自動デプロイ設定 -->
-    <div class="slide-container">
-        <div class="slide-content">
-            <h1>🔄 自動デプロイ（CI/CD）</h1>
-            <h2>GitHub連携による継続的デプロイ</h2>
-
-            <h3>自動デプロイの流れ</h3>
-            <div class="feature-grid">
-                <div class="feature-card">
-                    <div class="feature-icon">💻</div>
-                    <div class="feature-title">1. コード変更</div>
-                    <p>ローカルで開発・テスト</p>
-                </div>
-
-                <div class="feature-card">
-                    <div class="feature-icon">📤</div>
-                    <div class="feature-title">2. Git Push</div>
-                    <p>GitHubへプッシュ</p>
-                </div>
-
-                <div class="feature-card">
-                    <div class="feature-icon">🔍</div>
-                    <div class="feature-title">3. 自動検知</div>
-                    <p>Renderが変更を検知</p>
-                </div>
-
-                <div class="feature-card">
-                    <div class="feature-icon">🚀</div>
-                    <div class="feature-title">4. 自動デプロイ</div>
-                    <p>本番環境へ反映</p>
-                </div>
-            </div>
-
-            <div class="info-box">
-                <strong>📌 ベストプラクティス：</strong>
-                <ul>
-                    <li>mainブランチは常にデプロイ可能な状態に保つ</li>
-                    <li>新機能はfeatureブランチで開発</li>
-                    <li>プルリクエストでレビュー後にマージ</li>
-                </ul>
-            </div>
-        </div>
-    </div>
-
-    <!-- スライド8: データベース設定 -->
-    <div class="slide-container">
-        <div class="slide-content">
-            <h1>🗄️ クラウドデータベースの設定</h1>
-            <h2>本番用データベースサービス</h2>
-
-            <table>
-                <tr>
-                    <th>サービス</th>
-                    <th>種類</th>
-                    <th>無料枠</th>
-                    <th>特徴</th>
-                </tr>
-                <tr>
-                    <td><strong>Supabase</strong></td>
-                    <td>PostgreSQL</td>
-                    <td>500MB</td>
-                    <td>リアルタイム機能付き</td>
-                </tr>
-                <tr>
-                    <td><strong>PlanetScale</strong></td>
-                    <td>MySQL</td>
-                    <td>5GB</td>
-                    <td>スケーラブル</td>
-                </tr>
-                <tr>
-                    <td><strong>MongoDB Atlas</strong></td>
-                    <td>NoSQL</td>
-                    <td>512MB</td>
-                    <td>フレキシブル</td>
-                </tr>
-                <tr>
-                    <td><strong>Neon</strong></td>
-                    <td>PostgreSQL</td>
-                    <td>3GB</td>
-                    <td>サーバーレス</td>
-                </tr>
-            </table>
-
-            <h3>Supabaseの接続例</h3>
-            <div class="code-block">// Claude Codeへのプロンプト
-SupabaseのPostgreSQLデータベースに接続するようにコードを修正してください。
-
-// 生成されるコード例
-const { createClient } = require('@supabase/supabase-js');
-const supabase = createClient(
-  process.env.SUPABASE_URL,
-  process.env.SUPABASE_KEY
-);</div>
-
-            <div class="warning-box">
-                ⚠️ SQLiteからPostgreSQL/MySQLへ移行時は、SQL構文の違いに注意が必要です。
-            </div>
-        </div>
-    </div>
-
-    <!-- スライド9: 環境変数管理 -->
-    <div class="slide-container">
-        <div class="slide-content">
-            <h1>🔐 環境変数とセキュリティ</h1>
-            <h2>機密情報の安全な管理</h2>
-
-            <div class="feature-grid">
-                <div class="feature-card">
-                    <div class="feature-icon">🔑</div>
-                    <div class="feature-title">APIキー</div>
-                    <p>外部サービスの認証キー</p>
-                </div>
-
-                <div class="feature-card">
-                    <div class="feature-icon">🗄️</div>
-                    <div class="feature-title">DB接続情報</div>
-                    <p>データベースのURL、パスワード</p>
-                </div>
-
-                <div class="feature-card">
-                    <div class="feature-icon">🔐</div>
-                    <div class="feature-title">シークレット</div>
-                    <p>JWT秘密鍵、暗号化キー</p>
-                </div>
-
-                <div class="feature-card">
-                    <div class="feature-icon">🌐</div>
-                    <div class="feature-title">本番URL</div>
-                    <p>APIエンドポイント、CORS設定</p>
-                </div>
-            </div>
-
-            <h3>.env.exampleファイルの作成</h3>
-            <div class="code-block"># Database
-DATABASE_URL=postgresql://user:password@host:5432/dbname
-
-# Authentication
-JWT_SECRET=your-secret-key-here
-
-# External APIs
-OPENAI_API_KEY=sk-...
-
-# Application
-NODE_ENV=production
-PORT=3000</div>
-
-            <div class="success-box">
-                ✅ .env.exampleは値を空にしてGitにコミット、実際の値は各環境で個別に設定
-            </div>
-        </div>
-    </div>
-
-    <!-- スライド10: カスタムドメイン -->
-    <div class="slide-container">
-        <div class="slide-content">
-            <h1>🌐 カスタムドメインとHTTPS</h1>
-            <h2>プロフェッショナルな公開</h2>
-
-            <ol>
-                <li>
-                    <h3><span class="step-number">1</span>ドメイン取得</h3>
-                    <p>お名前.com、Google Domains、Namecheapなどで取得（年間1,000円〜）</p>
-                </li>
-
-                <li>
-                    <h3><span class="step-number">2</span>DNSレコード設定</h3>
-                    <div class="code-block">Type: CNAME
-Name: www
-Value: your-app.onrender.com
-
-Type: A
-Name: @
-Value: [RenderのIPアドレス]</div>
-                </li>
-
-                <li>
-                    <h3><span class="step-number">3</span>Renderでカスタムドメイン追加</h3>
-                    <p>Settings → Custom Domains → Add Custom Domain</p>
-                </li>
-
-                <li>
-                    <h3><span class="step-number">4</span>SSL証明書の自動発行</h3>
-                    <div class="success-box">
-                        ✅ RenderはLet's Encryptを使用して自動的にSSL証明書を発行・更新します
-                    </div>
-                </li>
-            </ol>
-
-            <div class="info-box">
-                💡 HTTPSは現在のWeb標準です。Renderなら無料で自動設定されます。
-            </div>
-        </div>
-    </div>
-
-    <!-- スライド11: モニタリング -->
-    <div class="slide-container">
-        <div class="slide-content">
-            <h1>📊 本番環境のモニタリング</h1>
-            <h2>アプリケーションの健全性監視</h2>
-
-            <div class="feature-grid">
-                <div class="feature-card">
-                    <div class="feature-icon">🎯</div>
-                    <div class="feature-title">アップタイム</div>
-                    <p>サービスの稼働率</p>
-                    <strong>目標: 99.9%以上</strong>
+                    <div class="feature-icon">🖥️</div>
+                    <div class="feature-title">仮想サーバー</div>
+                    <p>物理サーバーを仮想化した<br>コンピューティングリソース</p>
                 </div>
 
                 <div class="feature-card">
                     <div class="feature-icon">⚡</div>
-                    <div class="feature-title">レスポンスタイム</div>
-                    <p>APIの応答速度</p>
-                    <strong>目標: 200ms以下</strong>
+                    <div class="feature-title">即座に起動</div>
+                    <p>数分で新しいサーバーを<br>作成・起動できる</p>
+                </div>
+
+                <div class="feature-card">
+                    <div class="feature-icon">🌍</div>
+                    <div class="feature-title">世界中のリージョン</div>
+                    <p>東京、大阪を含む<br>世界25以上のリージョン</p>
+                </div>
+
+                <div class="feature-card">
+                    <div class="feature-icon">💰</div>
+                    <div class="feature-title">無料利用枠</div>
+                    <p>新規アカウントは<br>12ヶ月間t2.micro無料</p>
+                </div>
+            </div>
+
+            <h3>EC2の主要な概念</h3>
+            <ul>
+                <li><strong>インスタンス：</strong> 仮想サーバーの単位（1台のコンピューター）</li>
+                <li><strong>AMI（Amazon Machine Image）：</strong> OSとソフトウェアのテンプレート</li>
+                <li><strong>インスタンスタイプ：</strong> CPU、メモリなどのスペック（t2.micro、t3.medium等）</li>
+                <li><strong>セキュリティグループ：</strong> ファイアウォールのルール設定</li>
+                <li><strong>キーペア：</strong> SSH接続用の認証キー</li>
+            </ul>
+
+            <div class="info-box">
+                💡 <strong>無料利用枠：</strong> t2.microインスタンス（1vCPU、1GBメモリ）を月750時間まで無料で利用可能
+            </div>
+        </div>
+    </div>
+
+    <!-- スライド4: EC2インスタンス作成準備 -->
+    <div class="slide-container">
+        <div class="slide-content">
+            <h1>📝 EC2インスタンス作成の準備</h1>
+            <h2>AWSコンソールでの初期設定</h2>
+
+            <ol>
+                <li>
+                    <h3><span class="step-number">1</span>AWSマネジメントコンソールにログイン</h3>
+                    <p>https://console.aws.amazon.com/ にアクセス</p>
+                </li>
+
+                <li>
+                    <h3><span class="step-number">2</span>リージョンを東京に設定</h3>
+                    <p>右上のリージョン選択から「アジアパシフィック（東京）ap-northeast-1」を選択</p>
+                    <div class="highlight-box">
+                        <strong>重要：</strong> リージョンによって料金が異なります。東京リージョンは日本からのアクセスが高速です。
+                    </div>
+                </li>
+
+                <li>
+                    <h3><span class="step-number">3</span>EC2ダッシュボードへ移動</h3>
+                    <p>サービス検索で「EC2」と入力して選択</p>
+                </li>
+            </ol>
+
+            <h3>必要な設定項目の確認</h3>
+            <div class="feature-grid">
+                <div class="feature-card">
+                    <div class="feature-title">🔐 キーペア</div>
+                    <p>SSH接続用の認証キー<br>（後で作成）</p>
+                </div>
+
+                <div class="feature-card">
+                    <div class="feature-title">🛡️ セキュリティグループ</div>
+                    <p>ファイアウォール設定<br>（後で作成）</p>
+                </div>
+
+                <div class="feature-card">
+                    <div class="feature-title">💾 ストレージ</div>
+                    <p>8GB〜30GB程度<br>（無料枠は30GBまで）</p>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- スライド5: EC2インスタンスの作成手順1 -->
+    <div class="slide-container">
+        <div class="slide-content">
+            <h1>🚀 EC2インスタンスの作成（前半）</h1>
+            <h2>ステップバイステップガイド</h2>
+
+            <ol>
+                <li>
+                    <h3><span class="step-number">1</span>インスタンスを起動</h3>
+                    <p>EC2ダッシュボードから「インスタンスを起動」をクリック</p>
+                </li>
+
+                <li>
+                    <h3><span class="step-number">2</span>名前とタグの設定</h3>
+                    <div class="code-block">名前: my-app-server
+タグ:
+  - Key: Environment, Value: Production
+  - Key: Project, Value: Claude-Code-App</div>
+                </li>
+
+                <li>
+                    <h3><span class="step-number">3</span>AMIの選択</h3>
+                    <div class="info-box">
+                        <strong>推奨AMI：</strong><br>
+                        Ubuntu Server 22.04 LTS (HVM), SSD Volume Type<br>
+                        <span style="color: green;">✓ 無料利用枠の対象</span>
+                    </div>
+                </li>
+
+                <li>
+                    <h3><span class="step-number">4</span>インスタンスタイプの選択</h3>
+                    <div class="highlight-box">
+                        <strong>t2.micro</strong> を選択（無料利用枠）<br>
+                        • 1 vCPU<br>
+                        • 1 GB メモリ<br>
+                        • 小規模アプリケーションに最適
+                    </div>
+                </li>
+            </ol>
+        </div>
+    </div>
+
+    <!-- スライド6: EC2インスタンスの作成手順2 -->
+    <div class="slide-container">
+        <div class="slide-content">
+            <h1>🚀 EC2インスタンスの作成（後半）</h1>
+
+            <ol start="5">
+                <li>
+                    <h3><span class="step-number">5</span>キーペアの作成</h3>
+                    <div class="code-block">キーペア名: my-app-key
+キーペアのタイプ: RSA
+プライベートキーファイル形式: .pem（Mac/Linux）または .ppk（Windows）</div>
+                    <div class="warning-box">
+                        ⚠️ <strong>重要：</strong> ダウンロードしたキーファイルは安全な場所に保管してください。<br>
+                        紛失すると二度とダウンロードできません！
+                    </div>
+                </li>
+
+                <li>
+                    <h3><span class="step-number">6</span>ネットワーク設定（セキュリティグループ）</h3>
+                    <table>
+                        <tr>
+                            <th>タイプ</th>
+                            <th>プロトコル</th>
+                            <th>ポート</th>
+                            <th>ソース</th>
+                            <th>説明</th>
+                        </tr>
+                        <tr>
+                            <td>SSH</td>
+                            <td>TCP</td>
+                            <td>22</td>
+                            <td>マイIP</td>
+                            <td>SSH接続用</td>
+                        </tr>
+                        <tr>
+                            <td>HTTP</td>
+                            <td>TCP</td>
+                            <td>80</td>
+                            <td>0.0.0.0/0</td>
+                            <td>Webアクセス用</td>
+                        </tr>
+                        <tr>
+                            <td>HTTPS</td>
+                            <td>TCP</td>
+                            <td>443</td>
+                            <td>0.0.0.0/0</td>
+                            <td>SSL通信用</td>
+                        </tr>
+                        <tr>
+                            <td>カスタムTCP</td>
+                            <td>TCP</td>
+                            <td>3000</td>
+                            <td>0.0.0.0/0</td>
+                            <td>Node.jsアプリ用</td>
+                        </tr>
+                    </table>
+                </li>
+
+                <li>
+                    <h3><span class="step-number">7</span>ストレージ設定</h3>
+                    <p>デフォルトの8GB または 最大30GB（無料枠内）</p>
+                </li>
+
+                <li>
+                    <h3><span class="step-number">8</span>インスタンスを起動</h3>
+                    <div class="success-box">
+                        ✅ 「インスタンスを起動」をクリックして、2-3分待つと起動完了！
+                    </div>
+                </li>
+            </ol>
+        </div>
+    </div>
+
+    <!-- スライド7: SSH接続とセットアップ -->
+    <div class="slide-container">
+        <div class="slide-content">
+            <h1>🔐 EC2へのSSH接続と初期設定</h1>
+            <h2>サーバーへの接続と環境構築</h2>
+
+            <h3>SSH接続の準備（Mac/Linux）</h3>
+            <div class="code-block"># キーファイルの権限を変更
+chmod 400 ~/Downloads/my-app-key.pem
+
+# SSH接続（IPアドレスはEC2コンソールで確認）
+ssh -i ~/Downloads/my-app-key.pem ubuntu@[パブリックIPアドレス]</div>
+
+            <h3>初期セットアップスクリプト</h3>
+            <div class="code-block"># システムを最新に更新
+sudo apt update && sudo apt upgrade -y
+
+# Node.js 18.xをインストール
+curl -fsSL https://deb.nodesource.com/setup_18.x | sudo -E bash -
+sudo apt-get install -y nodejs
+
+# 必要なツールをインストール
+sudo apt-get install -y git nginx
+
+# PM2をグローバルインストール（プロセス管理）
+sudo npm install -g pm2
+
+# アプリケーション用ディレクトリを作成
+mkdir ~/app
+cd ~/app</div>
+
+            <div class="highlight-box">
+                <strong>Claude Codeへのプロンプト例：</strong><br>
+                「EC2 Ubuntu環境でNode.jsアプリケーションを動かすための初期設定スクリプトを作成してください。nginx、PM2、gitも含めてください。」
+            </div>
+        </div>
+    </div>
+
+    <!-- スライド8: アプリケーションのデプロイ -->
+    <div class="slide-container">
+        <div class="slide-content">
+            <h1>📦 アプリケーションのデプロイ</h1>
+            <h2>GitHubからEC2へ</h2>
+
+            <h3>デプロイ手順</h3>
+            <ol>
+                <li>
+                    <strong>GitHubからクローン</strong>
+                    <div class="code-block">cd ~/app
+git clone https://github.com/your-username/your-app.git
+cd your-app
+npm install</div>
+                </li>
+
+                <li>
+                    <strong>環境変数の設定</strong>
+                    <div class="code-block"># .envファイルを作成
+nano .env
+
+# 以下を追加
+PORT=3000
+NODE_ENV=production
+DATABASE_URL=your-database-url
+JWT_SECRET=your-secret-key</div>
+                </li>
+
+                <li>
+                    <strong>PM2でアプリケーション起動</strong>
+                    <div class="code-block"># アプリケーションを起動
+pm2 start server.js --name "my-app"
+
+# 自動起動設定
+pm2 save
+pm2 startup</div>
+                </li>
+
+                <li>
+                    <strong>動作確認</strong>
+                    <div class="code-block"># ローカルで確認
+curl http://localhost:3000
+
+# ブラウザで確認
+http://[EC2のパブリックIP]:3000</div>
+                </li>
+            </ol>
+
+            <div class="success-box">
+                ✅ これでアプリケーションがEC2上で動作開始！
+            </div>
+        </div>
+    </div>
+
+    <!-- スライド9: Nginxでリバースプロキシ設定 -->
+    <div class="slide-container">
+        <div class="slide-content">
+            <h1>🔧 Nginxリバースプロキシ設定</h1>
+            <h2>ポート80でアクセス可能に</h2>
+
+            <h3>なぜNginxが必要？</h3>
+            <ul>
+                <li>Node.jsアプリ（ポート3000）を標準のHTTPポート（80）で公開</li>
+                <li>静的ファイルの高速配信</li>
+                <li>負荷分散、キャッシュ、セキュリティ強化</li>
+            </ul>
+
+            <h3>Nginx設定ファイル作成</h3>
+            <div class="code-block"># 設定ファイルを作成
+sudo nano /etc/nginx/sites-available/my-app
+
+# 以下の設定を追加
+server {
+    listen 80;
+    server_name _;
+
+    location / {
+        proxy_pass http://localhost:3000;
+        proxy_http_version 1.1;
+        proxy_set_header Upgrade $http_upgrade;
+        proxy_set_header Connection 'upgrade';
+        proxy_set_header Host $host;
+        proxy_cache_bypass $http_upgrade;
+        proxy_set_header X-Real-IP $remote_addr;
+        proxy_set_header X-Forwarded-For $proxy_add_x_forwarded_for;
+        proxy_set_header X-Forwarded-Proto $scheme;
+    }
+}</div>
+
+            <h3>設定を有効化</h3>
+            <div class="code-block"># シンボリックリンクを作成
+sudo ln -s /etc/nginx/sites-available/my-app /etc/nginx/sites-enabled/
+
+# デフォルト設定を削除
+sudo rm /etc/nginx/sites-enabled/default
+
+# Nginx設定をテスト
+sudo nginx -t
+
+# Nginxを再起動
+sudo systemctl restart nginx</div>
+
+            <div class="info-box">
+                💡 これで http://[EC2のパブリックIP]/ でアクセス可能になります（ポート番号不要）
+            </div>
+        </div>
+    </div>
+
+    <!-- スライド10: Elastic IPとドメイン設定 -->
+    <div class="slide-container">
+        <div class="slide-content">
+            <h1>🌐 Elastic IPとドメイン設定</h1>
+            <h2>固定IPアドレスと独自ドメイン</h2>
+
+            <h3>Elastic IP（固定IP）の設定</h3>
+            <ol>
+                <li><strong>Elastic IPの割り当て</strong>
+                    <p>EC2ダッシュボード → Elastic IP → 「Elastic IPアドレスの割り当て」</p>
+                </li>
+                <li><strong>インスタンスに関連付け</strong>
+                    <p>割り当てたIPを右クリック → 「Elastic IPアドレスの関連付け」→ インスタンスを選択</p>
+                </li>
+            </ol>
+
+            <div class="warning-box">
+                ⚠️ <strong>注意：</strong> Elastic IPは、EC2インスタンスに関連付けている間は無料ですが、<br>
+                関連付けていない場合は時間単位で課金されます。
+            </div>
+
+            <h3>ドメインの設定（Route 53使用）</h3>
+            <div class="code-block"># Route 53でホストゾーンを作成
+1. Route 53コンソールへ移動
+2. 「ホストゾーンの作成」
+3. ドメイン名を入力（例：myapp.com）
+
+# レコードセットの作成
+タイプ: A
+値: [Elastic IPアドレス]
+
+# www付きも設定
+名前: www
+タイプ: CNAME
+値: myapp.com</div>
+
+            <h3>SSL証明書の設定（Let's Encrypt）</h3>
+            <div class="code-block"># Certbotをインストール
+sudo apt install certbot python3-certbot-nginx -y
+
+# SSL証明書を取得
+sudo certbot --nginx -d myapp.com -d www.myapp.com
+
+# 自動更新のテスト
+sudo certbot renew --dry-run</div>
+
+            <div class="success-box">
+                ✅ これで https://myapp.com でセキュアにアクセス可能！
+            </div>
+        </div>
+    </div>
+
+    <!-- スライド11: CloudWatchモニタリング -->
+    <div class="slide-container">
+        <div class="slide-content">
+            <h1>📊 CloudWatchでモニタリング</h1>
+            <h2>AWSネイティブの監視ツール</h2>
+
+            <div class="feature-grid">
+                <div class="feature-card">
+                    <div class="feature-icon">📈</div>
+                    <div class="feature-title">CPU使用率</div>
+                    <p>インスタンスの負荷状況<br>80%超えたらアラート</p>
                 </div>
 
                 <div class="feature-card">
                     <div class="feature-icon">💾</div>
                     <div class="feature-title">メモリ使用率</div>
-                    <p>リソース消費状況</p>
-                    <strong>警告: 80%超過時</strong>
+                    <p>メモリの消費状況<br>カスタムメトリクスで設定</p>
                 </div>
 
                 <div class="feature-card">
-                    <div class="feature-icon">🚨</div>
-                    <div class="feature-title">エラー率</div>
-                    <p>エラー発生頻度</p>
-                    <strong>目標: 1%未満</strong>
+                    <div class="feature-icon">🌐</div>
+                    <div class="feature-title">ネットワーク</div>
+                    <p>送受信のトラフィック量<br>異常な通信を検知</p>
+                </div>
+
+                <div class="feature-card">
+                    <div class="feature-icon">💽</div>
+                    <div class="feature-title">ディスク使用率</div>
+                    <p>ストレージの空き容量<br>90%超えたら要対応</p>
                 </div>
             </div>
 
-            <h3>ログ管理の実装</h3>
-            <div class="code-block">const winston = require('winston');
+            <h3>CloudWatchアラームの設定</h3>
+            <div class="code-block"># EC2コンソールから設定
+1. CloudWatch → アラーム → アラームの作成
+2. メトリクスの選択：EC2 → Per-Instance Metrics
+3. 条件の設定：
+   - CPU使用率 > 80% for 5分間
+4. 通知の設定：
+   - SNSトピックを作成
+   - メールアドレスを登録</div>
 
-const logger = winston.createLogger({
-  level: 'info',
-  format: winston.format.json(),
-  transports: [
-    new winston.transports.File({ filename: 'error.log', level: 'error' }),
-    new winston.transports.File({ filename: 'combined.log' })
-  ]
-});</div>
+            <h3>アプリケーションログの設定</h3>
+            <div class="code-block"># CloudWatch Logsエージェントのインストール
+wget https://s3.amazonaws.com/amazoncloudwatch-agent/ubuntu/amd64/latest/amazon-cloudwatch-agent.deb
+sudo dpkg -i amazon-cloudwatch-agent.deb
+
+# PM2のログをCloudWatchに送信
+pm2 install pm2-cloudwatch-logs</div>
 
             <div class="info-box">
-                💡 推奨ツール：Sentry（エラートラッキング）、New Relic（パフォーマンス監視）
+                💡 CloudWatchダッシュボードで全てのメトリクスを一元管理できます
             </div>
         </div>
     </div>
 
-    <!-- スライド12: トラブルシューティング -->
+    <!-- スライド12: バックアップとスナップショット -->
     <div class="slide-container">
         <div class="slide-content">
-            <h1>🔧 よくあるトラブルと解決法</h1>
+            <h1>💾 バックアップとスナップショット</h1>
+            <h2>データ保護とディザスタリカバリ</h2>
 
-            <div class="feature-grid">
-                <div class="feature-card" style="background: linear-gradient(135deg, #fab1a0 0%, #ff7675 100%);">
-                    <div class="feature-icon">❌</div>
-                    <div class="feature-title">ビルドエラー</div>
-                    <p><strong>原因：</strong> package.jsonの不整合</p>
-                    <div class="code-block">npm install --save [missing-package]
-rm package-lock.json
-npm install</div>
-                </div>
+            <h3>EBSスナップショットの作成</h3>
+            <ol>
+                <li><strong>手動スナップショット</strong>
+                    <div class="code-block"># EC2コンソールから
+1. EC2 → Elastic Block Store → ボリューム
+2. 対象ボリュームを選択
+3. アクション → スナップショットの作成
+4. 説明を入力して作成</div>
+                </li>
 
-                <div class="feature-card" style="background: linear-gradient(135deg, #fab1a0 0%, #ff7675 100%);">
-                    <div class="feature-icon">❌</div>
-                    <div class="feature-title">ポートエラー</div>
-                    <p><strong>原因：</strong> ポート番号の固定</p>
-                    <div class="code-block">const PORT = process.env.PORT || 3000;</div>
-                </div>
+                <li><strong>自動バックアップの設定</strong>
+                    <div class="code-block"># AWS Backupを使用
+1. AWS Backup → バックアッププランの作成
+2. ルールの設定：
+   - 頻度：毎日
+   - 時刻：深夜2時
+   - 保持期間：7日間
+3. リソースの割り当て：
+   - EC2インスタンスを選択</div>
+                </li>
+            </ol>
 
-                <div class="feature-card" style="background: linear-gradient(135deg, #fab1a0 0%, #ff7675 100%);">
-                    <div class="feature-icon">❌</div>
-                    <div class="feature-title">DB接続失敗</div>
-                    <p><strong>原因：</strong> 環境変数の未設定</p>
-                    <div class="code-block">環境変数DATABASE_URLを確認
-SSL設定の追加が必要な場合あり</div>
-                </div>
-
-                <div class="feature-card" style="background: linear-gradient(135deg, #fab1a0 0%, #ff7675 100%);">
-                    <div class="feature-icon">❌</div>
-                    <div class="feature-title">CORSエラー</div>
-                    <p><strong>原因：</strong> オリジン設定ミス</p>
-                    <div class="code-block">本番URLをCORS設定に追加
-credentials: trueの設定確認</div>
-                </div>
-            </div>
+            <h3>AMIの作成（完全バックアップ）</h3>
+            <div class="code-block"># インスタンス全体のイメージを作成
+1. EC2 → インスタンス → 対象インスタンスを選択
+2. アクション → イメージとテンプレート → イメージを作成
+3. イメージ名：my-app-backup-20240115
+4. 「再起動しない」にチェック（ダウンタイムを避ける場合）</div>
 
             <div class="highlight-box">
-                <strong>Claude Codeを使ったデバッグ：</strong><br>
-                「Renderのログに以下のエラーが出ています。原因と解決方法を教えてください」<br>
-                → エラーログをペーストすると、Claude Codeが解決策を提示します
+                <strong>💡 ベストプラクティス：</strong>
+                <ul style="text-align: left;">
+                    <li>本番環境は毎日自動バックアップ</li>
+                    <li>大きな変更前は必ず手動バックアップ</li>
+                    <li>定期的にリストアテストを実施</li>
+                </ul>
             </div>
         </div>
     </div>
 
-    <!-- スライド13: 実演課題1 -->
+    <!-- スライド13: コスト最適化 -->
     <div class="slide-container">
         <div class="slide-content">
-            <h1>🎯 実演課題①：ToDoアプリのデプロイ</h1>
+            <h1>💰 AWSコスト最適化のコツ</h1>
+            <h2>無駄な出費を防ぐ方法</h2>
+
+            <div class="feature-grid">
+                <div class="feature-card">
+                    <div class="feature-title">🔌 不要なリソースの停止</div>
+                    <ul style="text-align: left;">
+                        <li>開発環境は夜間・週末停止</li>
+                        <li>使わないElastic IPは解放</li>
+                        <li>古いスナップショットは削除</li>
+                    </ul>
+                </div>
+
+                <div class="feature-card">
+                    <div class="feature-title">📊 適切なインスタンスサイズ</div>
+                    <ul style="text-align: left;">
+                        <li>CloudWatchでCPU使用率確認</li>
+                        <li>平均20%以下ならダウンサイズ</li>
+                        <li>t3シリーズの活用（バースト機能）</li>
+                    </ul>
+                </div>
+
+                <div class="feature-card">
+                    <div class="feature-title">💳 料金アラート設定</div>
+                    <ul style="text-align: left;">
+                        <li>予算を設定（月$10など）</li>
+                        <li>80%到達でアラート</li>
+                        <li>Cost Explorerで分析</li>
+                    </ul>
+                </div>
+
+                <div class="feature-card">
+                    <div class="feature-title">🏷️ リザーブドインスタンス</div>
+                    <ul style="text-align: left;">
+                        <li>長期利用なら最大72%割引</li>
+                        <li>1年または3年契約</li>
+                        <li>本番環境におすすめ</li>
+                    </ul>
+                </div>
+            </div>
+
+            <h3>月額料金の目安（東京リージョン）</h3>
+            <table>
+                <tr>
+                    <th>リソース</th>
+                    <th>スペック</th>
+                    <th>月額（概算）</th>
+                </tr>
+                <tr>
+                    <td>EC2 t2.micro</td>
+                    <td>1vCPU, 1GB RAM</td>
+                    <td>$10〜12</td>
+                </tr>
+                <tr>
+                    <td>EBS 30GB</td>
+                    <td>汎用SSD (gp3)</td>
+                    <td>$3〜4</td>
+                </tr>
+                <tr>
+                    <td>データ転送</td>
+                    <td>100GB/月</td>
+                    <td>$10〜15</td>
+                </tr>
+                <tr>
+                    <td>Elastic IP</td>
+                    <td>1個（使用中）</td>
+                    <td>$0</td>
+                </tr>
+            </table>
+
+            <div class="info-box">
+                💡 <strong>合計：</strong> 月額$25〜35程度（約3,500〜5,000円）で運用可能
+            </div>
+        </div>
+    </div>
+
+    <!-- スライド14: 実演課題1 -->
+    <div class="slide-container">
+        <div class="slide-content">
+            <h1>🎯 実演課題①：EC2インスタンス構築</h1>
 
             <div class="demo-section">
                 <div class="demo-title">課題内容</div>
-                <p>Claude Codeで作成したシンプルなToDoアプリをRenderにデプロイしてください。</p>
+                <p>Claude Codeで作成したNode.jsアプリケーションをAWS EC2にデプロイしてください。</p>
             </div>
 
             <h3>実施手順：</h3>
             <ol>
                 <li>
-                    <strong>Claude Codeでアプリ作成</strong>
+                    <strong>EC2インスタンスの作成</strong>
+                    <ul>
+                        <li>Ubuntu 22.04 LTS、t2.micro</li>
+                        <li>セキュリティグループ設定（22, 80, 443, 3000番ポート）</li>
+                        <li>キーペアの作成とダウンロード</li>
+                    </ul>
+                </li>
+
+                <li>
+                    <strong>Claude Codeでセットアップスクリプト作成</strong>
                     <div class="code-block">プロンプト:
-「シンプルなToDoアプリを作成してください。
-Express.js + SQLite + 基本的なHTML/CSSで構築。
-Renderへのデプロイを考慮した設定も含めてください。」</div>
+「AWS EC2 Ubuntu 22.04でNode.jsアプリケーションを
+デプロイするための完全なセットアップスクリプトを作成してください。
+Node.js、PM2、Nginx、Git、SSL証明書の設定も含めてください。」</div>
                 </li>
 
                 <li>
-                    <strong>GitHubリポジトリ作成</strong>
-                    <p>作成したコードをGitHubにプッシュ</p>
-                </li>
-
-                <li>
-                    <strong>Renderでデプロイ</strong>
-                    <p>前述の手順に従ってデプロイ実行</p>
+                    <strong>アプリケーションのデプロイ</strong>
+                    <ul>
+                        <li>GitHubからクローン</li>
+                        <li>PM2で起動</li>
+                        <li>Nginxでリバースプロキシ設定</li>
+                    </ul>
                 </li>
 
                 <li>
                     <strong>動作確認</strong>
-                    <p>公開されたURLでアプリが動作することを確認</p>
+                    <p>http://[EC2のパブリックIP]/ でアクセスして確認</p>
                 </li>
             </ol>
 
             <div class="success-box">
-                🏆 <strong>達成目標：</strong> 30分以内に公開URLを取得し、他の人と共有できる状態にする
+                🏆 <strong>達成目標：</strong> 60分以内にEC2上でアプリケーションを公開
             </div>
         </div>
     </div>
 
-    <!-- スライド14: 実演課題2 -->
+    <!-- スライド15: 実演課題2 -->
     <div class="slide-container">
         <div class="slide-content">
-            <h1>🎯 実演課題②：本番環境の最適化</h1>
+            <h1>🎯 実演課題②：本番環境の構築</h1>
 
             <div class="demo-section">
                 <div class="demo-title">課題内容</div>
-                <p>デプロイ済みのアプリケーションに本番環境向けの最適化を実装してください。</p>
+                <p>EC2環境を本番レベルに最適化してください。</p>
             </div>
 
             <h3>実装項目：</h3>
             <div class="feature-grid">
                 <div class="feature-card">
-                    <div class="feature-title">1. 環境変数の完全分離</div>
+                    <div class="feature-title">1. Elastic IP設定</div>
                     <ul style="text-align: left;">
-                        <li>開発/ステージング/本番の切り替え</li>
-                        <li>.env.exampleファイルの作成</li>
+                        <li>固定IPアドレスの割り当て</li>
+                        <li>インスタンスへの関連付け</li>
                     </ul>
                 </div>
 
                 <div class="feature-card">
-                    <div class="feature-title">2. エラーハンドリング強化</div>
+                    <div class="feature-title">2. SSL証明書導入</div>
                     <ul style="text-align: left;">
-                        <li>カスタムエラーページ（404, 500）</li>
-                        <li>エラーログの記録</li>
+                        <li>Let's Encryptで無料SSL</li>
+                        <li>自動更新の設定</li>
                     </ul>
                 </div>
 
                 <div class="feature-card">
-                    <div class="feature-title">3. セキュリティ対策</div>
+                    <div class="feature-title">3. 監視設定</div>
                     <ul style="text-align: left;">
-                        <li>Rate Limiting実装</li>
-                        <li>Helmet.jsの導入</li>
+                        <li>CloudWatchアラーム作成</li>
+                        <li>CPU80%超えでメール通知</li>
                     </ul>
                 </div>
 
                 <div class="feature-card">
-                    <div class="feature-title">4. パフォーマンス最適化</div>
+                    <div class="feature-title">4. バックアップ設定</div>
                     <ul style="text-align: left;">
-                        <li>圧縮（compression）</li>
-                        <li>キャッシュ戦略</li>
+                        <li>EBSスナップショット作成</li>
+                        <li>毎日深夜に自動バックアップ</li>
                     </ul>
                 </div>
             </div>
 
             <h3>Claude Codeへのプロンプト例：</h3>
-            <div class="code-block">このExpressアプリに本番環境向けの最適化を追加してください：
-- Helmet.jsでセキュリティヘッダー追加
-- express-rate-limitでAPI制限（1分間に100リクエストまで）
-- compressionで圧縮
-- winstonでログ管理
-- 本番環境用のエラーハンドリング</div>
+            <div class="code-block">「AWS EC2で本番環境を構築するためのチェックリストと
+設定スクリプトを作成してください。以下を含めてください：
+- セキュリティ強化（fail2ban、ufw）
+- 自動バックアップ設定
+- ログローテーション
+- パフォーマンス最適化」</div>
+
+            <div class="info-box">
+                💡 これらの設定により、安全で信頼性の高い本番環境が構築できます
+            </div>
         </div>
     </div>
 
-    <!-- スライド15: まとめ -->
+    <!-- スライド16: まとめ -->
     <div class="slide-container">
         <div class="slide-content">
             <div class="centered">
@@ -948,11 +1121,13 @@ Renderへのデプロイを考慮した設定も含めてください。」</div
                 <div class="success-box">
                     <h2>✅ マスターしたスキル</h2>
                     <ul style="text-align: left; display: inline-block;">
-                        <li>クラウドプラットフォームの選択と特徴理解</li>
-                        <li>GitHubを使った自動デプロイの設定</li>
-                        <li>環境変数によるセキュアな設定管理</li>
-                        <li>本番環境向けの最適化とモニタリング</li>
-                        <li>トラブルシューティングの基本</li>
+                        <li>レンタルサーバーとクラウドサーバーの違い</li>
+                        <li>AWS EC2インスタンスの作成と設定</li>
+                        <li>SSH接続とサーバー環境構築</li>
+                        <li>Nginxリバースプロキシの設定</li>
+                        <li>Elastic IPとドメイン設定</li>
+                        <li>CloudWatchによる監視</li>
+                        <li>バックアップとコスト最適化</li>
                     </ul>
                 </div>
 
@@ -961,19 +1136,30 @@ Renderへのデプロイを考慮した設定も含めてください。」</div
                 <h3>🌟 次のステップ</h3>
                 <div class="feature-grid">
                     <div class="feature-card">
-                        <div class="feature-title">CI/CDパイプライン</div>
-                        <p>GitHub Actionsで自動化</p>
+                        <div class="feature-title">Auto Scaling</div>
+                        <p>負荷に応じて自動スケーリング</p>
                     </div>
 
                     <div class="feature-card">
-                        <div class="feature-title">コンテナ化</div>
-                        <p>Dockerの活用</p>
+                        <div class="feature-title">RDS連携</div>
+                        <p>マネージドデータベースの活用</p>
+                    </div>
+
+                    <div class="feature-card">
+                        <div class="feature-title">CloudFront CDN</div>
+                        <p>世界中に高速配信</p>
+                    </div>
+
+                    <div class="feature-card">
+                        <div class="feature-title">Docker & ECS</div>
+                        <p>コンテナ化とオーケストレーション</p>
                     </div>
                 </div>
 
                 <div class="highlight-box">
                     <strong>🎯 最終目標達成！</strong><br>
-                    あなたは今、Claude Codeで開発したアプリケーションを世界に公開する力を手に入れました！
+                    あなたは今、Claude Codeで開発したアプリケーションを<br>
+                    AWS EC2で本番運用する力を手に入れました！
                 </div>
             </div>
         </div>
@@ -982,7 +1168,7 @@ Renderへのデプロイを考慮した設定も含めてください。」</div
     <!-- ナビゲーション -->
     <div class="navigation">
         <button class="nav-btn" onclick="previousSlide()">◀ 前へ</button>
-        <span id="slideNumber">1 / 15</span>
+        <span id="slideNumber">1 / 16</span>
         <button class="nav-btn" onclick="nextSlide()">次へ ▶</button>
     </div>
 
