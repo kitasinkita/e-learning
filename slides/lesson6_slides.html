@@ -415,7 +415,195 @@
         </div>
     </div>
 
-    <!-- スライド3: AWS EC2とは -->
+    <!-- スライド3: Webサーバーに必要なもの -->
+    <div class="slide-container">
+        <div class="slide-content">
+            <h1>🌐 Webサーバーに必要なもの</h1>
+            <h2>世界中の人にサイトを見てもらうために</h2>
+
+            <h3>Webサーバーとは？</h3>
+            <p>インターネット上でWebサイトやアプリケーションを公開するためのコンピューターとソフトウェアの組み合わせです。</p>
+
+            <div class="feature-grid">
+                <div class="feature-card">
+                    <div class="feature-icon">🖥️</div>
+                    <div class="feature-title">サーバーマシン</div>
+                    <p>物理サーバーまたは<br>クラウドの仮想サーバー<br>（AWS EC2など）</p>
+                </div>
+
+                <div class="feature-card">
+                    <div class="feature-icon">⚙️</div>
+                    <div class="feature-title">Webサーバーソフト</div>
+                    <p><strong>Apache</strong> または <strong>Nginx</strong><br>HTTPリクエストを処理して<br>Webページを配信</p>
+                </div>
+
+                <div class="feature-card">
+                    <div class="feature-icon">🌍</div>
+                    <div class="feature-title">パブリックIP</div>
+                    <p>インターネットからアクセス<br>できる公開IPアドレス<br>（例：52.195.12.32）</p>
+                </div>
+
+                <div class="feature-card">
+                    <div class="feature-icon">🌐</div>
+                    <div class="feature-title">ドメイン名</div>
+                    <p>覚えやすいURL<br>（例：myapp.com）<br>IPアドレスに紐付け</p>
+                </div>
+            </div>
+
+            <h3>基本的なWebサイトの構成</h3>
+            <div class="comparison-grid">
+                <div class="comparison-card cloud">
+                    <h4>🏠 静的サイト（HTML/CSS/JS）</h4>
+                    <ul style="text-align: left;">
+                        <li>📄 <strong>HTML/CSS/JavaScript</strong><br>ブラウザで直接表示される</li>
+                        <li>⚙️ <strong>Webサーバー</strong><br>Apache または Nginx</li>
+                        <li>🚀 <strong>特徴</strong><br>高速、シンプル、軽量</li>
+                    </ul>
+                </div>
+
+                <div class="comparison-card rental">
+                    <h4>⚡ 動的サイト（アプリケーション）</h4>
+                    <ul style="text-align: left;">
+                        <li>💻 <strong>アプリケーション</strong><br>Node.js、PHP、Python等</li>
+                        <li>🗄️ <strong>データベース</strong><br>MySQL、PostgreSQL等</li>
+                        <li>🔧 <strong>特徴</strong><br>ユーザー登録、ログイン、データ処理</li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- スライド4: Webサーバーソフトウェアの種類 -->
+    <div class="slide-container">
+        <div class="slide-content">
+            <h1>⚙️ Webサーバーソフトウェアの種類</h1>
+            <h2>Apache vs Nginx</h2>
+
+            <table>
+                <tr>
+                    <th>項目</th>
+                    <th>Apache</th>
+                    <th>Nginx</th>
+                </tr>
+                <tr>
+                    <td>歴史</td>
+                    <td>1995年～（老舗）</td>
+                    <td>2004年～（新しい）</td>
+                </tr>
+                <tr>
+                    <td>メモリ使用量</td>
+                    <td>やや多い</td>
+                    <td>少ない</td>
+                </tr>
+                <tr>
+                    <td>処理方式</td>
+                    <td>プロセス・スレッド型</td>
+                    <td>イベント駆動型</td>
+                </tr>
+                <tr>
+                    <td>同時接続数</td>
+                    <td>中程度</td>
+                    <td>非常に多い（10,000+）</td>
+                </tr>
+                <tr>
+                    <td>設定の自由度</td>
+                    <td>高い（.htaccess）</td>
+                    <td>中程度</td>
+                </tr>
+            </table>
+
+            <h3>アプリケーション実行環境</h3>
+            <div class="feature-grid">
+                <div class="feature-card">
+                    <div class="feature-icon">🟨</div>
+                    <div class="feature-title">Node.js</div>
+                    <p>JavaScript実行環境<br>Express、React、Vue等<br><strong>今回使用</strong></p>
+                </div>
+
+                <div class="feature-card">
+                    <div class="feature-icon">🐘</div>
+                    <div class="feature-title">PHP</div>
+                    <p>Webに特化した言語<br>WordPress、Laravel等<br>共用サーバーでも人気</p>
+                </div>
+
+                <div class="feature-card">
+                    <div class="feature-icon">🐍</div>
+                    <div class="feature-title">Python</div>
+                    <p>汎用プログラミング言語<br>Django、Flask等<br>AI・機械学習にも強い</p>
+                </div>
+
+                <div class="feature-card">
+                    <div class="feature-icon">💎</div>
+                    <div class="feature-title">Ruby</div>
+                    <p>日本発のプログラミング言語<br>Ruby on Rails<br>スタートアップに人気</p>
+                </div>
+            </div>
+
+            <div class="info-box">
+                💡 <strong>今回の構成：</strong> EC2（Ubuntu） + Nginx + Node.js + SQLite
+            </div>
+        </div>
+    </div>
+
+    <!-- スライド5: データベースの役割 -->
+    <div class="slide-container">
+        <div class="slide-content">
+            <h1>🗄️ データベースの役割</h1>
+            <h2>Webアプリケーションに欠かせない要素</h2>
+
+            <h3>なぜデータベースが必要？</h3>
+            <ul>
+                <li><strong>ユーザー情報の管理：</strong> 登録・ログイン・プロフィール</li>
+                <li><strong>コンテンツの保存：</strong> 記事、商品情報、コメント</li>
+                <li><strong>履歴・ログの記録：</strong> アクセス履歴、購入履歴</li>
+                <li><strong>設定の保存：</strong> システム設定、ユーザー設定</li>
+            </ul>
+
+            <h3>主要なデータベースの種類</h3>
+            <div class="feature-grid">
+                <div class="feature-card">
+                    <div class="feature-icon">🐬</div>
+                    <div class="feature-title">MySQL</div>
+                    <p>世界で最も普及<br>WordPress等で使用<br>中小規模に最適</p>
+                </div>
+
+                <div class="feature-card">
+                    <div class="feature-icon">🐘</div>
+                    <div class="feature-title">PostgreSQL</div>
+                    <p>高機能・高性能<br>大規模システムに人気<br>拡張性が高い</p>
+                </div>
+
+                <div class="feature-card">
+                    <div class="feature-icon">🗃️</div>
+                    <div class="feature-title">SQLite</div>
+                    <p>軽量・ファイル型<br>アプリ組み込み用<br><strong>今回使用</strong></p>
+                </div>
+
+                <div class="feature-card">
+                    <div class="feature-icon">🍃</div>
+                    <div class="feature-title">MongoDB</div>
+                    <p>NoSQL（非リレーショナル）<br>JSON形式でデータ保存<br>スケーラブル</p>
+                </div>
+            </div>
+
+            <h3>Webアプリケーションの全体構成</h3>
+            <div class="code-block">ユーザー（ブラウザ）
+    ↓ HTTPリクエスト
+🌐 インターネット
+    ↓
+🔐 Nginx（リバースプロキシ・SSL終端）
+    ↓
+⚙️ Node.js アプリケーション（Express.js）
+    ↓
+🗄️ データベース（SQLite/MySQL/PostgreSQL）</div>
+
+            <div class="highlight-box">
+                <strong>実際の例：</strong> ユーザーがログインボタンを押すと→NginxがリクエストをNode.jsに転送→Node.jsがデータベースでユーザー情報を確認→結果をNginx経由でブラウザに返す
+            </div>
+        </div>
+    </div>
+
+    <!-- スライド6: AWS EC2とは -->
     <div class="slide-container">
         <div class="slide-content">
             <h1><span class="aws-orange">AWS</span> EC2とは？</h1>
@@ -805,18 +993,50 @@ sudo systemctl restart nginx</div>
 タイプ: CNAME
 値: myapp.com</div>
 
-            <h3>SSL証明書の設定（Let's Encrypt）</h3>
+            <h3>SSL証明書とは？</h3>
+            <div class="info-box">
+                <strong>🔐 SSL（Secure Sockets Layer）の役割：</strong>
+                <ul style="text-align: left;">
+                    <li><strong>暗号化：</strong> ブラウザ↔サーバー間の通信を暗号化</li>
+                    <li><strong>認証：</strong> サイトが本物であることを証明</li>
+                    <li><strong>完全性：</strong> データが改ざんされていないことを保証</li>
+                    <li><strong>SEO効果：</strong> GoogleがHTTPS化を推奨（検索順位向上）</li>
+                </ul>
+            </div>
+
+            <div class="comparison-grid">
+                <div class="comparison-card rental">
+                    <h4>❌ HTTP（非暗号化）</h4>
+                    <ul style="text-align: left;">
+                        <li>通信内容が平文（盗聴可能）</li>
+                        <li>ブラウザで「保護されていない通信」警告</li>
+                        <li>パスワード等の送信は危険</li>
+                    </ul>
+                </div>
+
+                <div class="comparison-card cloud">
+                    <h4>✅ HTTPS（SSL暗号化）</h4>
+                    <ul style="text-align: left;">
+                        <li>通信内容が暗号化（安全）</li>
+                        <li>ブラウザに🔒マークが表示</li>
+                        <li>個人情報の送信も安心</li>
+                    </ul>
+                </div>
+            </div>
+
+            <h3>Let's EncryptでSSL証明書取得</h3>
             <div class="code-block"># Certbotをインストール
 sudo apt install certbot python3-certbot-nginx -y
 
-# SSL証明書を取得
+# SSL証明書を取得（無料）
 sudo certbot --nginx -d myapp.com -d www.myapp.com
 
-# 自動更新のテスト
+# 自動更新のテスト（90日ごとに更新必要）
 sudo certbot renew --dry-run</div>
 
             <div class="success-box">
-                ✅ これで https://myapp.com でセキュアにアクセス可能！
+                ✅ これで https://myapp.com でセキュアにアクセス可能！<br>
+                証明書は90日間有効で、自動更新されます。
             </div>
         </div>
     </div>
@@ -1168,7 +1388,7 @@ Node.js、PM2、Nginx、Git、SSL証明書の設定も含めてください。�
     <!-- ナビゲーション -->
     <div class="navigation">
         <button class="nav-btn" onclick="previousSlide()">◀ 前へ</button>
-        <span id="slideNumber">1 / 16</span>
+        <span id="slideNumber">1 / 19</span>
         <button class="nav-btn" onclick="nextSlide()">次へ ▶</button>
     </div>
 
