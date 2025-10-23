@@ -1,0 +1,401 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>レッスン7: Claude Codeを駆使したiOSアプリ開発 - SmartLearn Pro</title>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.11.174/pdf.min.js"></script>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+        }
+
+        .header {
+            background: rgba(255, 255, 255, 0.95);
+            padding: 1rem 2rem;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+        }
+
+        .header h1 {
+            color: #3B82F6;
+            font-size: 1.5rem;
+            font-weight: 600;
+        }
+
+        .slide-container {
+            flex: 1;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            padding: 2rem;
+            position: relative;
+        }
+
+        #pdf-canvas {
+            max-width: 100%;
+            max-height: 70vh;
+            background: white;
+            border-radius: 12px;
+            box-shadow: 0 20px 60px rgba(0,0,0,0.3);
+        }
+
+        .loading {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            color: white;
+            font-size: 1.5rem;
+            font-weight: 600;
+        }
+
+        .controls {
+            background: rgba(255, 255, 255, 0.95);
+            padding: 1.5rem 2rem;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            box-shadow: 0 -2px 10px rgba(0,0,0,0.1);
+        }
+
+        .nav-buttons {
+            display: flex;
+            gap: 1rem;
+        }
+
+        .nav-btn {
+            background: #3B82F6;
+            color: white;
+            border: none;
+            padding: 0.75rem 1.5rem;
+            border-radius: 8px;
+            font-size: 1rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s;
+        }
+
+        .nav-btn:hover:not(:disabled) {
+            background: #2563EB;
+            transform: translateY(-2px);
+            box-shadow: 0 4px 12px rgba(59, 130, 246, 0.4);
+        }
+
+        .nav-btn:disabled {
+            background: #CBD5E1;
+            cursor: not-allowed;
+        }
+
+        .progress-info {
+            display: flex;
+            align-items: center;
+            gap: 1.5rem;
+        }
+
+        .slide-counter {
+            color: #475569;
+            font-weight: 600;
+            font-size: 1rem;
+        }
+
+        .progress-bar-container {
+            width: 300px;
+            height: 8px;
+            background: #E2E8F0;
+            border-radius: 4px;
+            overflow: hidden;
+        }
+
+        .progress-bar {
+            height: 100%;
+            background: linear-gradient(90deg, #3B82F6, #8B5CF6);
+            transition: width 0.3s ease;
+            border-radius: 4px;
+        }
+
+        .complete-btn {
+            background: #10B981;
+            color: white;
+            border: none;
+            padding: 0.75rem 2rem;
+            border-radius: 8px;
+            font-size: 1rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s;
+        }
+
+        .complete-btn:hover:not(:disabled) {
+            background: #059669;
+            transform: translateY(-2px);
+            box-shadow: 0 4px 12px rgba(16, 185, 129, 0.4);
+        }
+
+        .complete-btn:disabled {
+            background: #CBD5E1;
+            cursor: not-allowed;
+        }
+
+        .back-btn {
+            background: #64748B;
+            color: white;
+            border: none;
+            padding: 0.75rem 1.5rem;
+            border-radius: 8px;
+            font-size: 1rem;
+            font-weight: 600;
+            cursor: pointer;
+            text-decoration: none;
+            display: inline-block;
+            transition: all 0.3s;
+        }
+
+        .back-btn:hover {
+            background: #475569;
+            transform: translateY(-2px);
+            box-shadow: 0 4px 12px rgba(100, 116, 139, 0.4);
+        }
+
+        @media (max-width: 768px) {
+            .header {
+                padding: 0.75rem 1rem;
+            }
+
+            .header h1 {
+                font-size: 1.1rem;
+            }
+
+            .slide-container {
+                padding: 1rem;
+            }
+
+            #pdf-canvas {
+                max-height: 60vh;
+            }
+
+            .controls {
+                flex-direction: column;
+                gap: 1rem;
+                padding: 1rem;
+            }
+
+            .progress-info {
+                flex-direction: column;
+                gap: 0.5rem;
+            }
+
+            .progress-bar-container {
+                width: 100%;
+            }
+
+            .nav-buttons {
+                width: 100%;
+                justify-content: space-between;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="header">
+        <h1>📱 レッスン7: Claude Codeを駆使したiOSアプリ開発（実践編）</h1>
+    </div>
+
+    <div class="slide-container">
+        <div class="loading" id="loading">PDFを読み込み中...</div>
+        <canvas id="pdf-canvas"></canvas>
+    </div>
+
+    <div class="controls">
+        <div class="nav-buttons">
+            <a href="../public/student-dashboard.html" class="back-btn">← ダッシュボードに戻る</a>
+            <button class="nav-btn" id="prev-btn" disabled>← 前へ</button>
+            <button class="nav-btn" id="next-btn">次へ →</button>
+        </div>
+
+        <div class="progress-info">
+            <span class="slide-counter" id="slide-counter">1 / 25</span>
+            <div class="progress-bar-container">
+                <div class="progress-bar" id="progress-bar" style="width: 4%"></div>
+            </div>
+        </div>
+
+        <button class="complete-btn" id="complete-btn" disabled>✓ レッスン完了</button>
+    </div>
+
+    <script>
+        // PDF.js の設定
+        pdfjsLib.GlobalWorkerOptions.workerSrc = 'https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.11.174/pdf.worker.min.js';
+
+        // グローバル変数
+        let pdfDoc = null;
+        let currentPage = 1;
+        const totalPages = 25;
+        const pdfUrl = './claude-code-presentation.pdf';
+
+        // 要素の取得
+        const canvas = document.getElementById('pdf-canvas');
+        const ctx = canvas.getContext('2d');
+        const loading = document.getElementById('loading');
+        const prevBtn = document.getElementById('prev-btn');
+        const nextBtn = document.getElementById('next-btn');
+        const completeBtn = document.getElementById('complete-btn');
+        const slideCounter = document.getElementById('slide-counter');
+        const progressBar = document.getElementById('progress-bar');
+
+        // PDFの読み込み
+        async function loadPDF() {
+            try {
+                pdfDoc = await pdfjsLib.getDocument(pdfUrl).promise;
+                console.log(`PDF loaded: ${pdfDoc.numPages} pages`);
+                loading.style.display = 'none';
+                renderPage(currentPage);
+                updateProgress();
+            } catch (error) {
+                console.error('PDF読み込みエラー:', error);
+                loading.textContent = 'PDFの読み込みに失敗しました';
+                loading.style.color = '#EF4444';
+            }
+        }
+
+        // ページのレンダリング
+        async function renderPage(pageNum) {
+            try {
+                const page = await pdfDoc.getPage(pageNum);
+
+                // ビューポートの設定（高解像度対応）
+                const viewport = page.getViewport({ scale: 2.0 });
+
+                // Canvasのサイズ設定
+                canvas.height = viewport.height;
+                canvas.width = viewport.width;
+
+                // レンダリング
+                const renderContext = {
+                    canvasContext: ctx,
+                    viewport: viewport
+                };
+
+                await page.render(renderContext).promise;
+
+                // 進捗の保存
+                saveProgress(pageNum);
+            } catch (error) {
+                console.error('ページレンダリングエラー:', error);
+            }
+        }
+
+        // 進捗の更新
+        function updateProgress() {
+            // スライドカウンター
+            slideCounter.textContent = `${currentPage} / ${totalPages}`;
+
+            // プログレスバー
+            const progress = (currentPage / totalPages) * 100;
+            progressBar.style.width = `${progress}%`;
+
+            // ナビゲーションボタン
+            prevBtn.disabled = currentPage === 1;
+            nextBtn.disabled = currentPage === totalPages;
+
+            // 完了ボタン
+            completeBtn.disabled = currentPage !== totalPages;
+        }
+
+        // 進捗の保存
+        function saveProgress(slideNum) {
+            const token = localStorage.getItem('token');
+            if (!token) return;
+
+            fetch('http://localhost:3000/api/progress', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                    'Authorization': `Bearer ${token}`
+                },
+                body: JSON.stringify({
+                    lesson_id: 7,
+                    last_slide: slideNum,
+                    time_spent: 0 // 後で実装
+                })
+            }).catch(err => console.error('進捗保存エラー:', err));
+        }
+
+        // レッスン完了
+        async function completeLesson() {
+            const token = localStorage.getItem('token');
+            if (!token) {
+                alert('ログインが必要です');
+                return;
+            }
+
+            try {
+                const response = await fetch('http://localhost:3000/api/progress/complete', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                        'Authorization': `Bearer ${token}`
+                    },
+                    body: JSON.stringify({
+                        lesson_id: 7
+                    })
+                });
+
+                if (response.ok) {
+                    alert('🎉 レッスン7を完了しました！\n\nClaude Codeの実践的な活用方法を学習しました。');
+                    window.location.href = '../public/student-dashboard.html';
+                } else {
+                    throw new Error('完了処理に失敗しました');
+                }
+            } catch (error) {
+                console.error('完了エラー:', error);
+                alert('完了処理でエラーが発生しました');
+            }
+        }
+
+        // イベントリスナー
+        prevBtn.addEventListener('click', () => {
+            if (currentPage > 1) {
+                currentPage--;
+                renderPage(currentPage);
+                updateProgress();
+            }
+        });
+
+        nextBtn.addEventListener('click', () => {
+            if (currentPage < totalPages) {
+                currentPage++;
+                renderPage(currentPage);
+                updateProgress();
+            }
+        });
+
+        completeBtn.addEventListener('click', completeLesson);
+
+        // キーボードナビゲーション
+        document.addEventListener('keydown', (e) => {
+            if (e.key === 'ArrowLeft' && currentPage > 1) {
+                currentPage--;
+                renderPage(currentPage);
+                updateProgress();
+            } else if (e.key === 'ArrowRight' && currentPage < totalPages) {
+                currentPage++;
+                renderPage(currentPage);
+                updateProgress();
+            }
+        });
+
+        // 初期化
+        loadPDF();
+    </script>
+</body>
+</html>

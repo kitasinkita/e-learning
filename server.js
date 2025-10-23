@@ -122,7 +122,7 @@ app.get('/api/lesson/:id/slide-count', (req, res) => {
         res.json({ lessonId: parseInt(lessonId), totalSlides: slideCount });
     } catch (error) {
         // スライドファイルが見つからない場合はデフォルト値を返す
-        const defaultSlideCounts = { 1: 15, 2: 12, 3: 14, 4: 13, 5: 16 };
+        const defaultSlideCounts = { 1: 15, 2: 12, 3: 14, 4: 13, 5: 16, 6: 18, 7: 25 };
         const defaultCount = defaultSlideCounts[lessonId] || 15;
         res.json({ lessonId: parseInt(lessonId), totalSlides: defaultCount });
     }
