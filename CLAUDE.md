@@ -624,6 +624,61 @@ ssh -i '/Users/sk/elearning-key.pem' ubuntu@52.195.12.32 \
 
 ---
 
+### 2025-10-23 レッスン7追加: PDF.jsによるPDFスライド表示機能
+
+#### 主要変更内容
+1. **PDFスライド表示システム実装**: Mozilla PDF.jsを使用したPDFレンダリング機能
+2. **レッスン7追加**: 「Claude Code実践: iOSアプリ開発」（Oikonさんのプレゼン資料）
+3. **25ページ対応**: PDFの各ページをスライド形式で表示
+4. **既存システムとの統合**: 進捗管理・完了機能の完全対応
+
+#### ファイル変更
+- `slides/lesson7_slides.html`: 新規作成（PDF.jsベースのビューア）
+- `slides/claude-code-presentation.pdf`: 追加（17.4MB、25ページ）
+- `public/student-dashboard.html`: レッスン7を配列に追加
+- `server.js`: デフォルトスライド数に `7: 25` を追加
+
+#### 技術実装
+- **PDF.js CDN**: v3.11.174（worker含む）
+- **Canvas レンダリング**: scale 2.0 で高解像度表示
+- **ナビゲーション**: ←→キー対応、進捗バー、ページカウンター
+- **進捗管理**: 既存APIとの完全互換（`/api/progress`, `/api/progress/complete`）
+- **レスポンシブ**: モバイル・タブレット・デスクトップ対応
+
+#### デプロイ状況
+- **GitHub**: ✅ プッシュ完了（commit: 1ccbf79）
+- **AWS EC2**: ⚠️ SSH接続不可（IP制限）
+  - 現在IP: `153.161.216.163`
+  - HTTP (3000): ✅ アクセス可能
+  - SSH (22): ❌ タイムアウト（セキュリティグループで要IP追加）
+
+#### AWS反映手順（未実施）
+```bash
+# AWSコンソールまたは許可済みIPから実行
+ssh -i "$HOME/elearning-key.pem" ubuntu@52.195.12.32 \
+  "cd /var/www/elearning && git pull origin main && pm2 restart elearning"
+```
+
+または、**AWS EC2 Instance Connect** / **Session Manager** から：
+```bash
+cd /var/www/elearning
+git pull origin main
+pm2 restart elearning
+```
+
+#### 技術メモ
+- PDF.jsはスライド数カウント対象外（`slide-container`クラスなし）
+- `totalSlides: 25` を student-dashboard.html で固定値設定
+- PDFファイルサイズ大（17.4MB）→ 初回ロード時間に注意
+- 既存のHTML形式レッスンと共存可能
+
+#### 今後の拡張案
+- [ ] PDF圧縮・最適化（ファイルサイズ削減）
+- [ ] ページサムネイル表示
+- [ ] 検索機能（PDF内テキスト）
+- [ ] アノテーション機能
+- [ ] 他のPDF資料も同様の方式で追加可能
+
 ---
 
 ## 🎯 SmartLearn Pro カスタマイズガイド
