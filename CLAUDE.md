@@ -25,6 +25,9 @@ smartlearn-pro/
 │   ├── lesson3_slides.html     # レッスン3: MCP連携
 │   ├── lesson4_slides.html     # レッスン4: Playwright
 │   ├── lesson5_slides.html     # レッスン5: 総まとめ
+│   ├── lesson6_slides.html     # レッスン6: AWS EC2デプロイ実践
+│   ├── lesson7_slides.html     # レッスン7: Claude Code実践 iOSアプリ開発（PDF）
+│   ├── lesson8_slides.html     # レッスン8: Flutter + Claude Code開発環境構築
 │   └── system-overview.html    # システム概要（営業資料）
 ├── elearning.db                # SQLiteデータベース
 ├── CLAUDE.md                    # 本ファイル（開発ガイド）
@@ -678,6 +681,78 @@ pm2 restart elearning
 - [ ] 検索機能（PDF内テキスト）
 - [ ] アノテーション機能
 - [ ] 他のPDF資料も同様の方式で追加可能
+
+---
+
+### 2025-11-06 レッスン8追加: Flutter + Claude Code開発環境構築
+
+#### 主要変更内容
+1. **Flutter環境セットアップマニュアル追加**: AI支援によるクロスプラットフォームアプリ開発
+2. **レッスン8追加**: 「Flutter + Claude Code開発環境構築」（23スライド構成）
+3. **HTMLスライド形式**: 既存レッスンと同様のスライド形式で実装
+4. **Mac/Windows両対応**: プラットフォーム別のセットアップ手順を網羅
+
+#### ファイル変更
+- `slides/lesson8_slides.html`: 新規作成（Flutter環境セットアップマニュアル、23スライド）
+- `public/student-dashboard.html`: レッスン8を配列に追加
+- `server.js`: デフォルトスライド数に `8: 23` を追加
+- `server.js`: スライド検出ロジック改善（`class="slide"`にも対応）
+
+#### レッスン8の内容
+1. **Flutter SDKインストール**: Mac（Homebrew/公式サイト）、Windows（ZIPダウンロード）
+2. **Android Studioセットアップ**: 初期設定、Android SDK、Command-line Tools
+3. **プラグイン設定**: Flutter & Dartプラグインインストール
+4. **SDKライセンス承認**: flutter doctor --android-licenses
+5. **環境確認**: flutter doctor -v での動作確認
+6. **Androidエミュレータ作成**: Pixel 7エミュレータ設定
+7. **VS Code設定**: Flutter拡張機能 + Claude Code連携
+8. **プロジェクト作成**: flutter create による初回プロジェクト生成
+9. **Claude Codeでアプリ開発**: AI支援による実践的な開発手法
+10. **ホットリロード**: 高速開発サイクルの活用
+11. **トラブルシューティング**: よくあるエラーと解決方法
+
+#### 実演課題
+- **Flutter環境セットアップ**: 開発環境の完全構築
+- **最初のFlutterアプリ作成**: Claude Codeを使った初回アプリ開発
+
+#### 技術実装
+- **HTMLスライド形式**: `class="slide"` を使用した23スライド構成
+- **プラットフォームバッジ**: Mac/Windows/両対応の視覚的な区別
+- **コードブロック**: ターミナルコマンドの明確な表示
+- **注意喚起ボックス**: note（黄）、success（緑）、warning（赤）、info（青）
+- **レスポンシブ対応**: モバイル・タブレット・デスクトップ最適化
+
+#### デプロイ状況
+- **GitHub**: ✅ プッシュ完了（commit: 7d07fa0）
+- **AWS EC2**: ✅ デプロイ完了
+  - git pull成功（3ファイル変更、976行追加）
+  - PM2再起動完了
+  - API確認: `/api/lesson/8/slide-count` → 23スライド正常取得
+  - スライドアクセス: `/slides/lesson8_slides.html` → HTTP 200
+
+#### スライド検出ロジック改善
+```javascript
+// 修正前: slide-containerのみ検出
+const slideCount = (slideContent.match(/class="slide-container"/g) || []).length;
+
+// 修正後: slide-containerとslideクラス両方に対応
+const slideContainerCount = (slideContent.match(/class="slide-container"/g) || []).length;
+const slideClassCount = (slideContent.match(/class="slide"/g) || []).length;
+const slideCount = Math.max(slideContainerCount, slideClassCount);
+```
+
+#### 技術メモ
+- スライド形式の違い: レッスン1-6は`slide-container`、レッスン8は`slide`クラス
+- スライド数カウント: `grep -c 'class="slide"' filename.html` → 23スライド
+- デフォルト値設定: server.jsで `8: 23` を明示的に設定
+- サーバー再起動で即座に反映
+
+#### 今後の展開
+- [ ] 実際のFlutterアプリ開発実習（レッスン9検討）
+- [ ] Flutter実践プロジェクト課題の追加
+- [ ] iOSビルド対応手順の補足（Macユーザー向け）
+- [ ] Flutter Web対応の説明追加
+- [ ] パフォーマンス最適化手法の追加レッスン
 
 ---
 
