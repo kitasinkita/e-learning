@@ -1,0 +1,957 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Flutter + Claude Code 開発環境セットアップマニュアル</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Helvetica Neue', Arial, 'Hiragino Kaku Gothic ProN', 'Hiragino Sans', Meiryo, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            overflow: hidden;
+        }
+
+        .slide-container {
+            width: 100vw;
+            height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            position: relative;
+        }
+
+        .slide {
+            display: none;
+            background: white;
+            border-radius: 20px;
+            box-shadow: 0 20px 60px rgba(0, 0, 0, 0.3);
+            padding: 60px;
+            max-width: 950px;
+            width: 90%;
+            min-height: 600px;
+            max-height: 85vh;
+            overflow-y: auto;
+            animation: slideIn 0.5s ease-out;
+        }
+
+        .slide.active {
+            display: block;
+        }
+
+        @keyframes slideIn {
+            from {
+                opacity: 0;
+                transform: translateY(30px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        h1 {
+            color: #667eea;
+            font-size: 2.5em;
+            margin-bottom: 30px;
+            text-align: center;
+        }
+
+        h2 {
+            color: #667eea;
+            font-size: 2em;
+            margin-bottom: 30px;
+            border-bottom: 3px solid #667eea;
+            padding-bottom: 10px;
+        }
+
+        h3 {
+            color: #764ba2;
+            font-size: 1.5em;
+            margin: 25px 0 15px 0;
+        }
+
+        p, li {
+            font-size: 1.1em;
+            line-height: 1.8;
+            color: #333;
+            margin-bottom: 15px;
+        }
+
+        ul, ol {
+            margin-left: 30px;
+            margin-bottom: 20px;
+        }
+
+        code {
+            background: #f4f4f4;
+            padding: 3px 8px;
+            border-radius: 4px;
+            font-family: 'Courier New', monospace;
+            color: #e83e8c;
+            font-size: 0.95em;
+        }
+
+        .code-block {
+            background: #2d2d2d;
+            color: #f8f8f2;
+            padding: 20px;
+            border-radius: 8px;
+            margin: 20px 0;
+            overflow-x: auto;
+            font-family: 'Courier New', monospace;
+            font-size: 1em;
+            line-height: 1.5;
+        }
+
+        .note {
+            background: #fff3cd;
+            border-left: 4px solid #ffc107;
+            padding: 15px;
+            margin: 20px 0;
+            border-radius: 4px;
+        }
+
+        .success {
+            background: #d4edda;
+            border-left: 4px solid #28a745;
+            padding: 15px;
+            margin: 20px 0;
+            border-radius: 4px;
+        }
+
+        .warning {
+            background: #f8d7da;
+            border-left: 4px solid #dc3545;
+            padding: 15px;
+            margin: 20px 0;
+            border-radius: 4px;
+        }
+
+        .info {
+            background: #d1ecf1;
+            border-left: 4px solid #0c5460;
+            padding: 15px;
+            margin: 20px 0;
+            border-radius: 4px;
+        }
+
+        .navigation {
+            position: fixed;
+            bottom: 30px;
+            left: 50%;
+            transform: translateX(-50%);
+            display: flex;
+            gap: 20px;
+            z-index: 1000;
+        }
+
+        button {
+            background: #667eea;
+            color: white;
+            border: none;
+            padding: 15px 30px;
+            font-size: 1.1em;
+            border-radius: 50px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            box-shadow: 0 4px 15px rgba(102, 126, 234, 0.4);
+        }
+
+        button:hover {
+            background: #764ba2;
+            transform: translateY(-2px);
+            box-shadow: 0 6px 20px rgba(102, 126, 234, 0.6);
+        }
+
+        button:disabled {
+            background: #ccc;
+            cursor: not-allowed;
+            box-shadow: none;
+            transform: none;
+        }
+
+        .slide-number {
+            position: fixed;
+            top: 30px;
+            right: 30px;
+            background: rgba(255, 255, 255, 0.9);
+            padding: 10px 20px;
+            border-radius: 25px;
+            font-weight: bold;
+            color: #667eea;
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
+        }
+
+        .platform-badge {
+            display: inline-block;
+            padding: 5px 15px;
+            border-radius: 20px;
+            font-size: 0.9em;
+            font-weight: bold;
+            margin-right: 10px;
+            margin-bottom: 10px;
+        }
+
+        .platform-mac {
+            background: #e3f2fd;
+            color: #1976d2;
+        }
+
+        .platform-windows {
+            background: #f3e5f5;
+            color: #7b1fa2;
+        }
+
+        .platform-both {
+            background: #e8f5e9;
+            color: #2e7d32;
+        }
+
+        .checklist {
+            list-style: none;
+            margin-left: 0;
+        }
+
+        .checklist li {
+            padding-left: 30px;
+            position: relative;
+            margin-bottom: 10px;
+        }
+
+        .checklist li:before {
+            content: "✓";
+            position: absolute;
+            left: 0;
+            color: #28a745;
+            font-weight: bold;
+            font-size: 1.3em;
+        }
+
+        .app-list {
+            background: #f8f9fa;
+            padding: 20px;
+            border-radius: 8px;
+            margin: 20px 0;
+        }
+
+        .app-item {
+            margin-bottom: 15px;
+            padding: 10px;
+            background: white;
+            border-radius: 5px;
+            border-left: 3px solid #667eea;
+        }
+
+        .app-item strong {
+            color: #667eea;
+            font-size: 1.1em;
+        }
+    </style>
+</head>
+<body>
+    <div class="slide-number">
+        <span id="current-slide">1</span> / <span id="total-slides">0</span>
+    </div>
+
+    <div class="slide-container">
+        <!-- Slide 1: タイトル・目的 -->
+        <div class="slide active">
+            <h1>Flutter + Claude Code<br>開発環境セットアップマニュアル</h1>
+
+            <h3 style="text-align: center; color: #667eea; margin: 30px 0;">このマニュアルの目的</h3>
+            <div class="info">
+                <p style="font-size: 1.2em; margin-bottom: 15px;"><strong>AI支援によるモダンなアプリ開発環境の構築</strong></p>
+                <ul style="margin-left: 20px;">
+                    <li>Flutterを使ったクロスプラットフォームアプリ開発</li>
+                    <li>VS Code + Claude CodeでAI支援開発を体験</li>
+                    <li>まずはAndroid開発からスタート（Windows/Mac両対応）</li>
+                    <li>将来的にiOS対応も可能（Mac環境で）</li>
+                </ul>
+            </div>
+
+            <div class="note" style="margin-top: 30px;">
+                <strong>対象プラットフォーム:</strong><br>
+                <span class="platform-badge platform-mac">Mac</span>
+                <span class="platform-badge platform-windows">Windows</span>
+            </div>
+
+            <div style="text-align: center; margin-top: 40px;">
+                <p style="color: #999;">右下の「次へ」ボタンでスタート →</p>
+            </div>
+        </div>
+
+        <!-- Slide 2: なぜFlutterなのか -->
+        <div class="slide">
+            <h2>🎯 なぜFlutterを選ぶのか</h2>
+
+            <h3>クロスプラットフォーム開発の利点</h3>
+            <ul class="checklist">
+                <li><strong>1つのコードベース</strong>でiOS・Android両対応</li>
+                <li><strong>開発効率が高い</strong> - ホットリロードで即座に確認</li>
+                <li><strong>ネイティブパフォーマンス</strong> - スムーズな動作</li>
+                <li><strong>豊富なUI部品</strong> - 美しいアプリが簡単に</li>
+            </ul>
+
+            <h3 style="margin-top: 30px;">開発の進め方</h3>
+            <div class="info">
+                <p><strong>Phase 1（このマニュアル）:</strong> Android開発環境の構築</p>
+                <ul style="margin-left: 20px; margin-top: 10px;">
+                    <li>WindowsでもMacでも開発可能</li>
+                    <li>Androidエミュレータで動作確認</li>
+                    <li>Claude CodeでAI支援開発</li>
+                </ul>
+                <p style="margin-top: 15px;"><strong>Phase 2（将来）:</strong> iOS対応</p>
+                <ul style="margin-left: 20px; margin-top: 10px;">
+                    <li>Mac環境でXcodeをセットアップ</li>
+                    <li>同じFlutterコードがiOSでも動作</li>
+                </ul>
+            </div>
+        </div>
+
+        <!-- Slide 3: インストールするソフトウェア一覧 -->
+        <div class="slide">
+            <h2>📦 インストールするソフトウェア</h2>
+
+            <div class="app-list">
+                <div class="app-item">
+                    <strong>1. Flutter SDK</strong>
+                    <p>アプリ開発のコアツール。Dart言語とFlutterフレームワークを含む</p>
+                </div>
+
+                <div class="app-item">
+                    <strong>2. Android Studio</strong>
+                    <p>Android SDK管理・エミュレータ実行に必要。Flutterプラグインもインストール</p>
+                </div>
+
+                <div class="app-item">
+                    <strong>3. VS Code</strong>
+                    <p>軽量で高速なコードエディタ。Claude Codeと統合して開発</p>
+                </div>
+
+                <div class="app-item">
+                    <strong>4. VS Code拡張機能</strong>
+                    <p>• Flutter & Dart: Flutter開発サポート<br>
+                       • Claude Code（既にインストール済み想定）</p>
+                </div>
+
+                <div class="app-item" style="background: #f0f0f0;">
+                    <strong>（Macのみ）Homebrew</strong>
+                    <p>パッケージ管理ツール。インストールを簡単にする（オプション）</p>
+                </div>
+            </div>
+
+            <div class="note">
+                <strong>必要な容量:</strong> 約5〜8GB<br>
+                <strong>所要時間:</strong> 30分〜1時間
+            </div>
+        </div>
+
+        <!-- Slide 4: セットアップフロー -->
+        <div class="slide">
+            <h2>📋 セットアップの流れ</h2>
+
+            <ol style="font-size: 1.15em; line-height: 2;">
+                <li><strong>Flutter SDKインストール</strong>
+                    <ul style="font-size: 0.95em; margin-top: 5px;">
+                        <li>Mac: Homebrewまたは公式サイト</li>
+                        <li>Windows: 公式サイトからZIPダウンロード</li>
+                    </ul>
+                </li>
+                <li><strong>Android Studioセットアップ</strong>
+                    <ul style="font-size: 0.95em; margin-top: 5px;">
+                        <li>Android SDK自動インストール</li>
+                        <li>Flutter/Dartプラグイン追加</li>
+                    </ul>
+                </li>
+                <li><strong>SDKライセンス承認</strong></li>
+                <li><strong>Androidエミュレータ作成</strong></li>
+                <li><strong>VS Code設定</strong>
+                    <ul style="font-size: 0.95em; margin-top: 5px;">
+                        <li>Flutter拡張機能インストール</li>
+                        <li>Claude Codeと連携</li>
+                    </ul>
+                </li>
+                <li><strong>デモアプリで動作確認</strong></li>
+            </ol>
+
+            <div class="success" style="margin-top: 30px;">
+                すべて終わったら、Claude Codeに好きなアプリを依頼して作ってみましょう！
+            </div>
+        </div>
+
+        <!-- Slide 5: Flutter SDKインストール（Mac） -->
+        <div class="slide">
+            <h2>Step 1: Flutter SDKインストール</h2>
+            <span class="platform-badge platform-mac">Mac</span>
+
+            <h3>方法1: Homebrew経由（推奨）</h3>
+            <p>Homebrewがインストール済みの場合:</p>
+            <div class="code-block">brew install flutter</div>
+
+            <div class="note">
+                Homebrewがない場合は先にインストール:
+                <div class="code-block" style="margin-top: 10px;">/bin/bash -c "$(curl -fsSL https://raw.githubusercontent.com/Homebrew/install/HEAD/install.sh)"</div>
+            </div>
+
+            <h3>方法2: 公式サイトから</h3>
+            <ol>
+                <li><code>https://docs.flutter.dev/get-started/install/macos</code></li>
+                <li>ZIPをダウンロードして展開</li>
+                <li>PATHに追加</li>
+            </ol>
+
+            <h3>確認</h3>
+            <div class="code-block">flutter --version</div>
+            <p>バージョン情報が表示されればOK</p>
+        </div>
+
+        <!-- Slide 6: Flutter SDKインストール（Windows） -->
+        <div class="slide">
+            <h2>Step 1: Flutter SDKインストール</h2>
+            <span class="platform-badge platform-windows">Windows</span>
+
+            <ol>
+                <li>公式サイトにアクセス: <code>https://docs.flutter.dev/get-started/install/windows</code></li>
+                <li>「Download Flutter SDK」をクリック</li>
+                <li>ZIPファイルをダウンロード（約1GB）</li>
+                <li>ZIPを展開（推奨: <code>C:\src\flutter</code>）</li>
+            </ol>
+
+            <h3>環境変数の設定</h3>
+            <ol>
+                <li>Windows検索で「環境変数」と入力</li>
+                <li>「システム環境変数の編集」を開く</li>
+                <li>「環境変数」ボタンをクリック</li>
+                <li>ユーザー変数の「Path」を選択して「編集」</li>
+                <li>「新規」で <code>C:\src\flutter\bin</code> を追加</li>
+                <li>すべてのウィンドウで「OK」</li>
+            </ol>
+
+            <h3>確認</h3>
+            <p>新しいコマンドプロンプトを開いて:</p>
+            <div class="code-block">flutter --version</div>
+        </div>
+
+        <!-- Slide 7: Android Studioインストール（Windows） -->
+        <div class="slide">
+            <h2>Step 2: Android Studioインストール</h2>
+            <span class="platform-badge platform-windows">Windows</span>
+
+            <ol>
+                <li>公式サイト: <code>https://developer.android.com/studio</code></li>
+                <li>「Download Android Studio」をクリック</li>
+                <li>利用規約に同意してダウンロード</li>
+                <li>ダウンロードした<code>.exe</code>ファイルを実行</li>
+                <li>インストーラーの指示に従う（デフォルト設定でOK）</li>
+            </ol>
+
+            <div class="note">
+                <strong>インストール先:</strong> デフォルト推奨<br>
+                <strong>必要容量:</strong> 約3〜5GB<br>
+                <strong>時間:</strong> 10〜15分
+            </div>
+
+            <h3>初回起動</h3>
+            <p>インストール後、Android Studioを起動するとセットアップウィザードが表示されます。次のスライドで詳しく説明します。</p>
+        </div>
+
+        <!-- Slide 8: Android Studioインストール（Mac） -->
+        <div class="slide">
+            <h2>Step 2: Android Studioインストール</h2>
+            <span class="platform-badge platform-mac">Mac</span>
+
+            <h3>方法1: Homebrew経由</h3>
+            <div class="code-block">brew install --cask android-studio</div>
+
+            <h3>方法2: 公式サイトから</h3>
+            <ol>
+                <li><code>https://developer.android.com/studio</code></li>
+                <li>「Download Android Studio」をクリック</li>
+                <li><code>.dmg</code>ファイルをダウンロード</li>
+                <li>ダウンロードしたファイルを開く</li>
+                <li>Android Studio.appをApplicationsフォルダにドラッグ</li>
+            </ol>
+
+            <div class="note">
+                <strong>時間:</strong> ダウンロード5〜10分、インストール2〜3分
+            </div>
+        </div>
+
+        <!-- Slide 9: Android Studio初期設定 -->
+        <div class="slide">
+            <h2>Step 3: Android Studio初期設定</h2>
+            <span class="platform-badge platform-both">Windows & Mac</span>
+
+            <p>Android Studioを起動すると、セットアップウィザードが表示されます:</p>
+
+            <ol>
+                <li><strong>Welcome画面:</strong> 「Next」をクリック</li>
+                <li><strong>Install Type:</strong> 「Standard」を選択 → Next</li>
+                <li><strong>UI Theme:</strong> Light または Darcula（お好みで）→ Next</li>
+                <li><strong>Verify Settings:</strong> 設定を確認 → Next</li>
+                <li><strong>License Agreement:</strong> すべて「Accept」→ Finish</li>
+                <li><strong>Download Components:</strong> SDK等のダウンロード開始</li>
+            </ol>
+
+            <div class="warning">
+                <strong>重要:</strong> ダウンロードには10〜20分かかります。<br>
+                完了するまで待ちましょう（約2〜3GB）
+            </div>
+
+            <div class="success" style="margin-top: 15px;">
+                「Finish」ボタンが表示されたらセットアップ完了！
+            </div>
+        </div>
+
+        <!-- Slide 10: Command-line Toolsインストール -->
+        <div class="slide">
+            <h2>Step 4: Android SDK Command-line Tools</h2>
+            <span class="platform-badge platform-both">Windows & Mac</span>
+
+            <p>Flutterから必要なツールを追加インストールします:</p>
+
+            <ol>
+                <li>Android Studioを起動</li>
+                <li><strong>Windows:</strong> File → Settings<br>
+                    <strong>Mac:</strong> Android Studio → Settings</li>
+                <li>左メニューから <strong>Languages & Frameworks → Android SDK</strong></li>
+                <li>上部タブの <strong>SDK Tools</strong> をクリック</li>
+                <li>「Show Package Details」にチェック</li>
+                <li><strong>Android SDK Command-line Tools (latest)</strong> にチェック</li>
+                <li>「Apply」→「OK」</li>
+                <li>ダウンロード完了まで待つ</li>
+            </ol>
+
+            <div class="note">
+                このツールがないと、次のステップでエラーが出ます
+            </div>
+        </div>
+
+        <!-- Slide 11: Flutter/Dartプラグイン -->
+        <div class="slide">
+            <h2>Step 5: Flutter/Dartプラグイン</h2>
+            <span class="platform-badge platform-both">Windows & Mac</span>
+
+            <p>Android StudioにFlutter開発機能を追加:</p>
+
+            <ol>
+                <li>Android Studioを起動</li>
+                <li><strong>Windows:</strong> File → Settings<br>
+                    <strong>Mac:</strong> Android Studio → Settings</li>
+                <li>左メニューから <strong>Plugins</strong> を選択</li>
+                <li>上部の「Marketplace」タブを確認</li>
+                <li>検索ボックスに <code>Flutter</code> と入力</li>
+                <li>「Flutter」プラグインを探して <strong>Install</strong></li>
+                <li>「Dart」も自動的にインストールされます</li>
+                <li>「Restart IDE」をクリック</li>
+            </ol>
+
+            <div class="success">
+                再起動後、Flutterプロジェクトが作成できるようになります
+            </div>
+        </div>
+
+        <!-- Slide 12: SDKライセンス承認 -->
+        <div class="slide">
+            <h2>Step 6: Android SDKライセンス承認</h2>
+            <span class="platform-badge platform-both">Windows & Mac</span>
+
+            <p><strong>Windows:</strong> コマンドプロンプトを開く<br>
+               <strong>Mac:</strong> ターミナルを開く</p>
+
+            <p style="margin-top: 20px;">以下のコマンドを実行:</p>
+            <div class="code-block">flutter doctor --android-licenses</div>
+
+            <h3>操作方法</h3>
+            <ol>
+                <li>ライセンス文が表示されます</li>
+                <li><code>y</code> を入力してEnter</li>
+                <li>これを全てのライセンス（5〜8個）で繰り返す</li>
+                <li>「All SDK package licenses accepted」と表示されればOK</li>
+            </ol>
+
+            <div class="note">
+                すべて「y」で同意すればOKです
+            </div>
+        </div>
+
+        <!-- Slide 13: 環境確認 -->
+        <div class="slide">
+            <h2>Step 7: 環境確認</h2>
+            <span class="platform-badge platform-both">Windows & Mac</span>
+
+            <p>正しくセットアップできているか確認:</p>
+            <div class="code-block">flutter doctor -v</div>
+
+            <h3>確認ポイント</h3>
+            <ul class="checklist">
+                <li>Flutter (Channel stable) - ✓マークが必要</li>
+                <li>Android toolchain - ✓マークが必要</li>
+                <li>Android Studio - ✓マークが必要</li>
+            </ul>
+
+            <div class="warning">
+                <strong>iOS関連 (Xcode, CocoaPods):</strong> ✗マークでもOK<br>
+                現時点ではAndroid開発のみなので問題ありません
+            </div>
+
+            <div class="success" style="margin-top: 20px;">
+                上記3つに✓が付いていれば完璧です！
+            </div>
+        </div>
+
+        <!-- Slide 14: Androidエミュレータ作成 -->
+        <div class="slide">
+            <h2>Step 8: Androidエミュレータ作成</h2>
+            <span class="platform-badge platform-both">Windows & Mac</span>
+
+            <ol>
+                <li>Android Studioを起動</li>
+                <li>「More Actions」→「Virtual Device Manager」</li>
+                <li>「Create Device」をクリック</li>
+                <li><strong>Phone</strong>カテゴリから <strong>Pixel 7</strong> を選択 → Next</li>
+                <li>システムイメージを選択:
+                    <ul style="margin-top: 10px;">
+                        <li>「Recommended」タブから最新版を選択</li>
+                        <li>ダウンロード（Download）をクリック</li>
+                        <li>完了したら「Next」</li>
+                    </ul>
+                </li>
+                <li>デバイス名はそのままでOK → Finish</li>
+            </ol>
+
+            <div class="note">
+                <strong>推奨:</strong> API Level 34以上（Android 14以降）<br>
+                <strong>容量:</strong> 約2〜3GBのダウンロード
+            </div>
+        </div>
+
+        <!-- Slide 15: VS Code設定 -->
+        <div class="slide">
+            <h2>Step 9: VS Code設定</h2>
+            <span class="platform-badge platform-both">Windows & Mac</span>
+
+            <h3>Flutterペア張機能のインストール</h3>
+            <p>VS CodeでFlutter開発 + Claude Codeを使います</p>
+
+            <h3>方法1: コマンドラインから</h3>
+            <div class="code-block">code --install-extension Dart-Code.flutter</div>
+
+            <h3>方法2: VS Code内から</h3>
+            <ol>
+                <li>VS Codeを起動</li>
+                <li>拡張機能パネルを開く（Ctrl+Shift+X / ⌘+Shift+X）</li>
+                <li>「Flutter」を検索</li>
+                <li>「Flutter」をインストール</li>
+                <li>「Dart」も自動でインストールされます</li>
+            </ol>
+
+            <div class="success">
+                これでVS Code + Claude CodeでFlutter開発ができます！
+            </div>
+        </div>
+
+        <!-- Slide 16: プロジェクト作成 -->
+        <div class="slide">
+            <h2>Step 10: 最初のFlutterプロジェクト</h2>
+            <span class="platform-badge platform-both">Windows & Mac</span>
+
+            <p><strong>Windows:</strong> コマンドプロンプト<br>
+               <strong>Mac:</strong> ターミナル</p>
+
+            <div class="code-block">cd Desktop
+flutter create my_first_app
+cd my_first_app</div>
+
+            <h3>VS Codeで開く</h3>
+            <div class="code-block">code .</div>
+
+            <p style="margin-top: 20px;">または、VS Codeから「フォルダーを開く」で <code>my_first_app</code> を選択</p>
+
+            <div class="note">
+                プロジェクトが作成されました！次はClaude Codeで好きなアプリを作ってみましょう
+            </div>
+        </div>
+
+        <!-- Slide 17: Claude Codeでアプリ開発 -->
+        <div class="slide">
+            <h2>Step 11: Claude Codeでアプリ開発</h2>
+            <span class="platform-badge platform-both">Windows & Mac</span>
+
+            <h3>Claude Codeに依頼してみよう</h3>
+            <p>VS CodeのClaude Codeに、作りたいアプリを自由に依頼できます。</p>
+
+            <div class="app-list">
+                <div class="app-item">
+                    <strong>例1: カウンターアプリ</strong>
+                    <p>「ボタンを押すとカウントアップするシンプルなアプリを作って」</p>
+                </div>
+
+                <div class="app-item">
+                    <strong>例2: TODOリスト</strong>
+                    <p>「タスクを追加・削除・完了できるTODOリストアプリを作って」</p>
+                </div>
+
+                <div class="app-item">
+                    <strong>例3: 落ちゲー</strong>
+                    <p>「スイカゲームのような落ちゲーを作って。果物でなく動物にして」</p>
+                </div>
+
+                <div class="app-item">
+                    <strong>例4: 計算機</strong>
+                    <p>「四則演算ができる電卓アプリを作って」</p>
+                </div>
+            </div>
+
+            <div class="success">
+                Claude Codeがコードを書いてくれます！
+            </div>
+        </div>
+
+        <!-- Slide 18: エミュレータで確認 -->
+        <div class="slide">
+            <h2>Step 12: エミュレータで確認</h2>
+            <span class="platform-badge platform-both">Windows & Mac</span>
+
+            <h3>1. エミュレータを起動</h3>
+            <p>以下のいずれかの方法で:</p>
+            <ul>
+                <li>Android Studio → Virtual Device Manager → ▶️ボタン</li>
+                <li>コマンドで: <div class="code-block" style="margin-top: 10px;">flutter emulators --launch [エミュレータID]</div></li>
+            </ul>
+
+            <h3>2. アプリを実行</h3>
+            <p>VS Codeで:</p>
+            <ul>
+                <li><strong>F5</strong>キーを押す</li>
+                <li>または、<div class="code-block" style="margin-top: 10px;">flutter run</div></li>
+            </ul>
+
+            <h3>3. 動作確認</h3>
+            <p>エミュレータにアプリが表示されます。タップして操作してみましょう！</p>
+
+            <div class="success">
+                Claude Codeが作ったアプリが動いています！
+            </div>
+        </div>
+
+        <!-- Slide 19: ホットリロード -->
+        <div class="slide">
+            <h2>💡 開発のコツ: ホットリロード</h2>
+            <span class="platform-badge platform-both">Windows & Mac</span>
+
+            <h3>コードを変更したら...</h3>
+            <p>アプリを再起動せずに、すぐ反映できます：</p>
+
+            <ul style="font-size: 1.15em;">
+                <li><strong>VS Code:</strong> ファイル保存（Ctrl+S / ⌘+S）で自動反映</li>
+                <li><strong>ターミナル:</strong> <code>r</code> キーでホットリロード</li>
+                <li><strong>完全再起動:</strong> <code>R</code> キー（大文字）</li>
+            </ul>
+
+            <div class="info" style="margin-top: 30px;">
+                <strong>ホットリロードの利点:</strong>
+                <ul style="margin-left: 20px; margin-top: 10px;">
+                    <li>変更が1〜2秒で反映</li>
+                    <li>アプリの状態を保持したまま更新</li>
+                    <li>開発スピードが劇的に向上</li>
+                </ul>
+            </div>
+
+            <div class="note">
+                Claude Codeにコード修正を依頼 → 保存 → すぐ確認、のサイクルが高速！
+            </div>
+        </div>
+
+        <!-- Slide 20: トラブルシューティング -->
+        <div class="slide">
+            <h2>🔧 トラブルシューティング</h2>
+
+            <div class="warning">
+                <strong>問題:</strong> Android SDK not found<br>
+                <strong>解決:</strong> Android Studioの初期設定を完了させる（Step 3）
+            </div>
+
+            <div class="warning">
+                <strong>問題:</strong> cmdline-tools component is missing<br>
+                <strong>解決:</strong> Step 4のCommand-line Toolsをインストール
+            </div>
+
+            <div class="warning">
+                <strong>問題:</strong> エミュレータが起動しない（Windows）<br>
+                <strong>解決:</strong> BIOSで仮想化（VT-x/AMD-V）を有効化
+            </div>
+
+            <div class="warning">
+                <strong>問題:</strong> デバイスが見つからない<br>
+                <strong>解決:</strong> <code>flutter devices</code>でエミュレータが起動しているか確認
+            </div>
+
+            <div class="note">
+                詳しくは公式ドキュメントも参照: <code>https://docs.flutter.dev</code>
+            </div>
+        </div>
+
+        <!-- Slide 21: Windows環境での開発 -->
+        <div class="slide">
+            <h2>📝 Windows環境での開発範囲</h2>
+            <span class="platform-badge platform-windows">Windows</span>
+
+            <h3>Windowsでできること</h3>
+            <ul class="checklist">
+                <li>Flutterアプリの開発・コーディング</li>
+                <li>Androidアプリのビルド・実機テスト</li>
+                <li>Androidエミュレータでの動作確認</li>
+                <li>Claude Codeを使った開発</li>
+                <li>Google Playストアへの公開</li>
+            </ul>
+
+            <h3>Windowsでできないこと</h3>
+            <div class="warning">
+                <strong>✗ iOSアプリのビルド</strong> - Xcodeが必要（Mac専用）<br>
+                <strong>✗ iOSシミュレータでのテスト</strong><br>
+                <strong>✗ App Storeへの申請</strong>
+            </div>
+
+            <h3>チーム開発の場合</h3>
+            <p>Windowsメンバー: Android開発<br>
+               Macメンバー: iOS確認・ビルド<br>
+               <strong>同じFlutterコードで両対応！</strong></p>
+        </div>
+
+        <!-- Slide 22: iOSへの展開（将来） -->
+        <div class="slide">
+            <h2>🍎 iOS対応について（将来）</h2>
+            <span class="platform-badge platform-mac">Mac Required</span>
+
+            <h3>iOS開発に必要なもの</h3>
+            <ul>
+                <li><strong>Mac</strong>（macOS搭載コンピューター）</li>
+                <li><strong>Xcode</strong>（App Storeから無料）</li>
+                <li><strong>CocoaPods</strong>（ライブラリ管理ツール）</li>
+            </ul>
+
+            <h3>iOS対応の手順（概要）</h3>
+            <ol>
+                <li>MacにXcodeをインストール</li>
+                <li><code>flutter doctor</code>でXcode確認</li>
+                <li>iOSシミュレータで動作確認</li>
+                <li>Apple Developer登録（有料）</li>
+                <li>App Storeに申請</li>
+            </ol>
+
+            <div class="success">
+                <strong>良いニュース:</strong> Android用に作ったFlutterアプリは、<br>
+                ほとんどそのままiOSでも動きます！
+            </div>
+        </div>
+
+        <!-- Slide 23: 次のステップ -->
+        <div class="slide">
+            <h2>🎯 次のステップ</h2>
+
+            <h3>1. Claude Codeでアプリを作ろう</h3>
+            <ul class="checklist">
+                <li>好きなアプリのアイデアをClaude Codeに伝える</li>
+                <li>作られたコードをエミュレータで確認</li>
+                <li>修正・改善を依頼してブラッシュアップ</li>
+            </ul>
+
+            <h3>2. Flutter/Dartを学ぼう</h3>
+            <ul class="checklist">
+                <li>公式チュートリアル: <code>https://docs.flutter.dev</code></li>
+                <li>Dart言語ツアー: <code>https://dart.dev/guides/language/language-tour</code></li>
+                <li>Widget カタログを見てみる</li>
+            </ul>
+
+            <h3>3. 実機でテストしよう</h3>
+            <ul class="checklist">
+                <li>Android端末をUSB接続</li>
+                <li>開発者オプションを有効化</li>
+                <li><code>flutter run</code>で実機に転送</li>
+            </ul>
+        </div>
+
+        <!-- Slide 24: 完了 -->
+        <div class="slide">
+            <h2>🎉 セットアップ完了！</h2>
+            <p style="font-size: 1.3em; text-align: center; margin: 40px 0;">お疲れ様でした！</p>
+
+            <div class="success">
+                <h3 style="margin-bottom: 15px;">構築できた環境</h3>
+                <ul class="checklist">
+                    <li>Flutter開発環境（Android対応）</li>
+                    <li>VS Code + Claude Code統合</li>
+                    <li>Androidエミュレータ</li>
+                    <li>AI支援によるアプリ開発環境</li>
+                </ul>
+            </div>
+
+            <h3 style="margin-top: 40px; text-align: center;">さあ、開発を始めましょう！</h3>
+
+            <div class="info" style="margin-top: 30px;">
+                <strong>開発の流れ:</strong>
+                <ol style="margin-left: 20px; margin-top: 10px;">
+                    <li>Claude Codeに作りたいアプリを依頼</li>
+                    <li>エミュレータで動作確認</li>
+                    <li>気になる部分を修正依頼</li>
+                    <li>完成したら実機でテスト</li>
+                    <li>Google Playで公開！</li>
+                </ol>
+            </div>
+
+            <p style="text-align: center; margin-top: 60px; color: #999; font-size: 1.2em;">Happy Coding! 🚀</p>
+        </div>
+    </div>
+
+    <div class="navigation">
+        <button id="prev-btn" onclick="changeSlide(-1)">← 前へ</button>
+        <button id="next-btn" onclick="changeSlide(1)">次へ →</button>
+    </div>
+
+    <script>
+        let currentSlide = 0;
+        const slides = document.querySelectorAll('.slide');
+        const totalSlides = slides.length;
+
+        document.getElementById('total-slides').textContent = totalSlides;
+
+        function showSlide(n) {
+            slides[currentSlide].classList.remove('active');
+            currentSlide = (n + totalSlides) % totalSlides;
+            slides[currentSlide].classList.add('active');
+
+            document.getElementById('current-slide').textContent = currentSlide + 1;
+
+            // ボタンの有効/無効
+            document.getElementById('prev-btn').disabled = currentSlide === 0;
+            document.getElementById('next-btn').disabled = currentSlide === totalSlides - 1;
+
+            // スクロール位置をリセット
+            slides[currentSlide].scrollTop = 0;
+        }
+
+        function changeSlide(direction) {
+            showSlide(currentSlide + direction);
+        }
+
+        // キーボード操作
+        document.addEventListener('keydown', (e) => {
+            if (e.key === 'ArrowLeft' && currentSlide > 0) {
+                changeSlide(-1);
+            } else if (e.key === 'ArrowRight' && currentSlide < totalSlides - 1) {
+                changeSlide(1);
+            }
+        });
+
+        // 初期状態
+        showSlide(0);
+    </script>
+</body>
+</html>

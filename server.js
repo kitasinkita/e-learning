@@ -115,14 +115,16 @@ app.get('/api/lesson/:id/slide-count', (req, res) => {
     try {
         const fs = require('fs');
         const slideContent = fs.readFileSync(slidePath, 'utf8');
-        
-        // slide-containerクラスの数を数える
-        const slideCount = (slideContent.match(/class="slide-container"/g) || []).length;
-        
+
+        // slideクラスの数を数える（slide-containerまたはslideクラス）
+        const slideContainerCount = (slideContent.match(/class="slide-container"/g) || []).length;
+        const slideClassCount = (slideContent.match(/class="slide"/g) || []).length;
+        const slideCount = Math.max(slideContainerCount, slideClassCount);
+
         res.json({ lessonId: parseInt(lessonId), totalSlides: slideCount });
     } catch (error) {
         // スライドファイルが見つからない場合はデフォルト値を返す
-        const defaultSlideCounts = { 1: 15, 2: 12, 3: 14, 4: 13, 5: 16, 6: 18, 7: 25 };
+        const defaultSlideCounts = { 1: 15, 2: 12, 3: 14, 4: 13, 5: 16, 6: 18, 7: 25, 8: 23 };
         const defaultCount = defaultSlideCounts[lessonId] || 15;
         res.json({ lessonId: parseInt(lessonId), totalSlides: defaultCount });
     }
