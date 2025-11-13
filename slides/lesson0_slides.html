@@ -1,0 +1,762 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>インターネットの歴史 - 日米比較</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/reveal.js/4.5.0/reveal.min.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/reveal.js/4.5.0/theme/white.min.css">
+    <style>
+        /* Adobe Spectrum Design System準拠 */
+
+        /* Google Fontsインポート（閑話休題用） */
+        @import url('https://fonts.googleapis.com/css2?family=M+PLUS+Rounded+1c:wght@400;500;700&display=swap');
+
+        /* ベーススタイル */
+        .reveal {
+            font-family: adobe-clean, "Source Sans Pro", -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+            background: #ffffff;
+            color: #2c2c2c;
+        }
+
+        /* 閑話休題専用フォント */
+        section[data-background-color="#e8f5e9"] {
+            font-family: 'M PLUS Rounded 1c', -apple-system, sans-serif;
+        }
+        section[data-background-color="#e8f5e9"] h2,
+        section[data-background-color="#e8f5e9"] h3,
+        section[data-background-color="#e8f5e9"] h4 {
+            font-family: 'M PLUS Rounded 1c', -apple-system, sans-serif;
+        }
+
+        /* Spectrum Typography Scale */
+        .reveal h1 {
+            font-size: 1.5em;
+            color: #2c2c2c;
+            margin-bottom: 16px;
+            font-weight: 700;
+            letter-spacing: -0.006em;
+        }
+        .reveal h2 {
+            font-size: 1.2em;
+            color: #2c2c2c;
+            margin-bottom: 12px;
+            font-weight: 700;
+            letter-spacing: -0.006em;
+        }
+        .reveal h3 {
+            font-size: 0.95em;
+            color: #2c2c2c;
+            margin-bottom: 8px;
+            font-weight: 700;
+            letter-spacing: 0;
+        }
+        .reveal h4 {
+            font-size: 0.8em;
+            margin-bottom: 8px;
+            font-weight: 700;
+            color: #2c2c2c;
+            letter-spacing: 0;
+        }
+
+        /* テキスト */
+        .reveal section { text-align: left; }
+        .reveal ul { font-size: 0.6em; margin: 8px 0; }
+        .reveal ol { font-size: 0.6em; margin: 8px 0; }
+        .reveal li {
+            margin: 4px 0;
+            line-height: 1.5;
+            color: #2c2c2c;
+        }
+        .reveal p {
+            font-size: 0.6em;
+            margin: 8px 0;
+            line-height: 1.5;
+            color: #2c2c2c;
+        }
+        .reveal table {
+            font-size: 0.55em;
+            border-collapse: separate;
+            border-spacing: 0;
+        }
+        .reveal .timeline { font-size: 0.6em; }
+
+        /* Spectrum Color System */
+        .us-section {
+            background: #f5f5f5;
+            padding: 12px;
+            margin: 6px 0;
+            border-radius: 4px;
+            border: 1px solid #d3d3d3;
+        }
+        .jp-section {
+            background: #fafafa;
+            padding: 12px;
+            margin: 6px 0;
+            border-radius: 4px;
+            border: 1px solid #d3d3d3;
+        }
+
+        /* Spectrum Semantic Colors */
+        .key-person {
+            color: #d7373f;
+            font-weight: 600;
+            background-color: rgba(215, 55, 63, 0.08);
+            padding: 2px 6px;
+            border-radius: 4px;
+        }
+        .tech-highlight {
+            color: #2680eb;
+            font-weight: 600;
+            background-color: rgba(38, 128, 235, 0.08);
+            padding: 2px 6px;
+            border-radius: 4px;
+        }
+        .emphasis {
+            font-size: 0.9em;
+            color: #d7373f;
+            font-weight: 700;
+        }
+
+        /* レイアウト - Spectrum Grid */
+        .center-text { text-align: center; }
+        .two-column {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 16px;
+        }
+
+        /* Well Component (閑話休題) */
+        .column-break {
+            background: #fafafa;
+            padding: 12px;
+            margin: 8px 0;
+            border-radius: 4px;
+            border: 1px solid #d3d3d3;
+        }
+
+        /* テーブル - Spectrum Table */
+        .reveal table th {
+            background: #f5f5f5;
+            color: #2c2c2c;
+            padding: 8px;
+            font-weight: 700;
+            border-bottom: 2px solid #2680eb;
+            text-align: left;
+        }
+        .reveal table td {
+            padding: 8px;
+            border-bottom: 1px solid #e1e1e1;
+        }
+        .reveal table tbody tr:hover {
+            background-color: #fafafa;
+        }
+
+        /* Well Component - Info */
+        .tech-box {
+            background: #f0f9ff;
+            padding: 12px;
+            margin: 8px 0;
+            border-radius: 4px;
+            border: 1px solid #9dc9f5;
+        }
+
+        /* Well Component - Success */
+        .info-box {
+            background: #f0f9ff;
+            padding: 12px;
+            margin: 8px 0;
+            border-radius: 4px;
+            border: 1px solid #9dc9f5;
+        }
+
+        /* Spectrum強調 */
+        .reveal strong {
+            font-weight: 700;
+            color: #2c2c2c;
+        }
+
+        /* アクセント - Spectrum Blue */
+        .spectrum-accent {
+            color: #2680eb;
+        }
+
+        /* スライド番号 */
+        .reveal .slide-number {
+            color: #2680eb;
+            font-weight: 600;
+        }
+    </style>
+</head>
+<body>
+    <div class="reveal">
+        <div class="slides">
+
+            <!-- タイトルスライド -->
+            <section class="center-text">
+                <h1>インターネットの歴史</h1>
+                <h2>日本とアメリカの比較</h2>
+                <p>1980年代から現在まで</p>
+            </section>
+
+            <!-- 目次 -->
+            <section>
+                <h2>本日の内容</h2>
+                <ul style="font-size: 0.8em;">
+                    <li>前史：TCP/IPの発明（1960-70年代）</li>
+                    <li>黎明期とパソコン通信（1980年代）</li>
+                    <li>WWWの登場と商用化（1990年代前半）</li>
+                    <li>ドットコムブーム（1990年代後半）</li>
+                    <li>ブロードバンドとWeb 2.0（2000年代前半）</li>
+                    <li>モバイル革命（2000年代後半）</li>
+                    <li>ソーシャルメディアの成熟（2010年代）</li>
+                    <li>AI革命（2020年代）</li>
+                </ul>
+            </section>
+
+            <!-- 前史：1960-70年代 -->
+            <section>
+                <h2>前史：1960-70年代</h2>
+                <h3>インターネットの基盤技術</h3>
+                <ul style="font-size: 0.7em;">
+                    <li><strong>1969年</strong>：ARPANET誕生（最初の4ノード接続）</li>
+                    <li class="emphasis"><strong>1974年</strong>：TCP/IPプロトコル設計発表</li>
+                </ul>
+                <div class="column-break">
+                    <h4>キーパーソン</h4>
+                    <p class="key-person" style="font-size: 0.7em;">Vint Cerf（ヴィント・サーフ）& Bob Kahn（ボブ・カーン）</p>
+                    <p style="font-size: 0.65em;">「インターネットの父」と呼ばれる</p>
+                </div>
+            </section>
+
+            <!-- 閑話休題：ARPANETの軍事起源 -->
+            <section data-background-color="#e8f5e9">
+                <h2>閑話休題：ARPANETの誕生背景</h2>
+                <div class="column-break">
+                    <h3 style="font-size: 1em;">🔒 冷戦時代の軍事技術として誕生</h3>
+                    <ul style="font-size: 0.7em; margin-top: 10px;">
+                        <li><strong>ARPA（Advanced Research Projects Agency）</strong>：米国防総省の研究機関</li>
+                        <li><strong>目的</strong>：核攻撃にも耐えられる分散型通信ネットワークの構築</li>
+                        <li><strong>背景</strong>：冷戦下でのソ連との軍事・情報競争</li>
+                        <li>中央集権的なシステムは一箇所を破壊されると全体が停止する脆弱性がある</li>
+                        <li>分散型ネットワークなら一部が破壊されても通信を継続可能</li>
+                    </ul>
+                </div>
+                <div class="info-box">
+                    <h4 style="font-size: 0.8em;">皮肉な結果</h4>
+                    <p style="font-size: 0.65em;">軍事・スパイ活動のために開発された技術が、後に全世界をオープンにつなぐインターネットへと発展。
+                    軍事技術が平和利用され、情報の自由な流通を実現した稀有な例。</p>
+                </div>
+            </section>
+
+            <!-- TCP/IPとは -->
+            <section>
+                <h2>TCP/IPの革命性</h2>
+                <h3>なぜTCP/IPは画期的だったのか？</h3>
+                <ol style="font-size: 0.7em;">
+                    <li class="tech-highlight">異なるネットワークの相互接続を実現</li>
+                    <li class="tech-highlight">パケット交換方式（障害に強く効率的）</li>
+                    <li class="tech-highlight">階層構造（各層が独立して進化可能）</li>
+                    <li class="tech-highlight">オープンスタンダード（誰でも使用・実装可能）</li>
+                    <li class="tech-highlight">End-to-End原則（エンドに知能を置く）</li>
+                </ol>
+                <p style="margin-top: 15px; font-size: 0.75em;">
+                    → これがインターネットの爆発的成長の基盤に
+                </p>
+            </section>
+
+            <!-- 閑話休題：TCP/IP階層モデル -->
+            <section data-background-color="#e8f5e9">
+                <h2>閑話休題：TCP/IPの階層構造</h2>
+                <div class="column-break">
+                    <h3 style="font-size: 1em;">📚 4つの階層と役割分担</h3>
+                </div>
+                <table style="width: 100%; font-size: 0.6em; margin-top: 10px;">
+                    <thead>
+                        <tr style="background-color: #3498db; color: white;">
+                            <th style="padding: 6px;">階層</th>
+                            <th style="padding: 6px;">役割</th>
+                            <th style="padding: 6px;">プロトコル例</th>
+                            <th style="padding: 6px;">主要プレイヤー（企業例）</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td style="padding: 5px;"><strong>第4層：アプリケーション層</strong></td>
+                            <td style="padding: 5px;">ユーザーに見えるサービス</td>
+                            <td style="padding: 5px;">HTTP、HTTPS、SMTP、DNS</td>
+                            <td style="padding: 5px;">Google、Meta、Amazon、Netflix</td>
+                        </tr>
+                        <tr>
+                            <td style="padding: 5px;"><strong>第3層：トランスポート層</strong></td>
+                            <td style="padding: 5px;">データの信頼性確保</td>
+                            <td style="padding: 5px;">TCP、UDP</td>
+                            <td style="padding: 5px;">OS提供者（Microsoft、Apple、Linux）</td>
+                        </tr>
+                        <tr>
+                            <td style="padding: 5px;"><strong>第2層：インターネット層</strong></td>
+                            <td style="padding: 5px;">経路選択・アドレス管理</td>
+                            <td style="padding: 5px;">IP、ICMP</td>
+                            <td style="padding: 5px;">ルーター機器メーカー（Cisco、Juniper）</td>
+                        </tr>
+                        <tr>
+                            <td style="padding: 5px;"><strong>第1層：ネットワークインターフェース層</strong></td>
+                            <td style="padding: 5px;">物理的な通信</td>
+                            <td style="padding: 5px;">Ethernet、Wi-Fi、光ファイバー</td>
+                            <td style="padding: 5px;">通信キャリア（NTT、AT&T）、機器メーカー</td>
+                        </tr>
+                    </tbody>
+                </table>
+                <div class="info-box">
+                    <p style="font-size: 0.65em;"><strong>重要なポイント：</strong>各層が独立しているため、ある層の技術革新が他の層に影響を与えない。
+                    これにより、様々な企業が異なる階層で競争・イノベーションを起こすことができる。この構造がインターネットエコシステムの多様性と発展を支えている。</p>
+                </div>
+            </section>
+
+            <!-- 1980年代：日米比較 -->
+            <section>
+                <h2>1980年代：黎明期</h2>
+                <div class="two-column">
+                    <div class="us-section">
+                        <h3>🇺🇸 アメリカ</h3>
+                        <ul class="timeline">
+                            <li><strong>1983年</strong>：ARPANET、TCP/IPへ完全移行<br>
+                            <span class="emphasis">→ インターネット誕生日：1月1日</span></li>
+                            <li><strong>1984年</strong>：DNS導入（<span class="key-person">Paul Mockapetris</span>が設計）</li>
+                            <li><strong>1986年</strong>：NSFNET開始（学術ネットワークの拡大）</li>
+                            <li>パソコン通信：CompuServe、AOL、Prodigy</li>
+                        </ul>
+                    </div>
+                    <div class="jp-section">
+                        <h3>🇯🇵 日本</h3>
+                        <ul class="timeline">
+                            <li><strong>1984年</strong>：JUNET開始<br>
+                            <span class="key-person">村井純</span>（慶應義塾大学、「日本のインターネットの父」）</li>
+                            <li><strong>1985年</strong>：ASCII-NET開始（日本初の商用パソコン通信）</li>
+                            <li><strong>1986年</strong>：PC-VAN開始（NEC）</li>
+                            <li><strong>1987年</strong>：Nifty-Serve開始</li>
+                            <li><strong>1988年</strong>：WIDE Project発足（村井純ら）</li>
+                        </ul>
+                    </div>
+                </div>
+                <div class="column-break" style="margin-top: 10px;">
+                    <h4 style="font-size: 0.75em; margin-bottom: 5px;">📞 パソコン通信とは？</h4>
+                    <p style="font-size: 0.55em; line-height: 1.4; margin: 0;">
+                        電話回線を使った<strong>閉じた会員制ネットワーク</strong>（BBS、電子メール、チャット）。
+                        <strong>中央集権型</strong>で他サービスと相互接続不可。
+                        インターネット（<strong>分散型・オープン</strong>）の普及により2000年前後に衰退。
+                    </p>
+                </div>
+                <div class="tech-box">
+                    <h4 style="font-size: 0.75em; margin-bottom: 3px;">⚙️ 技術トピックス</h4>
+                    <p style="font-size: 0.55em; margin: 2px 0;">・TCP/IP標準化、DNS（階層的ドメイン名システム）、Ethernet普及、モデム通信（300-2400bps）</p>
+                </div>
+            </section>
+
+            <!-- 1990年代前半：日米比較 -->
+            <section>
+                <h2>1990年代前半：WWWの登場と商用化</h2>
+                <div class="two-column">
+                    <div class="us-section">
+                        <h3>🇺🇸 アメリカ</h3>
+                        <ul class="timeline">
+                            <li><strong>1991年</strong>：WWW（World Wide Web）公開<br>
+                            <span class="key-person">Tim Berners-Lee</span>（CERN）<br>
+                            HTML、HTTP、URLを発明</li>
+                            <li><strong>1993年</strong>：Mosaicブラウザ登場（<span class="key-person">Marc Andreessen</span>）</li>
+                            <li><strong>1994年</strong>：Netscape Navigator、Amazon（<span class="key-person">Jeff Bezos</span>）、Yahoo!（<span class="key-person">Jerry Yang & David Filo</span>）創業</li>
+                            <li><strong>1995年</strong>：インターネット完全商用化、Windows 95発売<br>
+                            <span class="key-person">Bill Gates</span>がインターネット戦略へ舵を切る</li>
+                        </ul>
+                    </div>
+                    <div class="jp-section">
+                        <h3>🇯🇵 日本</h3>
+                        <ul class="timeline">
+                            <li><strong>1992年</strong>：商用インターネットサービス開始</li>
+                            <li><strong>1993年</strong>：IIJ（Internet Initiative Japan）設立<br>
+                            <span class="key-person">鈴木幸一</span>（創業者）</li>
+                            <li><strong>1995年</strong>：Windows 95日本語版発売<br>
+                            パソコン通信全盛期</li>
+                        </ul>
+                        <p style="margin-top: 20px; font-weight: bold;">
+                            この時期：パソコン通信とインターネットの共存期
+                        </p>
+                    </div>
+                </div>
+                <div class="tech-box">
+                    <h4 style="font-size: 0.75em; margin-bottom: 3px;">⚙️ 技術トピックス</h4>
+                    <p style="font-size: 0.55em; margin: 2px 0;">・HTML（ハイパーテキスト）、HTTP（Webプロトコル）、URL、CGI、SSL（1994）、JavaScript（1995）、Java（1995）</p>
+                </div>
+            </section>
+
+            <!-- 1990年代後半：日米比較 -->
+            <section>
+                <h2>1990年代後半：ドットコムブーム</h2>
+                <div class="two-column">
+                    <div class="us-section">
+                        <h3>🇺🇸 アメリカ</h3>
+                        <ul class="timeline">
+                            <li><strong>1995年</strong>：Amazon.com、eBay開始</li>
+                            <li><strong>1998年</strong>：Google創業<br>
+                            <span class="key-person">Larry Page & Sergey Brin</span>（スタンフォード大学院生）<br>
+                            PageRankアルゴリズムの発明</li>
+                            <li><strong>1999年</strong>：Napster登場（P2Pファイル共有）</li>
+                            <li><strong>2000年</strong>：ドットコムバブル崩壊</li>
+                        </ul>
+                    </div>
+                    <div class="jp-section">
+                        <h3>🇯🇵 日本</h3>
+                        <ul class="timeline">
+                            <li><strong>1996年</strong>：Yahoo! JAPAN開始<br>
+                            <span class="key-person">孫正義</span>（ソフトバンク）が展開</li>
+                            <li><strong>1997年</strong>：楽天市場開設<br>
+                            <span class="key-person">三木谷浩史</span>（創業者）</li>
+                            <li><strong>1999年</strong>：iモード（NTTドコモ）サービス開始<br>
+                            <span class="key-person">夏野剛</span>（プロデューサー）<br>
+                            <span class="emphasis">世界初の本格的モバイルインターネット</span></li>
+                            <li><strong>2000年前後</strong>：パソコン通信からインターネットへ大移行<br>
+                            → パソコン通信の終焉</li>
+                        </ul>
+                    </div>
+                </div>
+                <div class="tech-box">
+                    <h4 style="font-size: 0.75em; margin-bottom: 3px;">⚙️ 技術トピックス</h4>
+                    <p style="font-size: 0.55em; margin: 2px 0;">・XML（1998）、CSS、Flash、検索エンジン技術、eコマース、P2P技術、携帯向けcHTML（iモード）</p>
+                </div>
+            </section>
+
+            <!-- 2000年代前半：日米比較 -->
+            <section>
+                <h2>2000年代前半：ブロードバンドとWeb 2.0</h2>
+                <div class="two-column">
+                    <div class="us-section">
+                        <h3>🇺🇸 アメリカ</h3>
+                        <ul class="timeline">
+                            <li><strong>2001年</strong>：Wikipedia開始（<span class="key-person">Jimmy Wales</span>）</li>
+                            <li><strong>2003年</strong>：MySpace、LinkedIn（<span class="key-person">Reid Hoffman</span>）登場</li>
+                            <li><strong>2004年</strong>：Facebook創業<br>
+                            <span class="key-person">Mark Zuckerberg</span>（ハーバード大学生）</li>
+                            <li><strong>2005年</strong>：YouTube創業<br>
+                            <span class="key-person">Chad Hurley, Steve Chen, Jawed Karim</span><br>
+                            Web 2.0概念の普及（<span class="key-person">Tim O'Reilly</span>が命名）</li>
+                        </ul>
+                    </div>
+                    <div class="jp-section">
+                        <h3>🇯🇵 日本</h3>
+                        <ul class="timeline">
+                            <li><strong>2000年</strong>：ADSL普及開始（Yahoo! BBなど）</li>
+                            <li><strong>2004年</strong>：mixi開始<br>
+                            <span class="key-person">笠原健治</span>（創業者）<br>
+                            招待制SNSとして大ヒット</li>
+                            <li><strong>2005年</strong>：ブロードバンド普及率が急上昇</li>
+                            <li><strong>2006年</strong>：ニコニコ動画開始<br>
+                            <span class="key-person">西村博之</span>が関与</li>
+                        </ul>
+                    </div>
+                </div>
+                <div class="tech-box">
+                    <h4 style="font-size: 0.75em; margin-bottom: 3px;">⚙️ 技術トピックス</h4>
+                    <p style="font-size: 0.55em; margin: 2px 0;">・ADSL/FTTH（光回線）、Ajax（非同期通信）、RSS、Blog技術、動画ストリーミング、Wiki技術、SNSプラットフォーム</p>
+                </div>
+            </section>
+
+            <!-- 2000年代後半：日米比較 -->
+            <section>
+                <h2>2000年代後半：モバイル革命</h2>
+                <div class="two-column">
+                    <div class="us-section">
+                        <h3>🇺🇸 アメリカ</h3>
+                        <ul class="timeline">
+                            <li><strong>2006年</strong>：Twitter創業（<span class="key-person">Jack Dorsey</span>）</li>
+                            <li><strong>2007年</strong>：iPhone発売<br>
+                            <span class="key-person">Steve Jobs</span>（Apple）<br>
+                            <span class="emphasis">スマートフォン革命の始まり</span></li>
+                            <li><strong>2008年</strong>：Android OS登場、Chrome ブラウザ登場</li>
+                            <li><strong>2009年</strong>：WhatsApp創業</li>
+                        </ul>
+                    </div>
+                    <div class="jp-section">
+                        <h3>🇯🇵 日本</h3>
+                        <ul class="timeline">
+                            <li><strong>2008年</strong>：iPhone 3G日本発売</li>
+                            <li>ガラケー（フィーチャーフォン）文化からの転換期</li>
+                            <li>iモードの優位性が徐々に低下</li>
+                        </ul>
+                        <p style="margin-top: 15px; padding: 8px; background-color: #fff3cd; border-radius: 5px; font-size: 0.55em;">
+                            <strong>日本の特徴：</strong>独自のモバイル文化（iモード、ガラケー）が発展していたが、
+                            iPhoneの登場でグローバルスタンダードへ移行
+                        </p>
+                    </div>
+                </div>
+                <div class="tech-box">
+                    <h4 style="font-size: 0.75em; margin-bottom: 3px;">⚙️ 技術トピックス</h4>
+                    <p style="font-size: 0.55em; margin: 2px 0;">・スマートフォンOS（iOS、Android）、タッチUI、App Store、HTML5、WebKit、3G/LTE通信、GPS、加速度センサー</p>
+                </div>
+            </section>
+
+            <!-- 2010年代前半 -->
+            <section>
+                <h2>2010年代前半：ソーシャルメディアの成熟</h2>
+                <div class="two-column">
+                    <div class="us-section">
+                        <h3>🇺🇸 アメリカ</h3>
+                        <ul class="timeline">
+                            <li><strong>2010年</strong>：Instagram創業<br>（<span class="key-person">Kevin Systrom</span>）</li>
+                            <li><strong>2011年</strong>：Snapchat創業</li>
+                            <li><strong>2012年</strong>：Facebook IPO<br>（10億ユーザー達成）</li>
+                            <li>クラウドコンピューティング普及<br>（AWS、Azure、GCP）</li>
+                        </ul>
+                    </div>
+                    <div class="jp-section">
+                        <h3>🇯🇵 日本</h3>
+                        <ul class="timeline">
+                            <li><strong>2011年</strong>：LINE開始<br>
+                            <span class="key-person">森川亮</span>（元NHN Japan CEO）<br>
+                            東日本大震災後、爆発的普及</li>
+                            <li><strong>2012年〜</strong>：スマートフォン普及率急上昇</li>
+                            <li>Twitter、Facebook、Instagram日本で普及</li>
+                        </ul>
+                    </div>
+                </div>
+                <div class="tech-box">
+                    <h4 style="font-size: 0.75em; margin-bottom: 3px;">⚙️ 技術トピックス</h4>
+                    <p style="font-size: 0.55em; margin: 2px 0;">・クラウドコンピューティング（IaaS/PaaS/SaaS）、RESTful API、レスポンシブデザイン、Node.js、NoSQL、ビッグデータ</p>
+                </div>
+            </section>
+
+            <!-- 2010年代後半 -->
+            <section>
+                <h2>2010年代後半：AI・クラウド時代</h2>
+                <ul class="timeline" style="font-size: 0.65em;">
+                    <li><strong>2015年〜</strong>：クラウドサービス競争激化（AWS、Azure、GCP）</li>
+                    <li><strong>2016年</strong>：TikTok国際版登場<br>
+                    <span class="key-person">張一鳴（Zhang Yiming）</span>、ByteDance</li>
+                    <li><strong>2017年</strong>：仮想通貨・ブロックチェーンブーム</li>
+                    <li>AI・機械学習の実用化が進む</li>
+                    <li>日本：動画配信サービス（Netflix、Amazon Primeなど）普及</li>
+                </ul>
+                <div class="tech-box">
+                    <h4 style="font-size: 0.75em; margin-bottom: 3px;">⚙️ 技術トピックス</h4>
+                    <p style="font-size: 0.55em; margin: 2px 0;">・コンテナ技術（Docker/Kubernetes）、マイクロサービス、深層学習（CNN/RNN）、ブロックチェーン、IoT、5G通信</p>
+                </div>
+            </section>
+
+            <!-- 2020年代 -->
+            <section>
+                <h2>2020年代：パンデミックとAI革命</h2>
+                <ul class="timeline" style="font-size: 0.65em;">
+                    <li><strong>2020年</strong>：COVID-19パンデミック<br>
+                    リモートワーク急拡大（Zoom、Teamsなど）</li>
+                    <li><strong>2021年</strong>：メタバース概念の注目、NFTブーム</li>
+                    <li><strong>2022年</strong>：ChatGPT登場<br>
+                    <span class="key-person">Sam Altman</span>（OpenAI CEO）、
+                    <span class="key-person">Ilya Sutskever</span>（技術責任者）<br>
+                    <span class="emphasis">生成AI革命の始まり</span></li>
+                    <li><strong>2023-2024年</strong>：生成AIの爆発的普及<br>
+                    GPT-4、Claude、Geminiなど</li>
+                    <li><strong>2025年〜</strong>：AI統合時代へ</li>
+                </ul>
+                <div class="tech-box">
+                    <h4 style="font-size: 0.75em; margin-bottom: 3px;">⚙️ 技術トピックス</h4>
+                    <p style="font-size: 0.55em; margin: 2px 0;">・Transformer（注意機構）、LLM（大規模言語モデル）、生成AI、RAG、ファインチューニング、プロンプトエンジニアリング、エッジAI</p>
+                </div>
+            </section>
+
+            <!-- 閑話休題：AIの歴史 -->
+            <section data-background-color="#e8f5e9">
+                <h2 style="font-size: 1em; margin-bottom: 6px;">閑話休題：AIの歴史とインターネット</h2>
+                <div class="column-break" style="padding: 8px; margin: 4px 0;">
+                    <h3 style="font-size: 0.75em;">🤖 AIの発展とインターネットの関係</h3>
+                </div>
+                <div class="two-column" style="margin-top: 4px; gap: 12px;">
+                    <div>
+                        <h4 style="font-size: 0.6em; margin-bottom: 4px;">AI技術の系譜</h4>
+                        <ul style="font-size: 0.48em; line-height: 1.25; margin: 4px 0;">
+                            <li><strong>2012年</strong>：AlexNet（深層学習ブレークスルー）GPU活用が鍵に</li>
+                            <li><strong>2017年</strong>：Transformer登場（Google）<br>
+                            <span class="tech-highlight">「Attention is All You Need」論文</span>　現代AIの基盤技術</li>
+                            <li><strong>2018年</strong>：BERT、GPT-1（言語モデルの進化）</li>
+                            <li><strong>2020年</strong>：GPT-3（1750億パラメータ）LLMの可能性を実証</li>
+                            <li><strong>2021年</strong>：DALL-E、CLIP（画像生成AI）</li>
+                            <li><strong>2022年</strong>：Stable Diffusion登場<br>
+                            <span class="tech-highlight">オープンソース画像生成AI</span>　LAIONデータセット活用</li>
+                            <li><strong>2022年11月</strong>：ChatGPT公開　生成AI革命の始まり</li>
+                        </ul>
+                    </div>
+                    <div>
+                        <h4 style="font-size: 0.6em; margin-bottom: 4px;">なぜNVIDIA GPUが使われるのか？</h4>
+                        <ul style="font-size: 0.48em; line-height: 1.25; margin: 4px 0;">
+                            <li><strong>並列計算能力</strong>：CPU（数十コア）vs GPU（数千コア）</li>
+                            <li><strong>行列演算の高速化</strong>：深層学習は大量の行列計算<br>
+                            GPUは3Dグラフィックス用に元々設計され行列演算が得意</li>
+                            <li><strong>NVIDIA CUDA</strong>（2006年）：GPU向けプログラミング環境<br>
+                            AI研究者が簡単にGPUを活用可能に</li>
+                            <li><strong>エコシステム</strong>：PyTorch、TensorFlow等がCUDA対応<br>
+                            事実上の標準に</li>
+                        </ul>
+                        <h4 style="font-size: 0.6em; margin-top: 6px; margin-bottom: 4px;">LAIONとオープンAI</h4>
+                        <ul style="font-size: 0.48em; line-height: 1.25; margin: 4px 0;">
+                            <li><strong>LAION</strong>：インターネット上の画像・テキストを収集した巨大データセット（数十億枚）</li>
+                            <li><strong>オープンソースの意義</strong>：誰でもAIモデルを訓練可能に<br>
+                            Stable Diffusionなどオープンな画像生成AIが登場</li>
+                        </ul>
+                    </div>
+                </div>
+                <div class="info-box" style="padding: 8px; margin: 6px 0;">
+                    <p style="font-size: 0.45em; margin: 0; line-height: 1.3;"><strong>インターネットとAIの相乗効果：</strong>
+                    インターネットが膨大なデータを提供し、GPU技術が計算を可能にし、オープンソースコミュニティが知識を共有。
+                    この3つの組み合わせが現代のAI革命を実現。Transformerの「Attention機構」により長い文脈を理解でき、
+                    これがChatGPTなどの大規模言語モデルの基盤となっている。</p>
+                </div>
+            </section>
+
+            <!-- 日米の違いまとめ -->
+            <section>
+                <h2>日米の違いと特徴</h2>
+                <div class="two-column">
+                    <div class="us-section">
+                        <h3>🇺🇸 アメリカ</h3>
+                        <ul>
+                            <li>技術革新の発信地</li>
+                            <li>グローバルプラットフォームの創出</li>
+                            <li>オープンイノベーション文化</li>
+                            <li>スタートアップエコシステム</li>
+                            <li>TCP/IP、WWW、SNS、AIなど基盤技術を次々と生み出す</li>
+                        </ul>
+                    </div>
+                    <div class="jp-section">
+                        <h3>🇯🇵 日本</h3>
+                        <ul>
+                            <li>独自のモバイル文化（iモード、ガラケー）</li>
+                            <li>パソコン通信文化の独自発展</li>
+                            <li>グローバルサービスへキャッチアップ</li>
+                            <li>国内独自サービスの成功例（LINE、mixi、ニコニコ動画）</li>
+                            <li>高品質なインフラ（光回線など）</li>
+                        </ul>
+                    </div>
+                </div>
+            </section>
+
+            <!-- インターネットの本質 -->
+            <section>
+                <h2>インターネットの本質</h2>
+                <div class="info-box" style="padding: 20px; margin: 15px 0;">
+                    <h3 class="tech-highlight" style="font-size: 1.2em;">TCP/IPから続く「つながる」思想</h3>
+                    <ul style="font-size: 0.8em; margin-top: 15px;">
+                        <li>オープンスタンダード</li>
+                        <li>分散型ネットワーク</li>
+                        <li>誰でも参加できる</li>
+                        <li>イノベーションを促進</li>
+                    </ul>
+                    <p style="margin-top: 20px; font-size: 0.85em; font-weight: bold;">
+                        → これが40年以上続く成長の源泉
+                    </p>
+                </div>
+            </section>
+
+            <!-- 技術の系譜 -->
+            <section>
+                <h2>技術の系譜：過去から未来へ</h2>
+                <div style="font-size: 0.75em; margin-top: 15px;">
+                    <p><strong>1974年</strong>：TCP/IP（ネットワークをつなぐ）</p>
+                    <p>↓</p>
+                    <p><strong>1991年</strong>：WWW（情報をつなぐ）</p>
+                    <p>↓</p>
+                    <p><strong>2004年</strong>：SNS（人をつなぐ）</p>
+                    <p>↓</p>
+                    <p><strong>2007年</strong>：iPhone（いつでもどこでもつながる）</p>
+                    <p>↓</p>
+                    <p><strong>2022年</strong>：生成AI（<span class="emphasis">知識と創造性をつなぐ</span>）</p>
+                </div>
+            </section>
+
+            <!-- 閑話休題：AIの未来 -->
+            <section data-background-color="#e8f5e9">
+                <h2 style="font-size: 1em; margin-bottom: 6px;">閑話休題：AIの未来予測</h2>
+                <div class="column-break" style="padding: 8px; margin: 4px 0;">
+                    <h3 style="font-size: 0.75em;">🔮 2025年以降、AIはどこへ向かうのか？</h3>
+                </div>
+                <div class="two-column" style="margin-top: 4px; gap: 12px;">
+                    <div>
+                        <h4 style="font-size: 0.6em; margin-bottom: 4px;">1. ローカルLLMの台頭</h4>
+                        <ul style="font-size: 0.48em; line-height: 1.25; margin: 4px 0;">
+                            <li><strong>クラウド依存からの脱却</strong>：プライバシー保護、コスト削減</li>
+                            <li><strong>小型化技術</strong>：量子化、蒸留により10GB以下のモデルが実用化</li>
+                            <li><strong>エッジデバイスAI</strong>：スマートフォン、PC、IoT機器で直接実行</li>
+                            <li><strong>オフライン利用</strong>：インターネット接続不要で動作</li>
+                            <li>例：Llama 3、Mistral、Phi-3など</li>
+                        </ul>
+                        <h4 style="font-size: 0.6em; margin-top: 6px; margin-bottom: 4px;">2. 学習データ競争の激化</h4>
+                        <ul style="font-size: 0.48em; line-height: 1.25; margin: 4px 0;">
+                            <li><strong>Web情報の限界</strong>：公開データは既に使い尽くされつつある</li>
+                            <li><strong>独自データの重要性</strong>：企業の内部データ、専門知識、非公開情報</li>
+                            <li><strong>合成データ</strong>：AIが生成したデータでAIを訓練（自己学習）</li>
+                            <li><strong>パートナーシップ</strong>：出版社、大学、研究機関とのデータ提携</li>
+                            <li><strong>著作権問題</strong>：データ使用の法的枠組みが整備される</li>
+                        </ul>
+                    </div>
+                    <div>
+                        <h4 style="font-size: 0.6em; margin-bottom: 4px;">3. 電力問題の深刻化</h4>
+                        <ul style="font-size: 0.48em; line-height: 1.25; margin: 4px 0;">
+                            <li><strong>消費電力の急増</strong>：大規模データセンターが電力網を圧迫</li>
+                            <li><strong>具体例</strong>：GPT-4の1回の学習で約25,000世帯の年間電力消費量</li>
+                            <li><strong>推論コスト</strong>：ChatGPT 1回の応答≈スマホ充電1回分の電力</li>
+                            <li><strong>データセンター立地競争</strong>：安価な電力・再生可能エネルギーへのアクセス</li>
+                            <li><strong>省電力技術</strong>：ASIC（専用チップ）、効率的アルゴリズム開発</li>
+                        </ul>
+                        <h4 style="font-size: 0.6em; margin-top: 6px; margin-bottom: 4px;">4. 新たな競争軸</h4>
+                        <ul style="font-size: 0.48em; line-height: 1.25; margin: 4px 0;">
+                            <li><strong>推論効率</strong>：より少ない計算で高品質な出力</li>
+                            <li><strong>マルチモーダル化</strong>：テキスト・画像・音声・動画の統合理解</li>
+                            <li><strong>エージェント化</strong>：AIが自律的にタスクを実行</li>
+                            <li><strong>パーソナライゼーション</strong>：個人に最適化されたAIアシスタント</li>
+                        </ul>
+                    </div>
+                </div>
+                <div class="info-box" style="padding: 8px; margin: 6px 0;">
+                    <p style="font-size: 0.45em; margin: 0; line-height: 1.3;"><strong>予測される変化：</strong>
+                    AIは「クラウドの巨人」から「個人のパートナー」へ。電力・データ・効率性が新たな競争軸となり、
+                    インターネット黎明期のように「オープンvsクローズド」の構図が再現される可能性も。
+                    ローカルLLMとクラウドLLMの使い分けが一般化し、AIインフラが第2のインターネット革命を牽引する。</p>
+                </div>
+            </section>
+
+            <!-- まとめ -->
+            <section class="center-text">
+                <h2>まとめ</h2>
+                <ul style="text-align: left; font-size: 0.8em;">
+                    <li>TCP/IPの発明が全ての基盤</li>
+                    <li>パソコン通信からインターネットへの移行</li>
+                    <li>アメリカ：革新の発信地、日本：独自文化と適応</li>
+                    <li>モバイル革命による生活の変化</li>
+                    <li>AI時代：新たな「つながり」の創造</li>
+                </ul>
+                <p style="margin-top: 35px; font-size: 0.95em; font-weight: bold; color: #2c3e50;">
+                    インターネットは今も進化し続けている
+                </p>
+            </section>
+
+            <!-- 終わり -->
+            <section class="center-text">
+                <h1>ご清聴ありがとうございました</h1>
+                <p style="margin-top: 35px; font-size: 0.9em;">質疑応答</p>
+            </section>
+
+        </div>
+    </div>
+
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/reveal.js/4.5.0/reveal.min.js"></script>
+    <script>
+        Reveal.initialize({
+            hash: true,
+            slideNumber: true,
+            transition: 'slide',
+            width: 1200,
+            height: 800,
+            margin: 0.1,
+            minScale: 0.2,
+            maxScale: 2.0
+        });
+    </script>
+</body>
+</html>

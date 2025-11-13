@@ -521,6 +521,18 @@
         // レッスンデータ
         const lessons = [
             {
+                id: 0,
+                number: "00",
+                title: "インターネットの歴史",
+                description: "日本とアメリカの比較 - 1980年代から現在まで",
+                slides: "lesson0_slides.html",
+                totalSlides: 21, // Reveal.jsスライド数固定
+                demos: [
+                    { id: "internet-timeline", title: "インターネット年表理解", required: true },
+                    { id: "tcp-ip-understanding", title: "TCP/IP基礎知識確認", required: true }
+                ]
+            },
+            {
                 id: 1,
                 number: "01",
                 title: "Claude Code入門",
