@@ -756,6 +756,78 @@ const slideCount = Math.max(slideContainerCount, slideClassCount);
 
 ---
 
+### 2025-11-13 レッスン0追加: インターネットの歴史（日米比較）
+
+#### 主要変更内容
+1. **イントロダクション教材の追加**: Claude Code学習前の基礎知識習得用スライド
+2. **レッスン0追加**: 「インターネットの歴史 - 日本とアメリカの比較」（21スライド構成）
+3. **Reveal.js形式**: 既存スライドとは異なるプレゼンテーションフレームワークを採用
+4. **TCP/IPからAI革命まで**: 1960年代から2020年代までのインターネット史を網羅
+
+#### ファイル変更
+- `slides/lesson0_slides.html`: 新規作成（Reveal.js形式、21スライド）
+- `public/student-dashboard.html`: lessons配列の先頭にlesson 0を追加
+- `server.js`: デフォルトスライド数に `0: 21` を追加
+- `.gitignore`: 更新
+
+#### レッスン0の内容
+1. **前史（1960-70年代）**: TCP/IPの発明、ARPANET誕生
+2. **黎明期（1980年代）**: パソコン通信の時代、日米の比較
+3. **WWWの登場（1990年代前半）**: 商用インターネットの始まり
+4. **ドットコムブーム（1990年代後半）**: Google創業、Yahoo! JAPAN、iモード
+5. **ブロードバンド時代（2000年代前半）**: Web 2.0、mixi、YouTube
+6. **モバイル革命（2000年代後半）**: iPhone登場、スマートフォン普及
+7. **ソーシャルメディア成熟（2010年代）**: LINE、Instagram、TikTok
+8. **AI革命（2020年代）**: ChatGPT、生成AI、LLM時代
+
+#### 実演課題
+- **インターネット年表理解**: 主要な技術・サービスの登場年と背景理解
+- **TCP/IP基礎知識確認**: インターネットの基盤技術の理解確認
+
+#### 技術実装
+- **Reveal.js 4.5.0**: スライドプレゼンテーションフレームワーク
+- **Adobe Spectrum Design System準拠**: 統一されたデザインシステム
+- **21スライド構成**: `<section>`タグベース
+- **閑話休題コーナー**: ARPANETの軍事起源、TCP/IP階層モデル、AIの歴史など
+- **日米比較表**: 各時代における日本とアメリカの違いを可視化
+- **レスポンシブ対応**: 1200x800px基準、スケーラブル設計
+
+#### デプロイ状況
+- **GitHub**: ✅ プッシュ完了（commit: 302c5fc）
+  - 4ファイル変更、776行追加
+- **AWS EC2**: ⚠️ SSH接続不可（IP制限）
+  - 現在IP: `180.47.213.52`
+  - HTTP (3000): ✅ アクセス可能
+  - SSH (22): ❌ タイムアウト（セキュリティグループで要IP追加）
+
+#### AWS反映手順（未実施）
+```bash
+# セキュリティグループで180.47.213.52/32を許可後
+ssh -i "$HOME/elearning-key.pem" ubuntu@52.195.12.32 \
+  "cd /var/www/elearning && git pull origin main && pm2 restart elearning"
+```
+
+または、**AWS Systems Manager Session Manager**から：
+```bash
+cd /var/www/elearning
+git pull origin main
+pm2 restart elearning
+```
+
+#### 技術メモ
+- Reveal.jsスライドはserver.jsのスライド検出ロジックで正常にカウント可能
+- スライド数カウント: `grep -c '<section' filename.html` → 21スライド
+- Adobe Spectrum Design Systemとの整合性を考慮したデザイン
+- 閑話休題セクションには丸みのあるGoogle Fontsを使用
+- 既存のHTML形式スライド（lesson1-8）とReveal.js形式が共存可能
+
+#### 今後の展開
+- [ ] レッスン0完了後の学習フロー最適化
+- [ ] 追加の導入教材検討（プログラミング基礎、Git基礎など）
+- [ ] スライド内容の定期更新（最新技術動向の反映）
+
+---
+
 ## 🎯 SmartLearn Pro カスタマイズガイド
 
 ### 🔄 新業界対応のスライド作成手順
