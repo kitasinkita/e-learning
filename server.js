@@ -116,10 +116,11 @@ app.get('/api/lesson/:id/slide-count', (req, res) => {
         const fs = require('fs');
         const slideContent = fs.readFileSync(slidePath, 'utf8');
 
-        // slideクラスの数を数える（slide-containerまたはslideクラス）
+        // slideクラスの数を数える（slide-container、slideクラス、または class="slide で始まるもの）
         const slideContainerCount = (slideContent.match(/class="slide-container"/g) || []).length;
         const slideClassCount = (slideContent.match(/class="slide"/g) || []).length;
-        const slideCount = Math.max(slideContainerCount, slideClassCount);
+        const slideClassWithModifierCount = (slideContent.match(/class="slide /g) || []).length;
+        const slideCount = Math.max(slideContainerCount, slideClassCount, slideClassWithModifierCount);
 
         res.json({ lessonId: parseInt(lessonId), totalSlides: slideCount });
     } catch (error) {
