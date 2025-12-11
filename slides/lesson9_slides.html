@@ -1,0 +1,1087 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Figma MCP × Claude Code ハンズオン講義</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Helvetica+Neue:wght@300;400;700&family=Noto+Sans+JP:wght@300;400;700&display=swap" rel="stylesheet">
+  <style>
+    :root {
+      --primary: #002452;
+      --secondary: #52575E;
+      --accent: #ACACAC;
+      --light-gray: #F6F8F9;
+      --border: #EEEEEE;
+      --white: #FFFFFF;
+    }
+
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+
+    body {
+      font-family: 'Helvetica Neue', 'Noto Sans JP', sans-serif;
+      background: var(--white);
+      color: var(--primary);
+      overflow: hidden;
+    }
+
+    .slides-container {
+      width: 100vw;
+      height: 100vh;
+      overflow: hidden;
+    }
+
+    .slide {
+      width: 100vw;
+      height: 100vh;
+      display: none;
+      padding: 80px;
+      position: relative;
+    }
+
+    .slide.active {
+      display: flex;
+      flex-direction: column;
+    }
+
+    /* Slide Types */
+    .slide-title {
+      background: linear-gradient(135deg, var(--light-gray) 0%, var(--white) 100%);
+      justify-content: center;
+    }
+
+    .slide-content {
+      background: var(--white);
+    }
+
+    .slide-section {
+      background: var(--light-gray);
+    }
+
+    /* Typography - Folio Style */
+    .category {
+      font-size: 18px;
+      font-weight: 700;
+      letter-spacing: 0.11em;
+      text-transform: uppercase;
+      color: var(--accent);
+      margin-bottom: 24px;
+    }
+
+    .title-large {
+      font-size: 120px;
+      font-weight: 700;
+      line-height: 1;
+      color: var(--primary);
+      margin-bottom: 24px;
+    }
+
+    .title-medium {
+      font-size: 60px;
+      font-weight: 400;
+      line-height: 1;
+      color: var(--primary);
+      margin-bottom: 32px;
+    }
+
+    .title-small {
+      font-size: 40px;
+      font-weight: 400;
+      line-height: 1.5;
+      color: var(--primary);
+    }
+
+    .subtitle {
+      font-size: 30px;
+      font-weight: 400;
+      letter-spacing: 0.07em;
+      text-transform: uppercase;
+      color: rgba(22, 55, 96, 0.35);
+      margin-bottom: 16px;
+    }
+
+    .body-text {
+      font-size: 34px;
+      font-weight: 300;
+      line-height: 1.47;
+      color: var(--secondary);
+    }
+
+    .body-small {
+      font-size: 22px;
+      font-weight: 400;
+      line-height: 1.32;
+      color: #53595F;
+    }
+
+    .label {
+      font-size: 21px;
+      font-weight: 700;
+      letter-spacing: 0.14em;
+      text-transform: uppercase;
+      color: var(--primary);
+      margin-bottom: 8px;
+    }
+
+    /* Layout Components */
+    .header-line {
+      width: 100%;
+      height: 4px;
+      background: var(--border);
+      margin-bottom: 40px;
+    }
+
+    .footer {
+      position: absolute;
+      bottom: 40px;
+      left: 80px;
+      right: 80px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      border-top: 2px solid var(--border);
+      padding-top: 16px;
+    }
+
+    .footer-text {
+      font-size: 18px;
+      color: #A6A6A6;
+    }
+
+    .page-number {
+      font-size: 18px;
+      color: #A6A6A6;
+    }
+
+    /* Content Grid */
+    .content-grid {
+      display: grid;
+      grid-template-columns: repeat(2, 1fr);
+      gap: 40px;
+      margin-top: 40px;
+    }
+
+    .content-grid-3 {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 32px;
+      margin-top: 40px;
+    }
+
+    /* Cards */
+    .card {
+      background: var(--light-gray);
+      border-radius: 8px;
+      padding: 40px;
+    }
+
+    .card-number {
+      font-size: 60px;
+      font-weight: 700;
+      color: var(--accent);
+      margin-bottom: 16px;
+    }
+
+    .card-title {
+      font-size: 24px;
+      font-weight: 700;
+      color: var(--primary);
+      margin-bottom: 12px;
+    }
+
+    .card-text {
+      font-size: 18px;
+      color: var(--secondary);
+      line-height: 1.5;
+    }
+
+    /* Code Block */
+    .code-block {
+      background: #1a1a2e;
+      border-radius: 12px;
+      padding: 32px;
+      margin: 24px 0;
+      overflow-x: auto;
+    }
+
+    .code-block pre {
+      font-family: 'Monaco', 'Consolas', monospace;
+      font-size: 18px;
+      line-height: 1.6;
+      color: #e0e0e0;
+      margin: 0;
+    }
+
+    .code-block .keyword { color: #ff79c6; }
+    .code-block .string { color: #f1fa8c; }
+    .code-block .comment { color: #6272a4; }
+    .code-block .function { color: #8be9fd; }
+
+    /* Comparison Layout */
+    .comparison {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 60px;
+      margin-top: 40px;
+    }
+
+    .comparison-box {
+      padding: 40px;
+      border-radius: 12px;
+    }
+
+    .comparison-box.before {
+      background: #f0f0f0;
+      border-left: 4px solid var(--accent);
+    }
+
+    .comparison-box.after {
+      background: #e8f4e8;
+      border-left: 4px solid #4CAF50;
+    }
+
+    .comparison-label {
+      font-size: 24px;
+      font-weight: 700;
+      margin-bottom: 24px;
+      text-transform: uppercase;
+      letter-spacing: 0.1em;
+    }
+
+    .comparison-box.before .comparison-label { color: var(--accent); }
+    .comparison-box.after .comparison-label { color: #4CAF50; }
+
+    /* List */
+    .list {
+      list-style: none;
+      margin-top: 24px;
+    }
+
+    .list li {
+      font-size: 28px;
+      line-height: 1.8;
+      color: var(--secondary);
+      padding-left: 40px;
+      position: relative;
+      margin-bottom: 16px;
+    }
+
+    .list li::before {
+      content: '';
+      position: absolute;
+      left: 0;
+      top: 14px;
+      width: 16px;
+      height: 16px;
+      background: var(--primary);
+      border-radius: 50%;
+    }
+
+    .list-numbered li::before {
+      content: counter(item);
+      counter-increment: item;
+      background: var(--primary);
+      color: var(--white);
+      width: 32px;
+      height: 32px;
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 16px;
+      font-weight: 700;
+      top: 6px;
+    }
+
+    .list-numbered {
+      counter-reset: item;
+    }
+
+    /* Table */
+    .table {
+      width: 100%;
+      border-collapse: collapse;
+      margin-top: 32px;
+    }
+
+    .table th, .table td {
+      padding: 20px 24px;
+      text-align: left;
+      border-bottom: 2px solid var(--border);
+    }
+
+    .table th {
+      font-size: 18px;
+      font-weight: 700;
+      color: var(--accent);
+      text-transform: uppercase;
+      letter-spacing: 0.1em;
+    }
+
+    .table td {
+      font-size: 22px;
+      color: var(--secondary);
+    }
+
+    /* Split Layout */
+    .split-layout {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 80px;
+      flex: 1;
+      align-items: center;
+    }
+
+    .split-visual {
+      background: var(--light-gray);
+      border-radius: 16px;
+      height: 400px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+
+    .split-visual-icon {
+      font-size: 120px;
+      opacity: 0.3;
+    }
+
+    /* Navigation */
+    .nav-hint {
+      position: fixed;
+      bottom: 20px;
+      right: 20px;
+      font-size: 14px;
+      color: var(--accent);
+      background: var(--white);
+      padding: 8px 16px;
+      border-radius: 4px;
+      box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+    }
+
+    /* Highlight Box */
+    .highlight-box {
+      background: linear-gradient(135deg, #002452 0%, #1a3a6c 100%);
+      color: var(--white);
+      padding: 40px;
+      border-radius: 16px;
+      margin: 32px 0;
+    }
+
+    .highlight-box .body-text {
+      color: rgba(255,255,255,0.9);
+    }
+
+    /* QA Section */
+    .qa-item {
+      margin-bottom: 32px;
+      padding-bottom: 32px;
+      border-bottom: 1px solid var(--border);
+    }
+
+    .qa-item:last-child {
+      border-bottom: none;
+    }
+
+    .qa-question {
+      font-size: 24px;
+      font-weight: 700;
+      color: var(--primary);
+      margin-bottom: 12px;
+    }
+
+    .qa-answer {
+      font-size: 20px;
+      color: var(--secondary);
+      line-height: 1.6;
+    }
+
+    /* Process Steps */
+    .process-steps {
+      display: flex;
+      gap: 24px;
+      margin-top: 40px;
+    }
+
+    .process-step {
+      flex: 1;
+      text-align: center;
+      position: relative;
+    }
+
+    .process-step::after {
+      content: '→';
+      position: absolute;
+      right: -20px;
+      top: 40px;
+      font-size: 32px;
+      color: var(--accent);
+    }
+
+    .process-step:last-child::after {
+      display: none;
+    }
+
+    .process-icon {
+      width: 80px;
+      height: 80px;
+      background: var(--primary);
+      border-radius: 50%;
+      margin: 0 auto 16px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      color: var(--white);
+      font-size: 32px;
+    }
+
+    .process-title {
+      font-size: 18px;
+      font-weight: 700;
+      color: var(--primary);
+      margin-bottom: 8px;
+    }
+
+    .process-desc {
+      font-size: 14px;
+      color: var(--secondary);
+    }
+
+    /* Two Column Text */
+    .two-column {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 60px;
+      margin-top: 40px;
+    }
+
+    .column-header {
+      font-size: 24px;
+      font-weight: 700;
+      color: var(--primary);
+      margin-bottom: 20px;
+      padding-bottom: 12px;
+      border-bottom: 3px solid var(--primary);
+    }
+  </style>
+</head>
+<body>
+  <div class="slides-container">
+    <!-- Slide 1: Title -->
+    <section class="slide slide-title active" data-slide="1">
+      <div class="subtitle">Figma MCP × Claude Code</div>
+      <h1 class="title-large">ハンズオン講義</h1>
+      <p class="title-medium" style="margin-top: 40px;">デザインからコードへ、AIで加速する<br>フロントエンド開発</p>
+      <div class="footer">
+        <span class="footer-text">IT-OPTIMIZATION inc. | 2025</span>
+        <span class="page-number">1 / 18</span>
+      </div>
+    </section>
+
+    <!-- Slide 2: Today's Goal -->
+    <section class="slide slide-content" data-slide="2">
+      <span class="category">OVERVIEW</span>
+      <div class="header-line"></div>
+      <h2 class="title-medium">今日のゴール</h2>
+      <p class="body-text" style="margin-bottom: 40px;">この講義で学ぶ4つのこと</p>
+      <div class="content-grid">
+        <div class="card">
+          <div class="card-number">01</div>
+          <div class="card-title">Figma MCP サーバー</div>
+          <div class="card-text">MCPの仕組みを理解し、Figmaとの連携方法を学ぶ</div>
+        </div>
+        <div class="card">
+          <div class="card-number">02</div>
+          <div class="card-title">Claude Code 接続</div>
+          <div class="card-text">Claude CodeとFigmaを接続し、デザイン情報を取得</div>
+        </div>
+        <div class="card">
+          <div class="card-number">03</div>
+          <div class="card-title">コード自動生成</div>
+          <div class="card-text">デザインからReact + Tailwindコードを自動生成</div>
+        </div>
+        <div class="card">
+          <div class="card-number">04</div>
+          <div class="card-title">対話で調整</div>
+          <div class="card-text">生成したコードを対話形式で調整・改善</div>
+        </div>
+      </div>
+      <div class="footer">
+        <span class="footer-text">Figma MCP × Claude Code ハンズオン</span>
+        <span class="page-number">2 / 18</span>
+      </div>
+    </section>
+
+    <!-- Slide 3: Before/After -->
+    <section class="slide slide-content" data-slide="3">
+      <span class="category">WORKFLOW</span>
+      <div class="header-line"></div>
+      <h2 class="title-medium">従来 vs MCP ワークフロー</h2>
+      <div class="comparison">
+        <div class="comparison-box before">
+          <div class="comparison-label">Before（従来）</div>
+          <ul class="list">
+            <li>デザイナー → Figma → 仕様書</li>
+            <li>エンジニアが手動でCSS記述</li>
+            <li>レイアウトを目コピ</li>
+            <li>色・フォントを手入力</li>
+          </ul>
+        </div>
+        <div class="comparison-box after">
+          <div class="comparison-label">After（MCP）</div>
+          <ul class="list">
+            <li>Figma → MCP → Claude Code</li>
+            <li>デザイン情報を自動取得</li>
+            <li>構造を理解して生成</li>
+            <li>調整は対話で指示</li>
+          </ul>
+        </div>
+      </div>
+      <div class="footer">
+        <span class="footer-text">Figma MCP × Claude Code ハンズオン</span>
+        <span class="page-number">3 / 18</span>
+      </div>
+    </section>
+
+    <!-- Slide 4: What is MCP -->
+    <section class="slide slide-content" data-slide="4">
+      <span class="category">CONCEPT</span>
+      <div class="header-line"></div>
+      <h2 class="title-medium">MCPとは？</h2>
+      <div class="split-layout">
+        <div>
+          <div class="label">Model Context Protocol</div>
+          <ul class="list">
+            <li>AIモデルが外部ツールと連携するためのプロトコル</li>
+            <li>Claudeが直接Figmaのデザイン情報を読み取れる</li>
+            <li>選択中のフレーム、色、フォント、レイアウト情報を取得</li>
+          </ul>
+          <div style="margin-top: 40px;">
+            <div class="label">Figma MCP サーバー</div>
+            <p class="body-small">Figmaデスクトップアプリに内蔵<br><code style="background:#f0f0f0;padding:4px 8px;border-radius:4px;">127.0.0.1:3845/sse</code> でローカル起動</p>
+          </div>
+        </div>
+        <div class="split-visual">
+          <div style="text-align:center;">
+            <div style="font-size:80px;margin-bottom:20px;">🔌</div>
+            <div class="body-small">Figma ↔ Claude Code</div>
+          </div>
+        </div>
+      </div>
+      <div class="footer">
+        <span class="footer-text">Figma MCP × Claude Code ハンズオン</span>
+        <span class="page-number">4 / 18</span>
+      </div>
+    </section>
+
+    <!-- Slide 5: Requirements -->
+    <section class="slide slide-content" data-slide="5">
+      <span class="category">PREPARATION</span>
+      <div class="header-line"></div>
+      <h2 class="title-medium">必要な準備</h2>
+      <table class="table">
+        <thead>
+          <tr>
+            <th>項目</th>
+            <th>備考</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td><strong>Figma アカウント</strong></td>
+            <td>Dev Mode使用可能なもの（Professional以上推奨）</td>
+          </tr>
+          <tr>
+            <td><strong>Node.js</strong></td>
+            <td>v18以上推奨</td>
+          </tr>
+          <tr>
+            <td><strong>Claude Code CLI</strong></td>
+            <td><code style="background:#f0f0f0;padding:2px 6px;border-radius:4px;">npm install -g @anthropic-ai/claude-code</code></td>
+          </tr>
+          <tr>
+            <td><strong>VS Code</strong></td>
+            <td>または好みのエディタ</td>
+          </tr>
+        </tbody>
+      </table>
+      <div class="footer">
+        <span class="footer-text">Figma MCP × Claude Code ハンズオン</span>
+        <span class="page-number">5 / 18</span>
+      </div>
+    </section>
+
+    <!-- Slide 6: Figma Setup -->
+    <section class="slide slide-content" data-slide="6">
+      <span class="category">SETUP</span>
+      <div class="header-line"></div>
+      <h2 class="title-medium">Figma側のセットアップ</h2>
+      <div class="content-grid-3">
+        <div class="card">
+          <div class="card-number">01</div>
+          <div class="card-title">テンプレートを選ぶ</div>
+          <div class="card-text">Figma Communityで「landing page」検索。シンプルなもの（3〜5セクション）を選択</div>
+        </div>
+        <div class="card">
+          <div class="card-number">02</div>
+          <div class="card-title">Dev Mode有効化</div>
+          <div class="card-text">Figmaデスクトップアプリ → 右上の &lt;/&gt; アイコン → MCP Serverを有効化</div>
+        </div>
+        <div class="card">
+          <div class="card-number">03</div>
+          <div class="card-title">フレームを選択</div>
+          <div class="card-text">実装したいフレームを1つ選択。わかりやすい名前に変更（例: Hero Section）</div>
+        </div>
+      </div>
+      <div class="footer">
+        <span class="footer-text">Figma MCP × Claude Code ハンズオン</span>
+        <span class="page-number">6 / 18</span>
+      </div>
+    </section>
+
+    <!-- Slide 7: Claude Code Setup -->
+    <section class="slide slide-content" data-slide="7">
+      <span class="category">SETUP</span>
+      <div class="header-line"></div>
+      <h2 class="title-medium">Claude Code側のセットアップ</h2>
+      <div class="two-column">
+        <div>
+          <div class="column-header">MCPサーバーを登録</div>
+          <div class="code-block">
+            <pre><span class="function">claude</span> mcp add \
+  --transport sse \
+  figma-dev-mode \
+  <span class="string">http://127.0.0.1:3845/mcp</span></pre>
+          </div>
+        </div>
+        <div>
+          <div class="column-header">接続確認</div>
+          <div class="code-block">
+            <pre><span class="function">claude</span> mcp list
+
+<span class="comment"># 以下が表示されればOK</span>
+figma-dev-mode: <span class="string">✓ Connected</span></pre>
+          </div>
+        </div>
+      </div>
+      <div class="footer">
+        <span class="footer-text">Figma MCP × Claude Code ハンズオン</span>
+        <span class="page-number">7 / 18</span>
+      </div>
+    </section>
+
+    <!-- Slide 8: Project Setup -->
+    <section class="slide slide-content" data-slide="8">
+      <span class="category">SETUP</span>
+      <div class="header-line"></div>
+      <h2 class="title-medium">プロジェクト準備</h2>
+      <p class="body-text" style="margin-bottom: 24px;">Vite + React + Tailwind 環境構築</p>
+      <div class="code-block">
+        <pre><span class="comment"># プロジェクト作成</span>
+<span class="function">npm</span> create vite@latest demo -- --template react-ts
+<span class="function">cd</span> demo
+<span class="function">npm</span> install
+
+<span class="comment"># Tailwind CSS v4 インストール</span>
+<span class="function">npm</span> install -D tailwindcss @tailwindcss/vite</pre>
+      </div>
+      <div class="code-block">
+        <pre><span class="comment">// vite.config.ts</span>
+<span class="keyword">import</span> tailwindcss <span class="keyword">from</span> <span class="string">'@tailwindcss/vite'</span>
+
+<span class="keyword">export default</span> defineConfig({
+  plugins: [react(), <span class="function">tailwindcss</span>()],
+})</pre>
+      </div>
+      <div class="footer">
+        <span class="footer-text">Figma MCP × Claude Code ハンズオン</span>
+        <span class="page-number">8 / 18</span>
+      </div>
+    </section>
+
+    <!-- Slide 9: Demo - Load Design -->
+    <section class="slide slide-section" data-slide="9">
+      <span class="category">DEMO</span>
+      <div class="header-line"></div>
+      <h2 class="title-medium">実演 - デザイン読み込み</h2>
+      <div class="highlight-box">
+        <div class="label" style="color:rgba(255,255,255,0.7);">プロンプト例</div>
+        <p class="body-text" style="font-style:italic;">
+          「Figma MCPを使って、このURLのフレーム情報を取得し、<br>
+          React + Tailwind CSS でコンポーネントを作ってください。<br>
+          URL: https://www.figma.com/design/xxx?node-id=xxx」
+        </p>
+      </div>
+      <div class="process-steps" style="margin-top:60px;">
+        <div class="process-step">
+          <div class="process-icon">1</div>
+          <div class="process-title">claude 起動</div>
+          <div class="process-desc">ターミナルで実行</div>
+        </div>
+        <div class="process-step">
+          <div class="process-icon">2</div>
+          <div class="process-title">URL指定</div>
+          <div class="process-desc">Figma URLを渡す</div>
+        </div>
+        <div class="process-step">
+          <div class="process-icon">3</div>
+          <div class="process-title">MCP取得</div>
+          <div class="process-desc">デザイン情報取得</div>
+        </div>
+        <div class="process-step">
+          <div class="process-icon">4</div>
+          <div class="process-title">コード生成</div>
+          <div class="process-desc">React生成</div>
+        </div>
+      </div>
+      <div class="footer">
+        <span class="footer-text">Figma MCP × Claude Code ハンズオン</span>
+        <span class="page-number">9 / 18</span>
+      </div>
+    </section>
+
+    <!-- Slide 10: Demo - Code Generation -->
+    <section class="slide slide-content" data-slide="10">
+      <span class="category">DEMO</span>
+      <div class="header-line"></div>
+      <h2 class="title-medium">実演 - コード生成</h2>
+      <p class="body-text" style="margin-bottom: 32px;">Claude Codeが行うこと</p>
+      <div class="content-grid">
+        <div>
+          <ul class="list list-numbered">
+            <li>Figma MCPサーバーに接続</li>
+            <li>指定フレームの情報を取得<br><span class="body-small">レイヤー構造、色、フォント、サイズ</span></li>
+            <li><code>src/components/</code> にコンポーネント生成</li>
+            <li>Tailwind CSSクラスを適用</li>
+          </ul>
+        </div>
+        <div class="code-block" style="height:fit-content;">
+          <pre><span class="comment">// 生成例: HeroSection.tsx</span>
+<span class="keyword">export default function</span> <span class="function">HeroSection</span>() {
+  <span class="keyword">return</span> (
+    &lt;section className=<span class="string">"bg-[#F9F2ED]"</span>&gt;
+      &lt;h1 className=<span class="string">"text-6xl font-bold"</span>&gt;
+        IT-OPTIMIZATION
+      &lt;/h1&gt;
+    &lt;/section&gt;
+  )
+}</pre>
+        </div>
+      </div>
+      <div class="footer">
+        <span class="footer-text">Figma MCP × Claude Code ハンズオン</span>
+        <span class="page-number">10 / 18</span>
+      </div>
+    </section>
+
+    <!-- Slide 11: Demo - Verify -->
+    <section class="slide slide-content" data-slide="11">
+      <span class="category">DEMO</span>
+      <div class="header-line"></div>
+      <h2 class="title-medium">実演 - 動作確認</h2>
+      <div class="two-column">
+        <div>
+          <div class="column-header">App.tsx に組み込み</div>
+          <div class="code-block">
+            <pre><span class="keyword">import</span> HeroSection <span class="keyword">from</span> <span class="string">'./components/HeroSection'</span>
+
+<span class="keyword">function</span> <span class="function">App</span>() {
+  <span class="keyword">return</span> (
+    &lt;div className=<span class="string">"min-h-screen"</span>&gt;
+      &lt;<span class="function">HeroSection</span> /&gt;
+    &lt;/div&gt;
+  )
+}</pre>
+          </div>
+        </div>
+        <div>
+          <div class="column-header">開発サーバー起動</div>
+          <div class="code-block">
+            <pre><span class="function">npm</span> run dev
+
+<span class="comment"># ブラウザで確認</span>
+<span class="string">http://localhost:5173</span></pre>
+          </div>
+          <div style="margin-top:32px;padding:24px;background:var(--light-gray);border-radius:8px;text-align:center;">
+            <div style="font-size:48px;margin-bottom:12px;">🎉</div>
+            <div class="body-small">Figmaデザインが<br>Reactコンポーネントに！</div>
+          </div>
+        </div>
+      </div>
+      <div class="footer">
+        <span class="footer-text">Figma MCP × Claude Code ハンズオン</span>
+        <span class="page-number">11 / 18</span>
+      </div>
+    </section>
+
+    <!-- Slide 12: Adjustment -->
+    <section class="slide slide-content" data-slide="12">
+      <span class="category">REFINEMENT</span>
+      <div class="header-line"></div>
+      <h2 class="title-medium">調整フェーズ</h2>
+      <p class="body-text" style="margin-bottom: 32px;">対話で改善を指示</p>
+      <div class="content-grid-3">
+        <div class="card">
+          <div class="card-title">ホバーエフェクト追加</div>
+          <div class="card-text" style="font-style:italic;">「ボタンのホバー時にわずかに拡大して、影をつけて」</div>
+        </div>
+        <div class="card">
+          <div class="card-title">レスポンシブ対応</div>
+          <div class="card-text" style="font-style:italic;">「モバイル幅（375px）で、カードを縦積みにして」</div>
+        </div>
+        <div class="card">
+          <div class="card-title">デザイン精緻化</div>
+          <div class="card-text" style="font-style:italic;">「Figmaで使っているカラーに合わせてTailwindクラスを調整して」</div>
+        </div>
+      </div>
+      <div class="highlight-box" style="margin-top:40px;">
+        <p class="body-small" style="color:rgba(255,255,255,0.9);">💡 ポイント: 1回で完璧を求めず、対話を重ねて調整していく</p>
+      </div>
+      <div class="footer">
+        <span class="footer-text">Figma MCP × Claude Code ハンズオン</span>
+        <span class="page-number">12 / 18</span>
+      </div>
+    </section>
+
+    <!-- Slide 13: Hands-on -->
+    <section class="slide slide-section" data-slide="13">
+      <span class="category">HANDS-ON</span>
+      <div class="header-line"></div>
+      <h2 class="title-medium">ハンズオン演習</h2>
+      <div class="split-layout">
+        <div>
+          <div class="label">あなたのタスク（15分）</div>
+          <ul class="list list-numbered">
+            <li>Figmaでフレームを選択</li>
+            <li>Claude CodeにURL指定で読み込ませる</li>
+            <li>コンポーネントとして実装</li>
+            <li>App.tsx に追加して表示確認</li>
+          </ul>
+          <div style="margin-top:40px;padding:24px;background:var(--white);border-radius:8px;border-left:4px solid #4CAF50;">
+            <div class="label" style="color:#4CAF50;">ボーナス</div>
+            <div class="body-small">• モバイルレスポンシブを追加<br>• ホバーアニメーションを追加</div>
+          </div>
+        </div>
+        <div class="split-visual" style="background:var(--white);">
+          <div style="text-align:center;">
+            <div style="font-size:100px;">⏱️</div>
+            <div class="title-small" style="margin-top:16px;">15分</div>
+          </div>
+        </div>
+      </div>
+      <div class="footer">
+        <span class="footer-text">Figma MCP × Claude Code ハンズオン</span>
+        <span class="page-number">13 / 18</span>
+      </div>
+    </section>
+
+    <!-- Slide 14: Tips -->
+    <section class="slide slide-content" data-slide="14">
+      <span class="category">TIPS</span>
+      <div class="header-line"></div>
+      <h2 class="title-medium">うまくいくコツ</h2>
+      <div class="two-column">
+        <div>
+          <div class="column-header">Figmaデザイン側</div>
+          <ul class="list">
+            <li><strong>オートレイアウト</strong>を積極的に使う</li>
+            <li>レイヤー名に意味を持たせる<br><span class="body-small">✅ Button/Primary, Card/Feature<br>❌ Frame 123, Group 456</span></li>
+            <li>1ページ・1フレームから始める</li>
+          </ul>
+        </div>
+        <div>
+          <div class="column-header">Claude Code側</div>
+          <ul class="list">
+            <li><strong>具体的に指示</strong>する</li>
+            <li>1回で完璧を求めず、対話で調整</li>
+            <li>エラーが出たらそのままClaude Codeに伝える</li>
+          </ul>
+        </div>
+      </div>
+      <div class="footer">
+        <span class="footer-text">Figma MCP × Claude Code ハンズオン</span>
+        <span class="page-number">14 / 18</span>
+      </div>
+    </section>
+
+    <!-- Slide 15: Use Cases -->
+    <section class="slide slide-content" data-slide="15">
+      <span class="category">USE CASES</span>
+      <div class="header-line"></div>
+      <h2 class="title-medium">実務での活用パターン</h2>
+      <div class="content-grid-3">
+        <div class="card">
+          <div class="card-number">01</div>
+          <div class="card-title">プロトタイプ高速化</div>
+          <div class="card-text">デザイン → 数分でプロトタイプ → フィードバック → 改善のサイクルを高速化</div>
+        </div>
+        <div class="card">
+          <div class="card-number">02</div>
+          <div class="card-title">デザインシステム構築</div>
+          <div class="card-text">Figmaのコンポーネント → Reactコンポーネント一括生成</div>
+        </div>
+        <div class="card">
+          <div class="card-number">03</div>
+          <div class="card-title">デザイナー・エンジニア協業</div>
+          <div class="card-text">デザイナーがFigma更新 → Claude Codeで差分反映</div>
+        </div>
+      </div>
+      <div class="footer">
+        <span class="footer-text">Figma MCP × Claude Code ハンズオン</span>
+        <span class="page-number">15 / 18</span>
+      </div>
+    </section>
+
+    <!-- Slide 16: Summary -->
+    <section class="slide slide-content" data-slide="16">
+      <span class="category">SUMMARY</span>
+      <div class="header-line"></div>
+      <h2 class="title-medium">まとめ</h2>
+      <div class="two-column">
+        <div>
+          <div class="column-header">今日学んだこと</div>
+          <ul class="list">
+            <li>✅ Figma MCP サーバーの設定方法</li>
+            <li>✅ Claude Code との接続方法</li>
+            <li>✅ デザインからReactコンポーネント生成</li>
+            <li>✅ 対話による調整・改善</li>
+          </ul>
+        </div>
+        <div>
+          <div class="column-header">次のステップ</div>
+          <ul class="list">
+            <li>自分のプロジェクトで試す</li>
+            <li>デザインシステムの自動生成</li>
+            <li>GitHub連携でPR作成まで自動化</li>
+          </ul>
+        </div>
+      </div>
+      <div class="footer">
+        <span class="footer-text">Figma MCP × Claude Code ハンズオン</span>
+        <span class="page-number">16 / 18</span>
+      </div>
+    </section>
+
+    <!-- Slide 17: Q&A -->
+    <section class="slide slide-content" data-slide="17">
+      <span class="category">Q&A</span>
+      <div class="header-line"></div>
+      <h2 class="title-medium">よくある質問</h2>
+      <div style="margin-top:40px;">
+        <div class="qa-item">
+          <div class="qa-question">Q: 複雑なデザインでも動く？</div>
+          <div class="qa-answer">A: シンプルなものから始めて、徐々に複雑にするのがおすすめ。オートレイアウトを使っているデザインは特に相性が良いです。</div>
+        </div>
+        <div class="qa-item">
+          <div class="qa-question">Q: 生成コードの品質は？</div>
+          <div class="qa-answer">A: 8割は使える、残り2割は手動調整。でも0から書くより圧倒的に速い。Tailwindクラスも適切に適用されます。</div>
+        </div>
+        <div class="qa-item">
+          <div class="qa-question">Q: デザイン変更したら？</div>
+          <div class="qa-answer">A: 再度URLを指定して読み込ませて更新。差分だけ反映も可能です。</div>
+        </div>
+      </div>
+      <div class="footer">
+        <span class="footer-text">Figma MCP × Claude Code ハンズオン</span>
+        <span class="page-number">17 / 18</span>
+      </div>
+    </section>
+
+    <!-- Slide 18: Thank You -->
+    <section class="slide slide-title" data-slide="18">
+      <h1 class="title-large">Thank You</h1>
+      <p class="title-small" style="margin-top:40px;">ご質問・フィードバックはお気軽に</p>
+      <div style="margin-top:60px;">
+        <p class="body-small" style="margin-bottom:16px;">
+          📧 contact@it-optimization.co.jp
+        </p>
+        <p class="body-small" style="margin-bottom:16px;">
+          🌐 https://it-optimization.co.jp
+        </p>
+      </div>
+      <div style="margin-top:60px;padding:24px;background:var(--white);border-radius:12px;display:inline-block;">
+        <p class="body-small">本日のデモコード・スライド</p>
+        <p style="font-family:monospace;font-size:18px;color:var(--primary);margin-top:8px;">
+          https://github.com/it-optimization/figma-mcp-demo
+        </p>
+      </div>
+      <div class="footer">
+        <span class="footer-text">IT-OPTIMIZATION inc. | 2025</span>
+        <span class="page-number">18 / 18</span>
+      </div>
+    </section>
+  </div>
+
+  <div class="nav-hint">← → キーで移動 | スペースで次へ</div>
+
+  <script>
+    let currentSlide = 1;
+    const totalSlides = 18;
+
+    function showSlide(n) {
+      const slides = document.querySelectorAll('.slide');
+
+      if (n > totalSlides) currentSlide = 1;
+      if (n < 1) currentSlide = totalSlides;
+
+      slides.forEach(slide => slide.classList.remove('active'));
+      slides[currentSlide - 1].classList.add('active');
+    }
+
+    document.addEventListener('keydown', (e) => {
+      if (e.key === 'ArrowRight' || e.key === ' ') {
+        e.preventDefault();
+        currentSlide++;
+        showSlide(currentSlide);
+      } else if (e.key === 'ArrowLeft') {
+        e.preventDefault();
+        currentSlide--;
+        showSlide(currentSlide);
+      } else if (e.key === 'Home') {
+        e.preventDefault();
+        currentSlide = 1;
+        showSlide(currentSlide);
+      } else if (e.key === 'End') {
+        e.preventDefault();
+        currentSlide = totalSlides;
+        showSlide(currentSlide);
+      }
+    });
+
+    // Click to advance
+    document.querySelector('.slides-container').addEventListener('click', (e) => {
+      if (e.clientX > window.innerWidth / 2) {
+        currentSlide++;
+      } else {
+        currentSlide--;
+      }
+      showSlide(currentSlide);
+    });
+
+    // Touch support
+    let touchStartX = 0;
+    document.addEventListener('touchstart', (e) => {
+      touchStartX = e.touches[0].clientX;
+    });
+
+    document.addEventListener('touchend', (e) => {
+      const touchEndX = e.changedTouches[0].clientX;
+      const diff = touchStartX - touchEndX;
+
+      if (Math.abs(diff) > 50) {
+        if (diff > 0) {
+          currentSlide++;
+        } else {
+          currentSlide--;
+        }
+        showSlide(currentSlide);
+      }
+    });
+  </script>
+</body>
+</html>
